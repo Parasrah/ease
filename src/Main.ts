@@ -5,6 +5,7 @@
  */
 
 import { BrowserWindow, ipcMain } from 'electron';
+import { setupIndex } from './ts/listeners/IndexListener';
 
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
@@ -25,6 +26,7 @@ export default class Main {
     private static onReady() {
         Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600})
         Main.mainWindow.loadURL('file://' + __dirname + '/../src/index.html');
+        setupIndex(ipcMain);
         Main.mainWindow.on('closed', Main.onClose);
     }
 
