@@ -5,8 +5,29 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="style/main.css" rel="stylesheet">
+        <link href="style/index.css" rel="stylesheet">
     </head>
     <body>
-        <h1>Hello World!!</h1>
+        <div class="join">
+            
+        </div>
+        <div class="break">
+            
+        </div>
+        <div class="host">
+            <h1>Start a Session</h1>
+            <form class="box test-click" method="post" action="" enctype="multipart/form-data">
+                <div class="box__input">
+                    <input type="file" name="files" id="file" />
+                    <label for="file"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
+                    <button class="box__button" type="submit">Upload</button>
+                </div>
+                <div class="box__uploading">Uploading&hellip;</div>
+                <div class="box__success">Done!</div>
+                <div class="box__error">Error! <span></span>.</div>
+            </form>
+        </div>
+
+        <script src="../dist/ts/logic/upload.js"></script>
     </body>
 </html>

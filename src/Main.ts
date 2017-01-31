@@ -4,7 +4,7 @@
  * Written from a template found here [http://blog.dmbcllc.com/typescript-and-electron-the-right-way/]
  */
 
-import {BrowserWindow} from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
