@@ -1,9 +1,7 @@
-import { IndexChannel } from '../constants/ChannelConst';
-
 // Setup the event listeners for the index
 export let setupIndex = (ipc: Electron.IpcMain) => {
-    
-    ipc.on(IndexChannel.UPLOAD_CLICK, () => {
+
+    ipc.on('upload-click', () => {
         console.log('Test click');
     });
 

@@ -14,5 +14,10 @@
     "videojs"
   ],
   "author": "Brad Pfannmuller",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^1.4.15",
+    "typescript": "^2.1.5",
+    "typings": "^2.1.0"
+  }
 }
