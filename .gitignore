@@ -1,4 +1,4 @@
 node_modules/
 typings/
 dist/
-*.css
+/src/style/*.css
