@@ -1,8 +1,18 @@
-// Setup the event listeners for the index
-export let setupIndex = (ipc: Electron.IpcMain) => {
+import { ipcMain, dialog } from 'electron';
 
-    ipc.on('upload-click', () => {
-        console.log('Test click');
+// Setup the event listeners for the index
+export let setupIndex = (browserWindow: Electron.BrowserWindow) => {
+
+    ipcMain.on('upload-click', () => {
+        dialog.showOpenDialog(browserWindow, {
+            title: 'Select your movie',
+            properties: ['openFile'],
+            filters: [
+                {name: 'Movies', extensions: ['mkv', 'avi', 'mp4']},
+            ]
+        }, (fileNames) => {
+            console.log(fileNames.length);
+        });
     });
 
 };

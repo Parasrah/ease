@@ -26,11 +26,11 @@ export default class Main {
     private static onReady() {
         Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600})
         Main.mainWindow.loadURL('file://' + __dirname + '/../src/index.html');
-        setupIndex(ipcMain);
+        setupIndex(Main.BrowserWindow);
         Main.mainWindow.on('closed', Main.onClose);
     }
 
-    private static onFileOpen() {
+    private static onFileOpen(event: Event) {
         console.log('File open');
     }
 
@@ -41,7 +41,7 @@ export default class Main {
         Main.BrowserWindow = browserWindow;
         Main.application = app;
         Main.application.on('window-all-closed', Main.onWindowAllClosed);
-        Main.application.on('open-open-file', Main.onFileOpen);
+        Main.application.on('open-file', Main.onFileOpen);
         Main.application.on('ready', Main.onReady);
     }
 }
