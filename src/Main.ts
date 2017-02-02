@@ -30,6 +30,10 @@ export default class Main {
         Main.mainWindow.on('closed', Main.onClose);
     }
 
+    private static onFileOpen() {
+        console.log('File open');
+    }
+
     static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
         // we pass the Electron.App object and the Electron.BrowserWindow into this function
         // so this class has no dependencies. This makes the code easier to write tests for.
@@ -37,6 +41,7 @@ export default class Main {
         Main.BrowserWindow = browserWindow;
         Main.application = app;
         Main.application.on('window-all-closed', Main.onWindowAllClosed);
+        Main.application.on('open-open-file', Main.onFileOpen);
         Main.application.on('ready', Main.onReady);
     }
 }
