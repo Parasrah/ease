@@ -3,6 +3,11 @@
     width: @length + 100px;
 }
 
+#center-vert(@padding) {
+    padding-top: @padding;
+    padding-bottom: @padding;
+}
+
 #center {
     width: 50%;
     margin: 0 auto; 
@@ -16,39 +21,35 @@ body {
 
     .break {
         text-align: center;
+        margin-top: 30px;
 
         .or {
-            
+            font-size: 1.5em;
         }
 
         .line {
-            margin-top: 8px;
+            margin-top: 16px;
             border-top: 1px solid black;
-
-            &.left {
-
-            }
-
-            &.right {
-
-            }
         }
     }
 
     .host {
         text-align: center;
 
-        h1 {
-
-        }
-
         .upload-box {
-            #squarish(350px);
+            #squarish(300px);
+            position: relative;
             display: block;
             margin: 0 auto;
 
             border-radius: 10px;
             border: 1px dashed black;
+            
+            > .upload-here {
+                position: relative;
+                display: inline-block;
+                #center-vert(125px);
+            }
         }
     }
 }

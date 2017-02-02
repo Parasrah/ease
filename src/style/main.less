@@ -4,9 +4,12 @@
     src: url('./font/IndieFlower.ttf');
 }
 
+#indie-flower {
+    font-family: 'Indie Flower', cursive;
+}
 
 body {
-    font-family: 'Indie Flower', cursive;
+    #indie-flower;
 
     > input [type='number'] {
         -moz-appearance: textfield;
@@ -25,7 +28,7 @@ body {
     html, button, input, select, textarea,
     .pure-g [class *= "pure-u"] {
         /* Set your content font stack here: */
-        font-family: Georgia, Times, "Times New Roman", serif;
+        #indie-flower;
     }
 }
 
