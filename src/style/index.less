@@ -1,21 +1,24 @@
-#squarish(@length) {
-    height: @length;
-    width: @length + 100px;
-}
-
-#center-vert(@padding) {
-    padding-top: @padding;
-    padding-bottom: @padding;
-}
-
-#center {
-    width: 50%;
-    margin: 0 auto; 
-}
+@import "main.less";
 
 body {
     .join {
         text-align: center;
+
+        input {
+            #inconsolata;
+
+            text-align: center;
+            background-color: @background-color;
+            font-size:18px;
+            padding:10px 10px 10px 5px;
+            width:200px;
+            border:none;
+            border-bottom:1px solid @accent-color;
+        }
+
+        input:focus { 
+            outline:none;
+        }
 
     }
 

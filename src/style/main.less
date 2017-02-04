@@ -4,12 +4,49 @@
     src: url('./font/IndieFlower.ttf');
 }
 
+@font-face {
+    font-family: 'Inconsolata';
+    font-style: normal;
+    src: url('./font/Inconsolata-Regular.ttf');
+}
+
+/* Color theme */
+
+@background-color: #303030;
+@secondary-color: #424242;
+@primary-color: #212121;
+@accent-color: black;
+@font-color: white;
+
+/* TODO find name */
+
+#squarish(@length) {
+    height: @length;
+    width: @length + 100px;
+}
+
+#center-vert(@padding) {
+    padding-top: @padding;
+    padding-bottom: @padding;
+}
+
+#center {
+    width: 50%;
+    margin: 0 auto; 
+}
+
 #indie-flower {
     font-family: 'Indie Flower', cursive;
 }
 
+#inconsolata {
+    font-family: 'Inconsolata', regular;
+}
+
 body {
     #indie-flower;
+
+    background-color: @background-color;
 
     > input [type='number'] {
         -moz-appearance: textfield;
