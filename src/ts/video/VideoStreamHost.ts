@@ -1,21 +1,12 @@
-import { webrtc } from 'webrtc';
-import * as fs from 'fs';
+import VideoStream from './VideoStream';
 
-export default class VideoStreamHost {
-    filepath : string;
-    movieStream : fs.ReadStream;
+/**
+ * Host to send and watch the video stream
+ */
+export default class VideoStreamHost extends VideoStream {
 
     constructor(filepath: string) {
-        this.filepath = filepath;
-        this.movieStream = null;
-    }
-
-    // TODO deal with errors
-    getStream() {
-        if (!this.movieStream) {
-            this.movieStream = fs.createReadStream(this.filepath);
-        }
-        return this.movieStream;
+        super(filepath, true)
     }
     
 }
