@@ -22,6 +22,6 @@
     "typings": "^2.1.0"
   },
   "dependencies": {
-    "webtorrent": "^0.98.5"
+    "webrtc": "^1.14.1"
   }
 }

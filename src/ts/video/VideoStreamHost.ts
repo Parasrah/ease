@@ -1,27 +1,21 @@
-import * as WebTorrent from 'webtorrent';
-
-interface SeedCallback {
-    (torrent: WebTorrent.Torrent) : void;
-}
+import { webrtc } from 'webrtc';
+import * as fs from 'fs';
 
 export default class VideoStreamHost {
     filepath : string;
-    host : WebTorrent.Instance;
-    torrent : WebTorrent.Torrent;
+    movieStream : fs.ReadStream;
 
     constructor(filepath: string) {
         this.filepath = filepath;
-        this.torrent = null;
-        
-        // Create the torrent
-        this.host = new WebTorrent();
+        this.movieStream = null;
     }
 
-    seed(callback: SeedCallback) {
-        this.host.seed(this.filepath, (torrent: WebTorrent.Torrent) => {
-            this.torrent = torrent;
-            callback(torrent);
-        });
+    // TODO deal with errors
+    getStream() {
+        if (!this.movieStream) {
+            this.movieStream = fs.createReadStream(this.filepath);
+        }
+        return this.movieStream;
     }
     
 }
