@@ -4,7 +4,7 @@
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
   "main": "dist/App.js",
   "scripts": {
-    "test": "mocha dist/test"
+    "test": "mocha dist/test/**/*.js"
   },
   "keywords": [
     "electron",
