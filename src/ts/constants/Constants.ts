@@ -1,0 +1,1 @@
+export const SIGNAL_URL : string = 'localhost:4141';

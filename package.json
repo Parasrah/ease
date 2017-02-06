@@ -22,6 +22,7 @@
     "typings": "^2.1.0"
   },
   "dependencies": {
-    "simple-peer": "^6.2.1"
+    "simple-peer": "^6.2.1",
+    "socket.io": "^1.7.2"
   }
 }
