@@ -5,7 +5,9 @@
   "main": "dist/App.js",
   "scripts": {
     "test": "electron-mocha dist/test/main/**/*.js",
-    "test-render": "electron-mocha --render dist/test/render/**/*.js"
+    "test-render": "electron-mocha --render dist/test/render/**/*.js",
+    "start": "electron .",
+    "clean": "rm -r dist/*"
   },
   "keywords": [
     "electron",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "electron": "^1.4.15",
     "electron-mocha": "^3.3.0",
+    "pre-commit": "^1.2.2",
     "typescript": "^2.1.5",
     "typings": "^2.1.0"
   },
