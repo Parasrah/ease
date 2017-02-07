@@ -16,14 +16,5 @@ describe('VideoStreamHost', () => {
     afterEach(() => {
 
     });
-
-    describe('#log', () => {
-        it('should return the room and password', (done) => {
-            subject.log((message) => {
-                console.log(message);
-                done();
-            })
-            subject.host(ROOM, PASSWORD);
-        })
-    });
+    
 });

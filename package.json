@@ -9,6 +9,10 @@
     "start": "electron .",
     "clean": "rm -r dist/*"
   },
+  "pre-commit": [
+    "test",
+    "test-render"
+  ],
   "keywords": [
     "electron",
     "video",
