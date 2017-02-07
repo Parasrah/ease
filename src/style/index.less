@@ -1,30 +1,58 @@
+@import "main.less";
+
 body {
     .join {
+        text-align: center;
+
+        input {
+            #inconsolata;
+
+            text-align: center;
+            background-color: @background-color;
+            font-size:18px;
+            padding:10px 10px 10px 5px;
+            width:200px;
+            border:none;
+            border-bottom:1px solid @accent-color;
+        }
+
+        input:focus { 
+            outline:none;
+        }
 
     }
 
     .break {
+        text-align: center;
+        margin-top: 30px;
 
+        .or {
+            font-size: 1.5em;
+        }
+
+        .line {
+            margin-top: 16px;
+            border-top: 1px solid black;
+        }
     }
 
     .host {
+        text-align: center;
 
-    }
+        .upload-box {
+            #squarish(300px);
+            position: relative;
+            display: block;
+            margin: 0 auto;
 
-    h1 {
-
-    }
-
-    form {
-        .box__input {
-
-        }
-
-        .box__dragndrop,
-        .box__uploading,
-        .box__success,
-        .box__error {
-            display: none;
+            border-radius: 10px;
+            border: 1px dashed black;
+            
+            > .upload-here {
+                position: relative;
+                display: inline-block;
+                #center-vert(125px);
+            }
         }
     }
 }

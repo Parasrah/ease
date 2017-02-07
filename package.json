@@ -1,11 +1,20 @@
 {
-  "name": "bread-desktop",
+  "name": "ease",
   "version": "1.0.0",
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
-  "main": "dist/App.js",
+  "main": "dist/src/App.js",
   "scripts": {
-    "test": "test"
+    "test": "electron-mocha dist/test/main/**/*.js",
+    "test-render": "electron-mocha --renderer dist/test/render/**/*.js",
+    "start": "electron .",
+    "clean": "rm -r dist/*",
+    "build": "tsc --diagnostics --project ."
   },
+  "pre-commit": [
+    "build",
+    "test",
+    "test-render"
+  ],
   "keywords": [
     "electron",
     "video",
@@ -17,7 +26,10 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^1.4.15",
+    "electron-mocha": "^3.3.0",
+    "pre-commit": "^1.2.2",
     "typescript": "^2.1.5",
     "typings": "^2.1.0"
-  }
+  },
+  "dependencies": {}
 }

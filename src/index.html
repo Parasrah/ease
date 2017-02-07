@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Bread</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="style/main.css" rel="stylesheet">
-        <link href="style/index.css" rel="stylesheet">
-    </head>
-    <body>
+
+<head>
+    <title>Bread</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../lib/pure/pure-min.css" rel="stylesheet">
+    <link href="style/main.css" rel="stylesheet">
+    <link href="style/index.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="session">
         <div class="join">
-            
+            <h1>Join a Session</h1>
+            <input type="number" name="ip">
+            <button type="button" class="pure-button pure-button-primary join-button">Join</button>
         </div>
-        <div class="break">
-            
+        <div class="break pure-g">
+            <div class="pure-u-10-24 break-item line left"></div>
+            <div class="pure-u-1-6 break-item center">
+                <span class="or">Or...</span>
+            </div>
+            <div class="pure-u-10-24 break-item line right"></div>
         </div>
         <div class="host">
             <h1>Start a Session</h1>
-            <form class="box test-click" method="post" action="" enctype="multipart/form-data">
-                <div class="box__input">
-                    <input type="file" name="files" id="file" />
-                    <label for="file"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
-                    <button class="box__button" type="submit">Upload</button>
-                </div>
-                <div class="box__uploading">Uploading&hellip;</div>
-                <div class="box__success">Done!</div>
-                <div class="box__error">Error! <span></span>.</div>
-            </form>
+            <div class="upload-box">
+                <span class="upload-here"><button class="pure-button pure-button-primary upload-click">Click Here</button> or drag to upload</span>
+            </div>
         </div>
-        
-        <script src="../dist/ts/logic/upload.js"></script>
-    </body>
+    </div>
+    <script src="../dist/src/ts/render/number.js"></script>
+    <script src="../dist/src/ts/render/upload.js"></script>
+</body>
+
 </html>
