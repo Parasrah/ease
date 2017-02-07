@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- "node"
+env:
+- NODE_ENV=development
+before_script:
+- typings install
+- mkdir dist
+- npm run build
+- ls
+- electron-mocha dist/test/main/MainTest.js
+script:
+- electron-mocha dist/test/main/MainTest.js
+- npm test
+- npm run test-render
+ 
