@@ -8,7 +8,7 @@
     "test-render": "electron-mocha --renderer dist/test/render/**/*.js",
     "start": "electron .",
     "clean": "rm -r dist/*",
-    "build": "tsc"
+    "build": "tsc --diagnostics --project ."
   },
   "pre-commit": [
     "build",
