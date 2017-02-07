@@ -4,13 +4,11 @@ node_js:
 env:
 - NODE_ENV=development
 before_script:
+- export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
 - typings install
 - mkdir dist
 - npm run build
-- ls
-- electron-mocha dist/test/main/MainTest.js
 script:
-- electron-mocha dist/test/main/MainTest.js
 - npm test
 - npm run test-render
  
