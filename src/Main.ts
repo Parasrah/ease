@@ -25,7 +25,7 @@ export default class Main {
 
     private static onReady() {
         Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600})
-        Main.mainWindow.loadURL('file://' + __dirname + '/../src/index.html');
+        Main.mainWindow.loadURL('file://' + __dirname + '/../../src/index.html');
         console.log('Testing');
         IndexListener.setupIndex();
         Main.mainWindow.on('closed', Main.onClose);

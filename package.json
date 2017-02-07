@@ -2,7 +2,7 @@
   "name": "ease",
   "version": "1.0.0",
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
-  "main": "dist/App.js",
+  "main": "dist/src/App.js",
   "scripts": {
     "test": "electron-mocha dist/test/main/**/*.js",
     "test-render": "electron-mocha --renderer dist/test/render/**/*.js",
