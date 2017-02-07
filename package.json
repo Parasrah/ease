@@ -5,11 +5,13 @@
   "main": "dist/App.js",
   "scripts": {
     "test": "electron-mocha dist/test/main/**/*.js",
-    "test-render": "electron-mocha --render dist/test/render/**/*.js",
+    "test-render": "electron-mocha --renderer dist/test/render/**/*.js",
     "start": "electron .",
-    "clean": "rm -r dist/*"
+    "clean": "rm -r dist/*",
+    "build": "tsc"
   },
   "pre-commit": [
+    "build",
     "test",
     "test-render"
   ],

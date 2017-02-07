@@ -11,10 +11,9 @@ const HOST : string = '127.0.0.1';
  */
 export default class VideoStreamHost extends VideoStream {
     private server: net.Server;
-    private filepath : string;
 
     constructor(filepath: string) {
-        super();
+        super(filepath);
         this.filepath = filepath;
         this.server = this.getServer();
     }
