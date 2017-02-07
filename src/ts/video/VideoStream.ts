@@ -10,7 +10,7 @@ export default class VideoStream {
 
     constructor(filepath: string, initiator: boolean) {
         this.filepath = filepath;
-        this.peer = new SimplePeer(initiator);
+        this.peer = new SimplePeer({initiator: initiator});
         this.socket = SocketIO(SIGNAL_URL);
     }
 }

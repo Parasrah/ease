@@ -15,7 +15,7 @@ export default class VideoStreamHost extends VideoStream {
         this.socket.emit('host', [room, password]);
     }
 
-    private setupLogger(callback: LogCallback) {
+    public log(callback: LogCallback) {
         this.socket.on('connection', (socket) => {
             socket.on('log', (...args: any[]) => {
                 let log : string = '';
@@ -26,9 +26,4 @@ export default class VideoStreamHost extends VideoStream {
             });
         });
     }
-
-    private log(room: string, password: string) {
-        console.log('Room: ' + room + '\nPassword: ' + password);
-    }
-    
 }

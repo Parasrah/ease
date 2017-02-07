@@ -4,7 +4,8 @@
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
   "main": "dist/App.js",
   "scripts": {
-    "test": "mocha dist/test/**/*.js"
+    "test": "electron-mocha dist/test/main/**/*.js",
+    "test-render": "electron-mocha --render dist/test/render/**/*.js"
   },
   "keywords": [
     "electron",
@@ -22,6 +23,7 @@
     "typings": "^2.1.0"
   },
   "dependencies": {
+    "electron-mocha": "^3.3.0",
     "simple-peer": "^6.2.1",
     "socket.io": "^1.7.2"
   }
