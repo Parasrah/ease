@@ -17,14 +17,10 @@
   "author": "Brad Pfannmuller",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "^3.2.0",
     "electron": "^1.4.15",
+    "electron-mocha": "^3.3.0",
     "typescript": "^2.1.5",
     "typings": "^2.1.0"
   },
-  "dependencies": {
-    "electron-mocha": "^3.3.0",
-    "simple-peer": "^6.2.1",
-    "socket.io": "^1.7.2"
-  }
+  "dependencies": {}
 }

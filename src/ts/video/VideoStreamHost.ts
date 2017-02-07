@@ -1,29 +1,39 @@
+import * as net from 'net';
+
 import VideoStream from './VideoStream';
 import { LogCallback } from '../constants/CallbackDefinitions'
+
+const HOST : string = 'localhost';
 
 /**
  * Host to send and watch the video stream
  */
 export default class VideoStreamHost extends VideoStream {
+    private server: net.Server;
 
     constructor(filepath: string) {
-        super(filepath, true)
-        this.socket.on
+        super(filepath)
+        this.server = net.createServer((socket) => {
+
+        });
     }
 
-    host(room: string, password: string) {
-        this.socket.emit('host', [room, password]);
-    }
+    host() {
+        this.server.listen(this.port, HOST, () => {
+            console.log('VideoStreamHost bound to: ' + HOST + ':' + this.port);
 
-    public log(callback: LogCallback) {
-        this.socket.on('connection', (socket) => {
-            socket.on('log', (...args: any[]) => {
-                let log : string = '';
-                for (let arg in args) {
-                    log.concat(arg + '\n');
-                }
-                callback(log);
+            this.server.on('connection', (socket) => {
+                console.log('connection made to: ' + socket.address());
+            })
+
+            this.server.on('end', () => {
+                console.log('connection terminated');
+            });
+
+            this.server.on('error', (err) => {
+                console.log(err);
             });
         });
     }
+
 }

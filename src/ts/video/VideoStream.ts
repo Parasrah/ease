@@ -1,16 +1,18 @@
-import * as SimplePeer from 'simple-peer';
-import * as SocketIO from 'socket.io';
+import * as fs from 'fs';
+import * as net from 'net';
 
-import { SIGNAL_URL } from '../constants/Constants'
+import { PORT } from '../constants/Constants'
 
 export default class VideoStream {
     private filepath : string;
-    protected peer: SimplePeer.Instance;
-    protected socket : SocketIO.Server;
+    protected port: number;
 
-    constructor(filepath: string, initiator: boolean) {
+    constructor(filepath: string) {
         this.filepath = filepath;
-        this.peer = new SimplePeer({initiator: initiator});
-        this.socket = SocketIO(SIGNAL_URL);
+        this.port = PORT;
+    }
+
+    getStream() {
+        return fs.createReadStream(this.filepath);
     }
 }
