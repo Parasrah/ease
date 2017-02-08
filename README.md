@@ -32,9 +32,13 @@ Ease is a desktop application build using Electron and Typescript. The goal is t
   
 ### Building Typescript
 
-- I have created an npm script to build the typescript files, simply run:
+- I have created an npm script to build Typescript and Webpack, simply run:
 
   - `npm run build`
+  
+- There are also some file watchers setup for your convenience. These commands are: 
+
+  - `npm run watch-webpack` and `npm run watch-ts`
 
 ### Running Application
 
