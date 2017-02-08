@@ -1,4 +1,6 @@
 node_modules/
 typings/
 dist/
-*.css
+.vscode/
+/src/style/*.css
+*.log
