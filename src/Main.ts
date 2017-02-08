@@ -10,7 +10,7 @@ import { IndexListener } from './ts//main/listeners/IndexListener';
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
     static application: Electron.App;
-    static BrowserWindow;
+    static BrowserWindow : typeof BrowserWindow;
     
     private static onWindowAllClosed() {
         if (process.platform !== 'darwin') {
@@ -24,14 +24,14 @@ export default class Main {
     }
 
     private static onReady() {
-        Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600})
+        Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600});
         Main.mainWindow.loadURL('file://' + __dirname + '/../../src/index.html');
-        console.log('Testing');
         IndexListener.setupIndex();
         Main.mainWindow.on('closed', Main.onClose);
     }
 
     private static onFileOpen(event: Event) {
+        event.preventDefault();
         console.log('File open');
     }
 

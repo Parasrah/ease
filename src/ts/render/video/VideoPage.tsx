@@ -1,7 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-export class Start extends React.Component<{}, {}> {
+export interface VideoPageProps {
+
+}
+
+export class VideoPage extends React.Component<VideoPageProps, {}> {
 
     constructor() {
         super();
@@ -9,7 +13,7 @@ export class Start extends React.Component<{}, {}> {
 
     render() : JSX.Element {
         return (
-            <div id='start'>
+            <div className='video'>
 
             </div>
         );

@@ -11,28 +11,15 @@
 </head>
 
 <body>
-    <div class="session">
-        <div class="join">
-            <h1>Join a Session</h1>
-            <input type="number" name="ip">
-            <button type="button" class="pure-button pure-button-primary join-button">Join</button>
-        </div>
-        <div class="break pure-g">
-            <div class="pure-u-10-24 break-item line left"></div>
-            <div class="pure-u-1-6 break-item center">
-                <span class="or">Or...</span>
-            </div>
-            <div class="pure-u-10-24 break-item line right"></div>
-        </div>
-        <div class="host">
-            <h1>Start a Session</h1>
-            <div class="upload-box">
-                <span class="upload-here"><button class="pure-button pure-button-primary upload-click">Click Here</button> or drag to upload</span>
-            </div>
-        </div>
-    </div>
-    <script src="../dist/src/ts/render/index/number.js"></script>
-    <script src="../dist/src/ts/render/index/upload.js"></script>
+    <!-- React Target -->
+    <div id="app"></div>
+    
+    <!-- Dependencies -->
+    <script src="../node_modules/react/dist/react.js"></script>
+    <script src="../node_modules/react-dom/dist/react-dom.js"></script>
+
+    <!-- Webpack file -->
+    <script src="../dist/bundle.js"></script>
 </body>
 
 </html>

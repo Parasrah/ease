@@ -1,20 +1,21 @@
 import VideoStreamHost from '../../src/ts/render/video/VideoStreamHost';
 
-import * as Assert from 'assert';
+import { expect as Expect, assert as Assert, should as Should } from 'chai';
+import * as ReactTestUtils from 'react-addons-test-utils';
 
 const TEST_DATA = __dirname + '/../../../testData';
 const ROOM : string = 'testingRoom';
 const PASSWORD : string = 'testing-password';
 
 describe('VideoStreamHost', () => {
-    let subject : VideoStreamHost;
+    let subject;
 
     beforeEach(() => {
-        subject = new VideoStreamHost(TEST_DATA + '/small.mp4');
+
     });
 
     afterEach(() => {
-        subject = null;
+
     });
 
     describe('#fakeTest', () => {
