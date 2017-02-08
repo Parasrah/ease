@@ -8,13 +8,13 @@
     "test-render": "electron-mocha --renderer dist/test/render/**/*.js",
     "start": "electron .",
     "clean": "rimraf dist/*",
+    "rebuild": "npm run clean && npm run build",
     "build": "tsc --diagnostics --project . && webpack",
     "watch-webpack": "webpack -w",
-    "watch-typescript": "tsc -w"
+    "watch-ts": "tsc -w"
   },
   "pre-commit": [
-    "clean",
-    "build"
+    "rebuild"
   ],
   "keywords": [
     "electron",
