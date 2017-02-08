@@ -9,13 +9,16 @@
     "removeComments": true,
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
-    "outDir": "dist"
+    "outDir": "./dist/",
+    "jsx": "react"
   },
   "include": [
-    "src/**/*",
-    "typings/**/*"
+    "./src/**/*",
+    "./test/**/*",
+    "./typings/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "./node_modules",
+    "./src/ts/render/**/*"
   ]
 }

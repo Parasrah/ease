@@ -5,12 +5,12 @@
  */
 
 import { BrowserWindow, ipcMain } from 'electron';
-import { setupIndex } from './ts/listeners/IndexListener';
+import { IndexListener } from './ts//main/listeners/IndexListener';
 
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
     static application: Electron.App;
-    static BrowserWindow;
+    static BrowserWindow : typeof BrowserWindow;
     
     private static onWindowAllClosed() {
         if (process.platform !== 'darwin') {
@@ -24,10 +24,15 @@ export default class Main {
     }
 
     private static onReady() {
-        Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600})
-        Main.mainWindow.loadURL('file://' + __dirname + '/../src/index.html');
-        setupIndex(ipcMain);
+        Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600});
+        Main.mainWindow.loadURL('file://' + __dirname + '/../../src/index.html');
+        IndexListener.setupIndex();
         Main.mainWindow.on('closed', Main.onClose);
+    }
+
+    private static onFileOpen(event: Event) {
+        event.preventDefault();
+        console.log('File open');
     }
 
     static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
@@ -37,6 +42,7 @@ export default class Main {
         Main.BrowserWindow = browserWindow;
         Main.application = app;
         Main.application.on('window-all-closed', Main.onWindowAllClosed);
+        Main.application.on('open-file', Main.onFileOpen);
         Main.application.on('ready', Main.onReady);
     }
 }

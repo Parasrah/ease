@@ -3,8 +3,16 @@
  */
 
 import { ipcRenderer } from 'electron';
+import { UPLOAD_CHANNEL } from '../constants/Channels';
 
-let uploadClick = document.querySelector('.test-click');
-uploadClick.addEventListener('click', () => {
-    ipcRenderer.send('upload-click');
-})
+document.addEventListener('DOMContentLoaded', (event) => {
+    
+    let uploadClick = document.querySelector('.upload-click');
+    
+    uploadClick.addEventListener('click', () => {
+        ipcRenderer.send(UPLOAD_CHANNEL);
+    });
+
+});
+
+
