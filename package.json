@@ -14,8 +14,7 @@
     "watch-ts": "tsc -w"
   },
   "pre-commit": [
-    "clean",
-    "build"
+    "rebuild"
   ],
   "keywords": [
     "electron",
