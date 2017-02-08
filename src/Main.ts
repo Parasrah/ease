@@ -5,7 +5,7 @@
  */
 
 import { BrowserWindow, ipcMain } from 'electron';
-import { IndexListener } from './ts/listeners/IndexListener';
+import { IndexListener } from './ts//main/listeners/IndexListener';
 
 export default class Main {
     static mainWindow: Electron.BrowserWindow;

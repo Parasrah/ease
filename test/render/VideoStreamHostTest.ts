@@ -1,4 +1,4 @@
-import VideoStreamHost from '../../src/ts/video/VideoStreamHost';
+import VideoStreamHost from '../../src/ts/render/video/VideoStreamHost';
 
 import * as Assert from 'assert';
 
