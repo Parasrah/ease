@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { StartPage } from './start/StartPage';
-import { VideoPage } from './video/VideoPage';
+import { VideoPage, ConnectionType } from './video/VideoPage';
 import * as Constants from '../constants/Constants';
 
 export interface AppProps {
@@ -57,7 +57,7 @@ export class AppContainer extends React.Component<AppProps, AppState> {
                 break;
 
             case Page.VIDEO:
-                renderedPage = <VideoPage videoPath={this.videoPath} />;
+                renderedPage = <VideoPage videoPath={this.videoPath} type={ConnectionType.HOST} name='Brad' password='password' signalHost='localhost' />;
                 break;
         }
 
