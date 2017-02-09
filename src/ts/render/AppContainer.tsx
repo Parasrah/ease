@@ -57,7 +57,7 @@ export class AppContainer extends React.Component<AppProps, AppState> {
                 break;
 
             case Page.VIDEO:
-                renderedPage = <VideoPage videoPath={this.videoPath} videoHeight={this.state.height} videoWidth={this.state.width} />;
+                renderedPage = <VideoPage videoPath={this.videoPath} />;
                 break;
         }
 
@@ -72,11 +72,15 @@ export class AppContainer extends React.Component<AppProps, AppState> {
         
     }
 
-    private getHeight() {
-
-    }
-
-    private getWidth() {
+    /**
+     * Return the dimensions of the page
+     * 
+     * return {
+     *      height: number,
+     *      width: number
+     * }
+     */
+    private getDimensions() {
 
     }
 }
