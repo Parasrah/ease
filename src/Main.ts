@@ -6,6 +6,7 @@
 
 import { BrowserWindow, ipcMain } from 'electron';
 import { ListenerUtils } from './ts//main/ListenerUtils';
+import * as Constants from './ts/constants/Constants';
 
 export default class Main {
     static mainWindow: Electron.BrowserWindow;
@@ -24,7 +25,7 @@ export default class Main {
     }
 
     private static onReady() {
-        Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600, webPreferences: { experimentalFeatures: true }});
+        Main.mainWindow = new Main.BrowserWindow({width: Constants.DEFAULT_WIDTH, height: Constants.DEFAULT_HEIGHT, webPreferences: { experimentalFeatures: true }});
         Main.mainWindow.loadURL('file://' + __dirname + '/../../src/index.html');
         ListenerUtils.listen();
         Main.mainWindow.on('closed', Main.onClose);
@@ -36,9 +37,6 @@ export default class Main {
     }
 
     static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
-        // we pass the Electron.App object and the Electron.BrowserWindow into this function
-        // so this class has no dependencies. This makes the code easier to write tests for.
-        
         Main.BrowserWindow = browserWindow;
         Main.application = app;
         Main.application.on('window-all-closed', Main.onWindowAllClosed);
