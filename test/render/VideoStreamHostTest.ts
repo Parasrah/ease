@@ -1,5 +1,3 @@
-import VideoStreamHost from '../../src/ts/render/video/VideoStreamHost';
-
 import { expect as Expect, assert as Assert, should as Should } from 'chai';
 import * as ReactTestUtils from 'react-addons-test-utils';
 

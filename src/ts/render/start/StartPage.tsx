@@ -1,6 +1,9 @@
 import * as React from 'react';
+import { ipcRenderer } from 'electron';
 
 import { UploadBox } from './UploadBox'
+import { UPLOAD_CHANNEL } from '../../constants/Channels';
+import { UploadCommand } from '../../constants/Commands';
 
 export interface StartPageProps {
 
@@ -13,7 +16,8 @@ export class StartPage extends React.Component<StartPageProps, {}> {
     }
 
     uploadClick() {
-
+        console.log('sending: ' + UploadCommand.CLICK);
+        ipcRenderer.send(UPLOAD_CHANNEL, UploadCommand.CLICK);
     }
 
     uploadDrag(filepath: string) {

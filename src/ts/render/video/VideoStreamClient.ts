@@ -1,12 +1,10 @@
 import * as peer from 'simple-peer';
 
-import VideoStream from './VideoStream';
-
-export default class VideoStreamClient extends VideoStream {
+export default class VideoStreamClient {
     private video : any;
 
     constructor() {
-        super();
+
     }
 
     protected call() {

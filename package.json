@@ -13,6 +13,10 @@
     "watch-webpack": "webpack -w",
     "watch-ts": "tsc -w"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Right2Drive/ease"
+  },
   "pre-commit": [
     "rebuild"
   ],
