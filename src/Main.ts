@@ -24,7 +24,7 @@ export default class Main {
     }
 
     private static onReady() {
-        Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600});
+        Main.mainWindow = new Main.BrowserWindow({width: 800, height: 600, webPreferences: { experimentalFeatures: true }});
         Main.mainWindow.loadURL('file://' + __dirname + '/../../src/index.html');
         ListenerUtils.listen();
         Main.mainWindow.on('closed', Main.onClose);

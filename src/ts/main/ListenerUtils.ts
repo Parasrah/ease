@@ -15,13 +15,13 @@ export class ListenerUtils {
                         title: 'Select your movie',
                         properties: ['openFile'],
                         filters: [
-                            { name: 'Movies', extensions: ['mkv', 'avi', 'mp4'] },
+                            { name: 'Movies', extensions: ['mp4'] },
                         ]
                     }, (fileNames) => {
                         if (!fileNames) {
                             console.log('No file chosen');
                         }
-                        else if (fileNames.length == 1) {
+                        else if (fileNames.length != 1) {
                             throw "Too many files";
                         }
                         else {
