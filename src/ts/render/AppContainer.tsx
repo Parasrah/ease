@@ -1,8 +1,8 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { StartPage } from './start/StartPage';
-import { VideoPage, ConnectionType } from './video/VideoPage';
-import * as Constants from '../constants/Constants';
+import { StartPage } from "./start/StartPage";
+import { VideoPage, ConnectionType } from "./video/VideoPage";
+import * as Constants from "../constants/Constants";
 
 export interface AppProps {
 
@@ -29,7 +29,7 @@ export class AppContainer extends React.Component<AppProps, AppState> {
             page: Page.START,
             height: Constants.DEFAULT_HEIGHT,
             width: Constants.DEFAULT_WIDTH
-        }
+        };
 
         this.setPageSize();
         this.watchPageSize();
@@ -48,16 +48,16 @@ export class AppContainer extends React.Component<AppProps, AppState> {
         });
     }
 
-    render() : JSX.Element {
+    render(): JSX.Element {
         /* Choose which page to render */
-        let renderedPage : JSX.Element;
+        let renderedPage: JSX.Element;
         switch (this.state.page) {
             case Page.START:
                 renderedPage = <StartPage filepathCallback={this.startVideo} />;
                 break;
 
             case Page.VIDEO:
-                renderedPage = <VideoPage videoPath={this.videoPath} type={ConnectionType.HOST} name='Brad' password='password' signalHost='localhost' />;
+                renderedPage = <VideoPage videoPath={this.videoPath} type={ConnectionType.HOST} name="Brad" password="password" signalHost="localhost" />;
                 break;
         }
 
@@ -69,12 +69,12 @@ export class AppContainer extends React.Component<AppProps, AppState> {
     }
 
     private watchPageSize() {
-        
+
     }
 
     /**
      * Return the dimensions of the page
-     * 
+     *
      * return {
      *      height: number,
      *      width: number

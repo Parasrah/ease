@@ -5,7 +5,7 @@
     "electron": "registry:dt/electron#1.4.8+20170104211658",
     "mocha": "registry:dt/mocha#2.2.5+20170204022515",
     "node": "registry:dt/node#7.0.0+20170124134802",
-    "socket.io": "registry:dt/socket.io#1.4.4+20160915014424"
+    "socket.io-client": "registry:dt/socket.io-client#1.4.4+20161116080703"
   },
   "dependencies": {
     "react-addons-test-utils": "registry:dt/react-addons-test-utils#0.14.0+20170123203653",
