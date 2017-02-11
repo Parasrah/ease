@@ -49,5 +49,5 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     /**
      * Setup the socketIO connection and the signalling
      */
-    protected abstract connect();
+    protected abstract connect(callback: Function);
 }

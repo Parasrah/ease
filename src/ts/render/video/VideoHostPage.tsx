@@ -1,5 +1,3 @@
-import * as React from "react";
-import * as Electron from "electron";
 import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
@@ -10,6 +8,10 @@ interface OfferMessage {
     signal: SimplePeer.SignalData;
 }
 
+export interface SignalCallback {
+    (message: OfferMessage, cb: (message: OfferMessage) => void): void;
+}
+
 export class VideoHostPage extends VideoPage<VideoPageProps> {
     peer: SimplePeer.Instance;
     socket: SocketIOClient.Socket;
@@ -18,19 +20,28 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
         super();
     }
 
-    protected connect() {
+    protected connect(callback: SignalCallback) {
         this.socket.on("offer", (message: OfferMessage) => {
             // Received offer, signal webRTC
-            this.peer.signal(message.signal);
-            this.peer.on("signal", (data: SimplePeer.SignalData) => {
-                // Has signalling data, send to client
-                let offerResponse: OfferMessage = {
-                    id: message.id,
-                    signal: data
-                };
-                this.socket.emit("respond", offerResponse);
-            });
+            callback(message, this.respond);
         });
+    }
+
+    protected signal(message: OfferMessage, cb: (message: OfferMessage) => void): void {
+        this.peer.on("signal", (data: SimplePeer.SignalData) => {
+            // Has signalling data, send to client
+            let offerResponse: OfferMessage = {
+                id: message.id,
+                signal: data
+            };
+            cb(offerResponse);
+        });
+
+        this.peer.signal(message.signal);
+    }
+
+    private respond(message: OfferMessage) {
+        this.socket.emit("respond", message);
     }
 
     componentDidMount() {
@@ -45,6 +56,6 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
         });
 
         // Perform signalling
-        this.connect();
+        this.connect(this.signal);
     }
 }
