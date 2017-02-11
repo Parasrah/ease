@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { StartPage } from "./start/StartPage";
-import { VideoPage, ConnectionType } from "./video/VideoPage";
+import { VideoPage } from "./video/VideoPage";
 import * as Constants from "../constants/Constants";
 
 export interface AppProps {
@@ -15,7 +15,7 @@ export interface AppState {
 }
 
 export enum Page {
-    START, VIDEO
+    START, VIDEO_HOST, VIDEO_CLIENT
 }
 
 export class AppContainer extends React.Component<AppProps, AppState> {
@@ -44,7 +44,7 @@ export class AppContainer extends React.Component<AppProps, AppState> {
     startVideo = (filepath: string) => {
         this.videoPath = filepath;
         this.setState({
-            page: Page.VIDEO
+            page: Page.VIDEO_HOST
         });
     }
 
@@ -56,8 +56,12 @@ export class AppContainer extends React.Component<AppProps, AppState> {
                 renderedPage = <StartPage filepathCallback={this.startVideo} />;
                 break;
 
-            case Page.VIDEO:
-                renderedPage = <VideoPage videoPath={this.videoPath} type={ConnectionType.HOST} name="Brad" password="password" signalHost="localhost" />;
+            case Page.VIDEO_HOST:
+                renderedPage = <div className="videoHostPage"></div>;
+                break;
+
+            case Page.VIDEO_CLIENT:
+                renderedPage = <div className="videoClientPage"></div>;
                 break;
         }
 
