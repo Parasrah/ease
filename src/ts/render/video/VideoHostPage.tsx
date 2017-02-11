@@ -10,12 +10,12 @@ interface OfferMessage {
     signal: SimplePeer.SignalData;
 }
 
-export abstract class VideoHostPage extends VideoPage<VideoPageProps> {
+export class VideoHostPage extends VideoPage<VideoPageProps> {
     peer: SimplePeer.Instance;
     socket: SocketIOClient.Socket;
 
     constructor() {
-        super(false);
+        super();
     }
 
     protected connect() {
@@ -31,5 +31,20 @@ export abstract class VideoHostPage extends VideoPage<VideoPageProps> {
                 this.socket.emit("respond", offerResponse);
             });
         });
+    }
+
+    componentDidMount() {
+        super.componentDidMount();
+
+        // Initialize peer from video stream
+        let video: any = document.getElementById(VideoHostPage.VIDEO_ID);
+        let stream: any = video.captureStream();
+        this.peer = new SimplePeer({
+            initiator: false,
+            stream: stream
+        });
+
+        // Perform signalling
+        this.connect();
     }
 }

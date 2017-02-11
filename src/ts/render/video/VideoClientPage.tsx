@@ -13,12 +13,15 @@ interface OfferMessage {
     signalData: SimplePeer.SignalData;
 }
 
-export abstract class VideoClientPage extends VideoPage<VideoClientProps> {
+export class VideoClientPage extends VideoPage<VideoClientProps> {
     peer: SimplePeer.Instance;
     socket: SocketIOClient.Socket;
 
     constructor() {
-        super(true);
+        super();
+        this.peer = new SimplePeer({
+            initiator: true
+        });
     }
 
     protected connect() {
@@ -41,6 +44,9 @@ export abstract class VideoClientPage extends VideoPage<VideoClientProps> {
 
     componentDidMount() {
         super.componentDidMount();
+
+        // Setup socket.io connection
+        this.connect();
 
         // Wait for peer connection
         this.peer.on("connect", () => {

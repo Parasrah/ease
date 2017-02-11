@@ -27,11 +27,8 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     peer: SimplePeer.Instance;
     socket: SocketIOClient.Socket;
 
-    constructor(initiator: boolean) {
+    constructor() {
         super();
-
-        // Initiate peer
-        this.peer = new SimplePeer({ initiator: initiator });
 
         // Initiate socket
         this.socket = SocketIO.connect(this.props.signalHost);
@@ -47,10 +44,10 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
 
     componentDidMount() {
         console.log("video mounted");
-
-        // Connect to host/client
-        this.connect();
     }
 
+    /**
+     * Setup the socketIO connection and the signalling
+     */
     protected abstract connect();
 }
