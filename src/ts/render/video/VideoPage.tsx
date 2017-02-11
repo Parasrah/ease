@@ -44,10 +44,11 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
 
     componentDidMount() {
         console.log("video mounted");
+        this.connect();
     }
 
     /**
      * Setup the socketIO connection and the signalling
      */
-    protected abstract connect(callback: Function);
+    protected abstract connect();
 }
