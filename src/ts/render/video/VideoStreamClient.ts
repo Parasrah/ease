@@ -1,21 +1,18 @@
-import * as peer from 'simple-peer';
+import * as peer from "simple-peer";
 
-import VideoStream from './VideoStream';
-
-export default class VideoStreamClient extends VideoStream {
-    private video : any;
+export default class VideoStreamClient {
+    private video: any;
 
     constructor() {
-        super();
+
     }
 
     protected call() {
-        console.log('initiating call');
-        
+        console.log("initiating call");
     }
 
     protected getStream() {
-        let videoElement : any = document.getElementById('video');
+        let videoElement: any = document.getElementById("video");
         if (!this.video) {
             if (videoElement.captureStream) {
                 this.video = videoElement.captureStream();

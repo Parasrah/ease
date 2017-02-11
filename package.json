@@ -11,9 +11,17 @@
     "rebuild": "npm run clean && npm run build",
     "build": "tsc --diagnostics --project . && webpack",
     "watch-webpack": "webpack -w",
-    "watch-ts": "tsc -w"
+    "watch-ts": "tsc -w",
+    "lint": "tslint ./src/**/*.ts",
+    "lint-test": "tslint ./test/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Right2Drive/ease"
   },
   "pre-commit": [
+    "lint",
+    "lint-test",
     "rebuild"
   ],
   "keywords": [
@@ -37,13 +45,17 @@
     "react-addons-test-utils": "^15.4.2",
     "rimraf": "^2.5.4",
     "source-map-loader": "^0.1.6",
-    "typescript": "^2.1.5",
+    "tslint": "^4.4.2",
+    "typescript": "^2.1.6",
     "typings": "^2.1.0",
     "webpack": "^2.2.1"
   },
   "dependencies": {
+    "purecss": "^0.6.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "simple-peer": "^6.2.1"
+    "simple-peer": "^6.2.1",
+    "socket.io": "^1.7.2",
+    "typings": "^2.1.0"
   }
 }

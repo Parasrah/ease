@@ -1,12 +1,12 @@
-import * as Assert from 'assert';
+import * as Assert from "assert";
 
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow } from "electron";
 
-import Main from '../../src/Main';
+import Main from "../../src/Main";
 
-describe('Main', () => {
-    describe('#fakeTest', () => {
-        it('should pass', (done) => {
+describe("Main", () => {
+    describe("#fakeTest", () => {
+        it("should pass", (done) => {
             Assert.equal(true, true);
             done();
         });

@@ -1,22 +1,27 @@
 import * as React from 'react';
+import { ipcRenderer } from 'electron';
 
 import { UploadBox } from './UploadBox'
+import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from '../../constants/Channels';
+import { UploadCommand } from '../../constants/Commands';
 
 export interface StartPageProps {
-
+    filepathCallback: (file: string) => void;
 }
 
 export class StartPage extends React.Component<StartPageProps, {}> {
 
     constructor() {
         super();
+        this.listen();
     }
 
-    uploadClick() {
-
+    onUploadClick() {
+        console.log('sending: ' + UploadCommand.CLICK);
+        ipcRenderer.send(UPLOAD_REQUEST, UploadCommand.CLICK);
     }
 
-    uploadDrag(filepath: string) {
+    onUploadDrag(filepath: string) {
         
     }
 
@@ -37,10 +42,17 @@ export class StartPage extends React.Component<StartPageProps, {}> {
                 </div>
                 <div className="host">
                     <h1>Start a Session</h1>
-                    <UploadBox onClick={this.uploadClick} />
+                    <UploadBox onClick={this.onUploadClick} />
                 </div>
             </div>
         );
+    }
+
+    private listen() {
+        ipcRenderer.on(UPLOAD_RESPONSE, (event, payload: string) => {
+            console.log('received filepath: ' + payload);
+            this.props.filepathCallback(payload);
+        });
     }
 
 }

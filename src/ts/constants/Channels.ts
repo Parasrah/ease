@@ -1,1 +1,2 @@
-export const UPLOAD_CHANNEL = "upload"; 
+export const UPLOAD_REQUEST = "upload-request";
+export const UPLOAD_RESPONSE = "upload-response";
