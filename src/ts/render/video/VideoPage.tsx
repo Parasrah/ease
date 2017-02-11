@@ -34,7 +34,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     render(): JSX.Element {
         return (
             <div className="video">
-                <video src={this.props.videoSource} type="video/mp4" width="100%" controls></video>
+                <video src={this.props.videoSource} poster="../../../../src/data/heart.gif" type="video/mp4" width="100%" controls></video>
             </div>
         );
     }
