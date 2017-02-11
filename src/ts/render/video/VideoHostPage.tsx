@@ -21,13 +21,15 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
     peer: SimplePeer.Instance;
     socket: SocketIOClient.Socket;
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
     }
 
     componentDidMount() {
         // Initialize peer from video stream (must be called before VideoPage setup)
-        let video: any = document.getElementById(VideoHostPage.VIDEO_ID);
+        console.log("entering did mount");
+        let video: any = this.getVideo();
+        console.log("Video element: " + video);
         let stream: any = video.captureStream();
         this.peer = new SimplePeer({
             initiator: false,
@@ -36,6 +38,7 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
 
         // Let VideoPage finish mounting
         super.componentDidMount();
+        this.setVideoReady();
     }
 
     protected connect() {

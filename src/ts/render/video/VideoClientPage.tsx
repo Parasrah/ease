@@ -17,8 +17,8 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
     peer: SimplePeer.Instance;
     socket: SocketIOClient.Socket;
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.peer = new SimplePeer({
             initiator: true
         });
@@ -99,9 +99,10 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
     }
 
     private stream(stream: MediaStream) {
-        let video = document.getElementById(VideoClientPage.VIDEO_ID) as HTMLMediaElement;
+        let video = this.getVideo();
         video.onplay = () => {
             video.srcObject = stream;
         };
+        this.setVideoReady();
     }
 }
