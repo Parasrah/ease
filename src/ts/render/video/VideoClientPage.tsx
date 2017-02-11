@@ -38,4 +38,19 @@ export abstract class VideoClientPage extends VideoPage<VideoClientProps> {
             });
         });
     }
+
+    componentDidMount() {
+        super.componentDidMount();
+
+        // Wait for peer connection
+        this.peer.on("connect", () => {
+            // Wait for data
+            this.peer.on("stream", (stream: MediaStream) => {
+                let video = document.getElementById(VideoClientPage.VIDEO_ID) as HTMLMediaElement;
+                video.onplay = () => {
+                    video.srcObject = stream;
+                };
+            });
+        });
+    }
 }

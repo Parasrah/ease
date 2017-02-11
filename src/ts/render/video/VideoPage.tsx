@@ -11,13 +11,19 @@ interface User {
 }
 
 export interface VideoPageProps {
-    videoSource: any;
+    videoSource: string;
     signalHost: string;
     name: string;
     id: string;
 }
 
+export interface VideoPageState {
+    videoSource: string | MediaStream;
+}
+
 export abstract class VideoPage<P extends VideoPageProps> extends React.Component<P, {}> {
+    static VIDEO_ID = "video";
+
     peer: SimplePeer.Instance;
     socket: SocketIOClient.Socket;
 
@@ -34,7 +40,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     render(): JSX.Element {
         return (
             <div className="video">
-                <video src={this.props.videoSource} poster="../../../../src/data/heart.gif" type="video/mp4" width="100%" controls></video>
+                <video id={VideoPage.VIDEO_ID} src={this.props.videoSource} poster="../../../../src/data/heart.gif" type="video/mp4" width="100%" controls></video>
             </div>
         );
     }
