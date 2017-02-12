@@ -5,7 +5,7 @@
   "main": "dist/src/App.js",
   "scripts": {
     "test": "electron-mocha dist/test/main/**/*.js",
-    "test-render": "electron-mocha --renderer dist/test/render/**/*.js",
+    "test-render": "electron-mocha --renderer dist/test/render/**/*.js --require-main dist/test/support/experimental-features.js",
     "start": "electron .",
     "clean": "rimraf dist/*",
     "rebuild": "npm run clean && npm run build",
