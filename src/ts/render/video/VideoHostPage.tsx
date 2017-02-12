@@ -29,16 +29,17 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
         // Initialize peer from video stream (must be called before VideoPage setup)
         console.log("entering did mount");
         let video: any = this.getVideo();
-        console.log("Video element: " + video);
-        let stream: any = video.captureStream();
-        this.peer = new SimplePeer({
-            initiator: false,
-            stream: stream
-        });
+        video.onplay = () => {
+            let stream: any = video.captureStream();
+            this.peer = new SimplePeer({
+                initiator: false,
+                stream: stream
+            });
 
-        // Let VideoPage finish mounting
-        super.componentDidMount();
-        this.setVideoReady();
+            // Let VideoPage finish mounting
+            super.componentDidMount();
+            this.setVideoReady();
+        };
     }
 
     protected connect() {
