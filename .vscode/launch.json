@@ -11,6 +11,7 @@
                 "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-mocha.cmd"
             },
             "args": [
+                "--debug-brk",
                 "--recursive",
                 "-u",
                 "tdd",
@@ -26,37 +27,6 @@
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceRoot}/dist/test/main/**/*.js"
-            ],
-            "port": 5858
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Mocha Render",
-            "cwd": "${workspaceRoot}",
-            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-mocha",
-            "windows": {
-                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-mocha.cmd"
-            },
-            "args": [
-                "--debug",
-                "--renderer",
-                "--recursive",
-                "-u",
-                "tdd",
-                "--timeout",
-                "999999",
-                "--require-main",
-                "dist/test/support/experimental-features.js",
-                "${workspaceRoot}/dist/test/render"
-            ],
-            "runtimeArgs": [
-                "--nolazy"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/dist/test/render/**/*.js"
             ],
             "port": 5858
         },
