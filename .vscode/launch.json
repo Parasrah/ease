@@ -1,0 +1,94 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Main",
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-mocha",
+            "windows": {
+                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-mocha.cmd"
+            },
+            "args": [
+                "--recursive",
+                "-u",
+                "tdd",
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceRoot}/dist/test/main/"
+            ],
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/dist/test/main/**/*.js"
+            ],
+            "port": 5858
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Render",
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-mocha",
+            "windows": {
+                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-mocha.cmd"
+            },
+            "args": [
+                "--debug",
+                "--renderer",
+                "--recursive",
+                "-u",
+                "tdd",
+                "--timeout",
+                "999999",
+                "--require-main",
+                "dist/test/support/experimental-features.js",
+                "${workspaceRoot}/dist/test/render"
+            ],
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/dist/test/render/**/*.js"
+            ],
+            "port": 5858
+        },
+        {
+            "name": "Launch",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceRoot}/dist/src/App.js",
+            "stopOnEntry": false,
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+            "runtimeArgs": [
+                ".",
+                "--enable-logging"
+            ],
+            "env": {},
+            "console": "internalConsole",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/dist/src/**/*.js"
+            ]
+        },
+        {
+            "name": "Attach",
+            "type": "node",
+            "request": "attach",
+            "port": 5858,
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/dist/src/**/*.js"
+            ]
+        }
+    ]
+}
