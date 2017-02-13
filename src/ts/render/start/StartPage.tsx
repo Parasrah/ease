@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ipcRenderer } from "electron";
+import * as Guid from "guid";
 
 import { UploadBox } from "./UploadBox";
 import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../constants/Channels";
@@ -11,7 +12,7 @@ export interface StartPageProps {
 }
 
 export class StartPage extends React.Component<StartPageProps, {}> {
-    private idInput: HTMLElement;
+    private idInput: HTMLInputElement;
 
     constructor() {
         super();
@@ -28,10 +29,29 @@ export class StartPage extends React.Component<StartPageProps, {}> {
     }
 
     private onIdButtonClick = () => {
-        this.props.idCallback(this.idInput.textContent);
+        this.useHostID();
     }
 
-    private setIdInput = (input: HTMLElement) => {
+    private onIdFieldKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.keyCode === 13) {
+            this.useHostID();
+        }
+    }
+
+    private useHostID() {
+        const guid = this.idInput.value;
+        if (guid === "") {
+            // TODO warning message
+        }
+        else if (!Guid.isGuid(guid)) {
+            // TODO warning message
+        }
+        else {
+            this.props.idCallback(guid);
+        }
+    }
+
+    private setIdInput = (input: HTMLInputElement) => {
         this.idInput = input;
     }
 
@@ -50,6 +70,7 @@ export class StartPage extends React.Component<StartPageProps, {}> {
                         type="text"
                         name="id"
                         placeholder="Host ID"
+                        onKeyDown={this.onIdFieldKeyDown}
                         ref={this.setIdInput}
                     />
                     <button
