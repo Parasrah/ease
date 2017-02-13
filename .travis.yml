@@ -11,5 +11,4 @@ script:
 - npm run lint
 - npm run lint-test
 - npm run build
-- npm run test-main
-- npm run test-render
+- npm test

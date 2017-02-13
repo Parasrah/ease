@@ -52,8 +52,16 @@ Ease is a desktop application build using Electron and Typescript. The goal is t
 
   - To test main:
 
-    - `npm test`
+    - `npm test:main`
 
   - And to test the render process(es):
 
-    - `npm run test-render`
+    - `npm run test:render`
+
+  - To debug render process:
+
+    1) `npm run test:debug-main`
+
+    2) Set your breakpoints using the console that is shown
+
+    3) Press `CTRL-R` to reload and run the tests again

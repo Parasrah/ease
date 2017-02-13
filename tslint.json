@@ -1,4 +1,7 @@
 {
+    "extends": [
+        "tslint-react"
+    ],
     "jsRules": {
         "class-name": true,
         "comment-format": [
@@ -44,6 +47,11 @@
         ]
     },
     "rules": {
+        "jsx-alignment": true,
+        "jsx-curly-spacing": [
+            true,
+            "never"
+        ],
         "class-name": true,
         "comment-format": [
             true,

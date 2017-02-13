@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", (event) => {
 
     // Must use for in because targeting es5
-    let inputFields = document.getElementsByTagName("input");
+    const inputFields = document.getElementsByTagName("input");
     for (let i = 0; i < inputFields.length; i++) {
         if (inputFields[i].getAttribute("type").toLowerCase() === "number") {
             // Is number, prevent up/down arrows
