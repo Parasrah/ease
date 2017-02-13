@@ -48,14 +48,18 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
                 <b> ID: </b> {this.props.id}
                 <video
                     src={this.props.videoSource}
-                    ref={(video) => { this.videoElement = video; }}
+                    ref={this.setVideo}
                     poster="../../../../src/data/heart.gif"
                     type="video/mp4"
                     width="100%"
-                    controls>
-                </video>
+                    controls
+                />
             </div>
         );
+    }
+
+    private setVideo = (video: HTMLVideoElement) => {
+        this.videoElement = video;
     }
 
     getVideo(): HTMLMediaElement {

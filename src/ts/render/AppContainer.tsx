@@ -3,7 +3,7 @@ import * as Guid from "guid";
 
 import { StartPage } from "./start/StartPage";
 import { VideoPage } from "./video/VideoPage";
-import { VideoHostPage } from "./video/VideoHostPage"
+import { VideoHostPage } from "./video/VideoHostPage";
 import * as Constants from "../constants/Constants";
 
 export interface AppProps {
@@ -22,7 +22,7 @@ export enum Page {
 
 export class AppContainer extends React.Component<AppProps, AppState> {
     private videoPath: string;
-    private _renderedPage: JSX.Element; 
+    private _renderedPage: JSX.Element;
 
     constructor() {
         super();
@@ -51,7 +51,7 @@ export class AppContainer extends React.Component<AppProps, AppState> {
         });
     }
 
-    componentWillUpdate = (nextProps, nextState) => { 
+    componentWillUpdate = (nextProps, nextState) => {
         if (this.state.page !== nextState.page) {
             switch (nextState.page) {
                 case Page.START:
@@ -59,11 +59,11 @@ export class AppContainer extends React.Component<AppProps, AppState> {
                     break;
                 case Page.VIDEO_HOST:
                     const guid = Guid.raw();
-                    this._renderedPage = 
-                        <VideoHostPage 
-                            id={guid} 
+                    this._renderedPage =
+                        <VideoHostPage
+                            id={guid}
                             signalHost={Constants.SIGNAL_HOST}
-                            videoSource={this.videoPath} 
+                            videoSource={this.videoPath}
                         />;
                     break;
 

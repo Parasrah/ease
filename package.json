@@ -14,9 +14,9 @@
     "build": "tsc --diagnostics --project . && webpack",
     "watch:webpack": "webpack -w",
     "watch:ts": "tsc -w",
-    "lint": "tslint ./src/**/*.ts",
-    "lint:fix": "tslint ./src/**/*.ts --fix",
-    "lint-test": "tslint ./test/**/*.ts"
+    "lint": "tslint ./src/**/*.ts?",
+    "lint:fix": "tslint ./src/**/*.ts? --fix",
+    "lint-test": "tslint ./test/**/*.ts?"
   },
   "repository": {
     "type": "git",

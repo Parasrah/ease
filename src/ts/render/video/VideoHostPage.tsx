@@ -27,7 +27,6 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
 
     componentDidMount() {
         // Initialize peer from video stream (must be called before VideoPage setup)
-        console.log("entering did mount");
         let video: any = this.getVideo();
         video.onplay = () => {
             let stream: any = video.captureStream();
