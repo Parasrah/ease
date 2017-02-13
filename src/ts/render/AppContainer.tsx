@@ -30,10 +30,12 @@ export class AppContainer extends React.Component<AppProps, AppState> {
             height: Constants.DEFAULT_HEIGHT,
             width: Constants.DEFAULT_WIDTH
         };
-
+        this._renderedPage = <StartPage filepathCallback={this.startVideo} />;
         this.setPageSize();
         this.watchPageSize();
     }
+
+    _renderedPage: JSX.Element; 
 
     setPage(page: Page) {
         this.setState({
@@ -48,24 +50,25 @@ export class AppContainer extends React.Component<AppProps, AppState> {
         });
     }
 
-    render(): JSX.Element {
-        /* Choose which page to render */
-        let renderedPage: JSX.Element;
-        switch (this.state.page) {
-            case Page.START:
-                renderedPage = <StartPage filepathCallback={this.startVideo} />;
-                break;
+    componentWillUpdate = (nextProps, nextState) => { 
+        console.log(nextState.page);
+        if (this.state.page !== nextState.page) {
+            switch (nextState.page) {
+                case Page.START:
+                    this._renderedPage = <StartPage filepathCallback={this.startVideo} />;
+                    break;
+                case Page.VIDEO_HOST:
+                    this._renderedPage = <div className="videoHostPage">Video host page</div>;
+                    break;
 
-            case Page.VIDEO_HOST:
-                renderedPage = <div className="videoHostPage"></div>;
-                break;
-
-            case Page.VIDEO_CLIENT:
-                renderedPage = <div className="videoClientPage"></div>;
-                break;
+                case Page.VIDEO_CLIENT:
+                    this._renderedPage = <div className="videoClientPage">Video client page</div>;
+                    break;
+            }
         }
-
-        return renderedPage;
+    }
+    render(): JSX.Element {
+        return this._renderedPage;
     }
 
     private setPageSize() {
