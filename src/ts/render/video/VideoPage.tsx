@@ -42,22 +42,6 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.socket = SocketIO.connect(this.props.signalHost);
     }
 
-    render(): JSX.Element {
-        return (
-            <div className="video">
-                <b> ID: </b> {this.props.id}
-                <video
-                    src={this.props.videoSource}
-                    ref={this.setVideo}
-                    poster="../../../../src/data/heart.gif"
-                    type="video/mp4"
-                    width="100%"
-                    controls
-                />
-            </div>
-        );
-    }
-
     private setVideo = (video: HTMLVideoElement) => {
         this.videoElement = video;
     }
@@ -95,4 +79,20 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
      * Setup the socketIO connection and the signalling
      */
     protected abstract connect();
+
+    render(): JSX.Element {
+        return (
+            <div className="video">
+                <b> ID: </b> {this.props.id}
+                <video
+                    src={this.props.videoSource}
+                    ref={this.setVideo}
+                    poster="../../../../src/data/heart.gif"
+                    type="video/mp4"
+                    width="100%"
+                    controls
+                />
+            </div>
+        );
+    }
 }
