@@ -1,7 +1,9 @@
 import * as React from "react";
+import * as Guid from "guid";
 
 import { StartPage } from "./start/StartPage";
 import { VideoPage } from "./video/VideoPage";
+import { VideoHostPage } from "./video/VideoHostPage"
 import * as Constants from "../constants/Constants";
 
 export interface AppProps {
@@ -20,6 +22,7 @@ export enum Page {
 
 export class AppContainer extends React.Component<AppProps, AppState> {
     private videoPath: string;
+    private _renderedPage: JSX.Element; 
 
     constructor() {
         super();
@@ -30,12 +33,10 @@ export class AppContainer extends React.Component<AppProps, AppState> {
             height: Constants.DEFAULT_HEIGHT,
             width: Constants.DEFAULT_WIDTH
         };
-        this._renderedPage = <StartPage filepathCallback={this.startVideo} />;
+        this._renderedPage = <StartPage filepathCallback={this.startVideo}/>;
         this.setPageSize();
         this.watchPageSize();
     }
-
-    _renderedPage: JSX.Element; 
 
     setPage(page: Page) {
         this.setState({
@@ -51,14 +52,19 @@ export class AppContainer extends React.Component<AppProps, AppState> {
     }
 
     componentWillUpdate = (nextProps, nextState) => { 
-        console.log(nextState.page);
         if (this.state.page !== nextState.page) {
             switch (nextState.page) {
                 case Page.START:
                     this._renderedPage = <StartPage filepathCallback={this.startVideo} />;
                     break;
                 case Page.VIDEO_HOST:
-                    this._renderedPage = <div className="videoHostPage">Video host page</div>;
+                    const guid = Guid.raw();
+                    this._renderedPage = 
+                        <VideoHostPage 
+                            id={guid} 
+                            signalHost={Constants.SIGNAL_HOST}
+                            videoSource={this.videoPath} 
+                        />;
                     break;
 
                 case Page.VIDEO_CLIENT:

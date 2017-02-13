@@ -45,6 +45,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     render(): JSX.Element {
         return (
             <div className="video">
+                <b> ID: </b> {this.props.id}
                 <video
                     src={this.props.videoSource}
                     ref={(video) => { this.videoElement = video; }}
