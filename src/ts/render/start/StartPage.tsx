@@ -31,7 +31,7 @@ export class StartPage extends React.Component<StartPageProps, {}> {
         this.props.idCallback(this.idInput.textContent);
     }
 
-    private setIdInput(input: HTMLElement) {
+    private setIdInput = (input: HTMLElement) => {
         this.idInput = input;
     }
 
@@ -47,8 +47,9 @@ export class StartPage extends React.Component<StartPageProps, {}> {
                 <div className="join">
                     <h1>Join a Session</h1>
                     <input
-                        type="number"
-                        name="ip"
+                        type="text"
+                        name="id"
+                        placeholder="Host ID"
                         ref={this.setIdInput}
                     />
                     <button
