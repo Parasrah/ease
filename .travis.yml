@@ -9,6 +9,5 @@ before_script:
 - mkdir dist
 script:
 - npm run lint
-- npm run lint-test
 - npm run build
 - npm test
