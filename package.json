@@ -4,16 +4,18 @@
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
   "main": "dist/src/App.js",
   "scripts": {
-    "test": "npm run test-main && npm run test-render",
-    "test-main": "electron-mocha --recursive dist/test/main",
-    "test-render": "electron-mocha --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
+    "test": "npm run test:main && npm run test:render",
+    "test:main": "electron-mocha --recursive dist/test/main",
+    "test:render": "electron-mocha --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
+    "test:debug-render": "electron-mocha -u tdd --debug --interactive --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
     "start": "electron .",
     "clean": "rimraf dist/*",
     "rebuild": "npm run clean && npm run build",
     "build": "tsc --diagnostics --project . && webpack",
-    "watch-webpack": "webpack -w",
-    "watch-ts": "tsc -w",
+    "watch:webpack": "webpack -w",
+    "watch:ts": "tsc -w",
     "lint": "tslint ./src/**/*.ts",
+    "lint:fix": "tslint ./src/**/*.ts --fix",
     "lint-test": "tslint ./test/**/*.ts"
   },
   "repository": {
@@ -49,6 +51,7 @@
     "sinon-spy-react": "^2.0.1",
     "source-map-loader": "^0.1.6",
     "tslint": "^4.4.2",
+    "tslint-react": "^2.3.0",
     "typescript": "^2.1.6",
     "typings": "^2.1.0",
     "webpack": "^2.2.1"

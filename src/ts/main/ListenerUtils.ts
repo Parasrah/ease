@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from "electron";
+import { dialog, ipcMain } from "electron";
 import * as Channel from "../constants/Channels";
 import * as Command from "../constants/Commands";
 
@@ -16,13 +16,13 @@ export class ListenerUtils {
                         properties: ["openFile"],
                         filters: [
                             { name: "Movies", extensions: ["mp4"] },
-                        ]
+                        ],
                     }, (fileNames) => {
                         if (!fileNames) {
                             console.log("No file chosen");
                         }
                         else if (fileNames.length !== 1) {
-                            throw "Too many files";
+                            throw new Error("Too many files");
                         }
                         else {
                             console.log("sending: " + fileNames[0]);
@@ -31,7 +31,7 @@ export class ListenerUtils {
                     });
                     break;
                 default:
-                    throw "Command does not exist";
+                    throw new Error("Command does not exist");
             }
 
         });
