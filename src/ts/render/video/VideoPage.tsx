@@ -87,7 +87,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
                 <video
                     src={this.props.videoSource}
                     ref={this.setVideo}
-                    poster="../../../../src/data/heart.gif"
+                    poster={__dirname + "/src/data/heart.gif"}
                     type="video/mp4"
                     width="100%"
                     controls

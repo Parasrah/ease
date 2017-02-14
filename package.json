@@ -1,6 +1,6 @@
 {
   "name": "ease",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
   "main": "dist/src/App.js",
   "scripts": {

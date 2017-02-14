@@ -10,6 +10,10 @@ module.exports = {
 
     target: "electron-renderer",
 
+    node: {
+        __dirname: false
+    },
+
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".jsx"]
