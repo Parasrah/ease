@@ -21,7 +21,6 @@ export interface VideoPageState {
 }
 
 export abstract class VideoPage<P extends VideoPageProps> extends React.Component<P, {}> {
-    static VIDEO_ID_PREFIX = "video_";
 
     protected videoReady: boolean;
     protected videoListeners: Function[];
@@ -38,9 +37,16 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoListeners = [];
         this.videoElement = null;
 
+        (localStorage as any).debug = "*";
+
         // Initiate socket
         this.socket = SocketIO.connect(this.props.signalHost , {
-            reconnection: true
+            reconnection: true,
+            reconnectionDelay: 300,
+            reconnectionDelayMax: 1000
+        });
+        this.socket.on("disconnect", () => {
+            console.log("Disconnected");
         });
         console.log(this.socket.connected);
     }

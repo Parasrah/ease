@@ -33,6 +33,10 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
             this.initServer();
         });
 
+        this.socket.on("reconnect", () => {
+            this.initServer();
+        });
+
         // Send socket error info to console
         this.socket.on("signal_error", (error: string) => {
             console.log(error);

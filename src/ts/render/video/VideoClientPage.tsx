@@ -32,7 +32,7 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
     protected performSignaling() {
         // Prepare signalling data and send offer via socket.io
         this.prepareSignal().then((data: SimplePeer.SignalData) => {
-            this.signal(data).then(this.sendOffer);
+            this.signal(data).then(this.sendOffer).catch(this.errorHandler);
         });
 
         // Setup peer using response
@@ -89,6 +89,10 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
             signalData: data
         };
         this.socket.emit("offer", JSON.stringify(offerMessage));
+    }
+
+    private errorHandler = (error) => {
+        console.log("error: " + error);
     }
 
     private setupPeerConnection(): Promise<{}> {
