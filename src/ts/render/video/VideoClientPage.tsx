@@ -24,7 +24,12 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
         });
     }
 
-    protected connect() {
+    componentDidMount() {
+        super.componentDidMount();
+        this.performSignaling();
+    }
+
+    protected performSignaling() {
         // Prepare signalling data and send offer via socket.io
         this.prepareSignal().then((data: SimplePeer.SignalData) => {
             this.signal(data).then(this.sendOffer);
@@ -51,12 +56,13 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
 
     private signal(data: SimplePeer.SignalData) {
         return new Promise((resolve, reject) => {
-            this.socket.on("error", (error) => {
-                this.socket.removeEventListener("error");
+            this.socket.on("signal_error", (error) => {
+                this.socket.removeEventListener("signal_error");
                 reject(error);
             });
             this.socket.on("connect", () => {
                 this.socket.removeEventListener("error");
+                this.socket.removeEventListener("connect");
                 resolve(data);
             });
         });
@@ -64,12 +70,13 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
 
     private respond(): Promise<SimplePeer.SignalData | string> {
         return new Promise((resolve, reject) => {
-            this.socket.on("error", (error) => {
-                this.socket.removeEventListener("error");
+            this.socket.on("signal_error", (error) => {
+                this.socket.removeEventListener("signal_error");
                 reject(error);
             });
             this.socket.on("response", (signalData: SimplePeer.SignalData) => {
                 this.socket.removeEventListener("error");
+                this.socket.removeEventListener("response");
                 resolve(signalData);
             });
         });
@@ -81,7 +88,7 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
             clientID: this.props.id,
             signalData: data
         };
-        this.socket.emit("offer", offerMessage);
+        this.socket.emit("offer", JSON.stringify(offerMessage));
     }
 
     private setupPeerConnection(): Promise<{}> {
@@ -103,9 +110,7 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
 
     private stream(stream: MediaStream) {
         let video = this.getVideo();
-        video.onplay = () => {
-            video.srcObject = stream;
-        };
+        video.srcObject = stream;
         this.setVideoReady();
     }
 }

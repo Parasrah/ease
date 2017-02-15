@@ -13,6 +13,10 @@ export interface ResponseMessage {
     signalData: SimplePeer.SignalData;
 }
 
+export interface InitMessage {
+    id: string;
+}
+
 export interface SignalCallback {
     (message: OfferMessage, cb: (message: OfferMessage) => void): void;
 }
@@ -23,9 +27,21 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
 
     constructor(props) {
         super(props);
+
+        // Send host information to the server
+        this.socket.on("connect", () => {
+            this.initServer();
+        });
+
+        // Send socket error info to console
+        this.socket.on("signal_error", (error: string) => {
+            console.log(error);
+        });
     }
 
     componentDidMount() {
+        super.componentDidMount();
+
         // Initialize peer from video stream (must be called before VideoPage setup)
         let video: any = this.getVideo();
         video.onplay = () => {
@@ -35,27 +51,25 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
                 stream: stream
             });
 
-            // Let VideoPage finish mounting
-            super.componentDidMount();
+            this.performSignaling();
             this.setVideoReady();
         };
     }
 
-    protected connect() {
-        this.prepareForOffer().then((message: OfferMessage) => { this.setupSignal(message).then(this.respond); });
+    /**
+     * Must be performed AFTER simple peer initialized
+     */
+    protected performSignaling() {
+        this.socket.on("offer", (message: OfferMessage) => {
+            this.setupSignal(message).then(this.respond);
+        });
     }
 
-    private prepareForOffer() {
-        return new Promise((resolve, reject) => {
-            this.socket.on("offer", (message: OfferMessage) => {
-                this.socket.removeEventListener("error");
-                resolve(message);
-            });
-            this.socket.on("error", (error) => {
-                this.socket.removeEventListener("error");
-                reject(error);
-            });
-        });
+    private initServer() {
+        let message: InitMessage = {
+            id: this.props.id
+        };
+        this.socket.emit("host", JSON.stringify(message));
     }
 
     private setupSignal(offer: OfferMessage) {
@@ -75,6 +89,6 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
             id: message.clientID,
             signal: message.signalData
         };
-        this.socket.emit("respond", offerResponse);
+        this.socket.emit("respond", JSON.stringify(offerResponse));
     }
 }

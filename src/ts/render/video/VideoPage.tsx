@@ -39,7 +39,10 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoElement = null;
 
         // Initiate socket
-        this.socket = SocketIO.connect(this.props.signalHost);
+        this.socket = SocketIO.connect(this.props.signalHost , {
+            reconnection: true
+        });
+        console.log(this.socket.connected);
     }
 
     private setVideo = (video: HTMLVideoElement) => {
@@ -52,7 +55,6 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
 
     componentDidMount() {
         console.log("video mounted");
-        this.connect();
     }
 
     public registerListener(fn: Function): void {
@@ -78,7 +80,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     /**
      * Setup the socketIO connection and the signalling
      */
-    protected abstract connect();
+    protected abstract performSignaling();
 
     render(): JSX.Element {
         return (
@@ -87,7 +89,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
                 <video
                     src={this.props.videoSource}
                     ref={this.setVideo}
-                    poster={__dirname + "/src/data/heart.gif"}
+                    poster={__dirname + "/data/heart.gif"}
                     type="video/mp4"
                     width="100%"
                     controls
