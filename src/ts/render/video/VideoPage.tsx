@@ -10,6 +10,12 @@ interface User {
     signal: any;
 }
 
+export interface OfferMessage {
+    hostID: string;
+    clientID: string;
+    signalData: SimplePeer.SignalData;
+}
+
 export interface VideoPageProps {
     videoSource: string;
     signalHost: string;

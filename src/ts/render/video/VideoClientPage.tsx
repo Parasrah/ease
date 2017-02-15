@@ -1,16 +1,10 @@
 import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
-import { VideoPage, VideoPageProps } from "./VideoPage";
+import { VideoPage, VideoPageProps, OfferMessage } from "./VideoPage";
 
 interface VideoClientProps extends VideoPageProps {
     hostID: string;
-}
-
-interface OfferMessage {
-    targetID: string;
-    clientID: string;
-    signalData: SimplePeer.SignalData;
 }
 
 export class VideoClientPage extends VideoPage<VideoClientProps> {
@@ -84,7 +78,7 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
 
     private sendOffer = (data: SimplePeer.SignalData) => {
         let offerMessage: OfferMessage = {
-            targetID: this.props.hostID,
+            hostID: this.props.hostID,
             clientID: this.props.id,
             signalData: data
         };

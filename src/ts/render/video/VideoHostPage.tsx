@@ -1,12 +1,7 @@
 import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
-import { VideoPage, VideoPageProps } from "./VideoPage";
-
-export interface OfferMessage {
-    id: string;
-    signal: SimplePeer.SignalData;
-}
+import { VideoPage, VideoPageProps, OfferMessage } from "./VideoPage";
 
 export interface ResponseMessage {
     clientID: string;
@@ -30,10 +25,6 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
 
         // Send host information to the server
         this.socket.on("connect", () => {
-            this.initServer();
-        });
-
-        this.socket.on("reconnect", () => {
             this.initServer();
         });
 
@@ -76,22 +67,26 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
         this.socket.emit("host", JSON.stringify(message));
     }
 
-    private setupSignal(offer: OfferMessage) {
+    private setupSignal(offer: OfferMessage): Promise<ResponseMessage> {
         // Signal peer
-        this.peer.signal(offer.signal);
+        this.peer.signal(offer.signalData);
 
         // Prepare to respond
         return new Promise((resolve) => {
             this.peer.on("signal", (data: SimplePeer.SignalData) => {
+                let responseMessage: ResponseMessage = {
+                    signalData: data,
+                    clientID: offer.clientID
+                };
                 resolve(data);
             });
         });
     }
 
-    private respond(message: ResponseMessage) {
-        let offerResponse: OfferMessage = {
-            id: message.clientID,
-            signal: message.signalData
+    private respond = (message: ResponseMessage) => {
+        let offerResponse: ResponseMessage = {
+            clientID: message.clientID,
+            signalData: message.signalData,
         };
         this.socket.emit("respond", JSON.stringify(offerResponse));
     }
