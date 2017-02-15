@@ -1,4 +1,4 @@
 export enum UploadCommand {
     CLICK = 1,
-    DRAG = 2
+    DRAG = 2,
 }

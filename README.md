@@ -30,15 +30,23 @@ Ease is a desktop application build using Electron and Typescript. The goal is t
 
   - `mkdir dist`
   
-### Building Typescript
+### Building
 
 - I have created an npm script to build Typescript and Webpack, simply run:
 
   - `npm run build`
-  
-- There are also some file watchers setup for your convenience. These commands are: 
 
-  - `npm run watch-webpack` and `npm run watch-ts`
+- Ease also uses LESS CSS. I would recommend finding a plugin for your IDE/editor, but there is also a file watcher setup to help you out:
+
+  - `npm run watch:less`
+  
+- There are also some other file watchers setup for your convenience. These commands are: 
+
+  - `npm run watch:wp` and `npm run watch:ts`
+
+- Having this many file watchers is ridiculous though. Don't worry, we've got you covered! The following script runs all watchers concurrently so you don't have to stress! =D
+
+  - `npm run watch`
 
 ### Running Application
 
@@ -52,8 +60,16 @@ Ease is a desktop application build using Electron and Typescript. The goal is t
 
   - To test main:
 
-    - `npm test`
+    - `npm test:main`
 
   - And to test the render process(es):
 
-    - `npm run test-render`
+    - `npm run test:render`
+
+  - To debug render process:
+
+    1) `npm run test:debug-main`
+
+    2) Set your breakpoints using the console that is shown
+
+    3) Press `CTRL-R` to reload and run the tests again

@@ -10,10 +10,15 @@ interface User {
     signal: any;
 }
 
+export interface OfferMessage {
+    hostID: string;
+    clientID: string;
+    signalData: SimplePeer.SignalData;
+}
+
 export interface VideoPageProps {
     videoSource: string;
     signalHost: string;
-    name: string;
     id: string;
 }
 
@@ -22,32 +27,86 @@ export interface VideoPageState {
 }
 
 export abstract class VideoPage<P extends VideoPageProps> extends React.Component<P, {}> {
-    static VIDEO_ID = "video";
+
+    protected videoReady: boolean;
+    protected videoListeners: Function[];
+
+    private videoElement: HTMLMediaElement;
 
     peer: SimplePeer.Instance;
     socket: SocketIOClient.Socket;
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        this.videoReady = false;
+        this.videoListeners = [];
+        this.videoElement = null;
+
+        (localStorage as any).debug = "*";
 
         // Initiate socket
-        this.socket = SocketIO.connect(this.props.signalHost);
+        this.socket = SocketIO.connect(this.props.signalHost , {
+            reconnection: true,
+            reconnectionDelay: 300,
+            reconnectionDelayMax: 1000
+        });
+        this.socket.on("disconnect", () => {
+            console.log("Disconnected");
+        });
+        console.log(this.socket.connected);
     }
 
-    render(): JSX.Element {
-        return (
-            <div className="video">
-                <video id={VideoPage.VIDEO_ID} src={this.props.videoSource} poster="../../../../src/data/heart.gif" type="video/mp4" width="100%" controls></video>
-            </div>
-        );
+    private setVideo = (video: HTMLVideoElement) => {
+        this.videoElement = video;
+    }
+
+    getVideo(): HTMLMediaElement {
+        return this.videoElement;
     }
 
     componentDidMount() {
         console.log("video mounted");
     }
 
+    public registerListener(fn: Function): void {
+        if (this.videoReady) {
+            fn();
+        }
+        else {
+            this.videoListeners.push(fn);
+        }
+    }
+
+    protected setVideoReady() {
+        // Set state to true
+        this.videoReady = true;
+
+        // Alert the listeners
+        for (let fn of this.videoListeners) {
+            fn();
+        }
+        this.videoListeners = null;
+    }
+
     /**
      * Setup the socketIO connection and the signalling
      */
-    protected abstract connect();
+    protected abstract performSignaling();
+
+    render(): JSX.Element {
+        return (
+            <div className="video">
+                <b> ID: </b> {this.props.id}
+                <video
+                    src={this.props.videoSource}
+                    ref={this.setVideo}
+                    poster={__dirname + "/data/heart.gif"}
+                    type="video/mp4"
+                    width="100%"
+                    controls
+                />
+            </div>
+        );
+    }
 }

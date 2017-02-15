@@ -1,19 +1,28 @@
 {
   "name": "ease",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
   "main": "dist/src/App.js",
   "scripts": {
-    "test": "electron-mocha dist/test/main/**/*.js",
-    "test-render": "electron-mocha --renderer dist/test/render/**/*.js",
     "start": "electron .",
     "clean": "rimraf dist/*",
     "rebuild": "npm run clean && npm run build",
-    "build": "tsc --diagnostics --project . && webpack",
-    "watch-webpack": "webpack -w",
-    "watch-ts": "tsc -w",
-    "lint": "tslint ./src/**/*.ts",
-    "lint-test": "tslint ./test/**/*.ts"
+    "build": "npm run build:ts && npm run build:wp",
+    "build:ts": "tsc --diagnostics --project .",
+    "build:wp": "webpack",
+    "watch": "concurrently --kill-others \"npm run watch:wp\" \"npm run watch:ts\" \"npm run watch:less\"",
+    "watch:wp": "webpack -w",
+    "watch:ts": "tsc -w",
+    "watch:less": "less-watch-compiler src/style src/style",
+    "test": "npm run test:main && npm run test:render",
+    "test:main": "electron-mocha --recursive dist/test/main",
+    "test:render": "electron-mocha --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
+    "test:debug-render": "electron-mocha -u tdd --debug --interactive --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
+    "lint": "npm run lint:src && npm run lint:test",
+    "lint:src": "tslint ./src/**/*.ts?",
+    "lint:src-fix": "tslint ./src/**/*.ts? --fix",
+    "lint:test": "tslint ./test/**/*.ts?",
+    "lint:test-fix": "tslint ./test/**/*.ts? --fix"
   },
   "repository": {
     "type": "git",
@@ -21,7 +30,6 @@
   },
   "pre-commit": [
     "lint",
-    "lint-test",
     "rebuild"
   ],
   "keywords": [
@@ -38,24 +46,31 @@
     "@types/react-dom": "^0.14.23",
     "awesome-typescript-loader": "^3.0.3",
     "chai": "^3.5.0",
+    "concurrently": "^3.3.0",
     "electron": "^1.4.15",
     "electron-mocha": "^3.3.0",
     "electron-react-devtools": "^0.4.0",
+    "less": "^2.7.2",
+    "less-watch-compiler": "^1.4.2",
     "pre-commit": "^1.2.2",
     "react-addons-test-utils": "^15.4.2",
     "rimraf": "^2.5.4",
+    "sinon": "^1.17.7",
+    "sinon-spy-react": "^2.0.1",
     "source-map-loader": "^0.1.6",
     "tslint": "^4.4.2",
+    "tslint-react": "^2.3.0",
     "typescript": "^2.1.6",
     "typings": "^2.1.0",
     "webpack": "^2.2.1"
   },
   "dependencies": {
+    "guid": "0.0.12",
     "purecss": "^0.6.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "simple-peer": "^6.2.1",
     "socket.io": "^1.7.2",
-    "typings": "^2.1.0"
+    "socket.io-client": "^1.7.2"
   }
 }

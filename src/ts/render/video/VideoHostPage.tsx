@@ -1,50 +1,93 @@
-import * as React from "react";
-import * as Electron from "electron";
 import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
-import { VideoPage, VideoPageProps } from "./VideoPage";
+import { VideoPage, VideoPageProps, OfferMessage } from "./VideoPage";
 
-interface OfferMessage {
+export interface ResponseMessage {
+    clientID: string;
+    signalData: SimplePeer.SignalData;
+}
+
+export interface InitMessage {
     id: string;
-    signal: SimplePeer.SignalData;
+}
+
+export interface SignalCallback {
+    (message: OfferMessage, cb: (message: OfferMessage) => void): void;
 }
 
 export class VideoHostPage extends VideoPage<VideoPageProps> {
     peer: SimplePeer.Instance;
     socket: SocketIOClient.Socket;
 
-    constructor() {
-        super();
-    }
+    constructor(props) {
+        super(props);
 
-    protected connect() {
-        this.socket.on("offer", (message: OfferMessage) => {
-            // Received offer, signal webRTC
-            this.peer.signal(message.signal);
-            this.peer.on("signal", (data: SimplePeer.SignalData) => {
-                // Has signalling data, send to client
-                let offerResponse: OfferMessage = {
-                    id: message.id,
-                    signal: data
-                };
-                this.socket.emit("respond", offerResponse);
-            });
+        // Send host information to the server
+        this.socket.on("connect", () => {
+            this.initServer();
+        });
+
+        // Send socket error info to console
+        this.socket.on("signal_error", (error: string) => {
+            console.log(error);
         });
     }
 
     componentDidMount() {
         super.componentDidMount();
 
-        // Initialize peer from video stream
-        let video: any = document.getElementById(VideoHostPage.VIDEO_ID);
-        let stream: any = video.captureStream();
-        this.peer = new SimplePeer({
-            initiator: false,
-            stream: stream
-        });
+        // Initialize peer from video stream (must be called before VideoPage setup)
+        let video: any = this.getVideo();
+        video.onplay = () => {
+            let stream: any = video.captureStream();
+            this.peer = new SimplePeer({
+                initiator: false,
+                stream: stream
+            });
 
-        // Perform signalling
-        this.connect();
+            this.performSignaling();
+            this.setVideoReady();
+        };
+    }
+
+    /**
+     * Must be performed AFTER simple peer initialized
+     */
+    protected performSignaling() {
+        this.socket.on("offer", (message: OfferMessage) => {
+            this.setupSignal(message).then(this.respond);
+        });
+    }
+
+    private initServer() {
+        let message: InitMessage = {
+            id: this.props.id
+        };
+        this.socket.emit("host", JSON.stringify(message));
+    }
+
+    private setupSignal(offer: OfferMessage): Promise<ResponseMessage> {
+        // Signal peer
+        this.peer.signal(offer.signalData);
+
+        // Prepare to respond
+        return new Promise((resolve) => {
+            this.peer.on("signal", (data: SimplePeer.SignalData) => {
+                let responseMessage: ResponseMessage = {
+                    signalData: data,
+                    clientID: offer.clientID
+                };
+                resolve(data);
+            });
+        });
+    }
+
+    private respond = (message: ResponseMessage) => {
+        let offerResponse: ResponseMessage = {
+            clientID: message.clientID,
+            signalData: message.signalData,
+        };
+        this.socket.emit("respond", JSON.stringify(offerResponse));
     }
 }
