@@ -2,9 +2,23 @@
 
 ## Project Description
 
+### Non-technical
+
 Ease is a desktop application build using Electron and Typescript. The goal is to make it a little bit easier to spend time with the people that matter to you, regardless of the distance. 
 
-## Getting Started
+The project is still in development and yet to release 0.1 Beta, but the goal is watch local video content in sync with peers. Ease uses a simple signaling server to connect you to your loved ones, but after that it's completely peer-to-peer! 
+
+What does this mean for you? If you have any video files on your computer, you will be able to watch them with your friends and loved ones with synced controls! All viewers will be able to pause, play and seek the video and both of you will still see the same thing
+
+### Technical
+
+For the more technical minded out there, Ease is using an experimental chromium feature to extract a stream from an HTML5 video element, and stream it to the viewers via WebRTC. All controls will be synced via this WebRTC connection as well, ensuring you stay off the grid! Normally you can't count on all viewers using experimental features, but thanks to Electron we can control how you use the application while still offering a native, cross-platform experience.
+
+### Future
+
+In the future we would like to build a web front-end and some mobile applications for the viewers. After all, only the host should be constrained to using Electron! 
+
+## Getting Started Developing
 
 ### Clone 
 
@@ -32,11 +46,11 @@ Ease is a desktop application build using Electron and Typescript. The goal is t
   
 ### Building
 
-- I have created an npm script to build Typescript and Webpack, simply run:
+- We have created an npm script to build Typescript and Webpack, simply run:
 
   - `npm run build`
 
-- Ease also uses LESS CSS. I would recommend finding a plugin for your IDE/editor, but there is also a file watcher setup to help you out:
+- Ease also uses LESS CSS. We would recommend finding a plugin for your IDE/editor, but there is also a file watcher setup to help you out:
 
   - `npm run watch:less`
   

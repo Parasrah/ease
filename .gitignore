@@ -1,7 +1,5 @@
 node_modules/
 typings/
 dist/
-.vscode/*
-!.vscode/launch.json
 /src/style/*.css
 *.log
