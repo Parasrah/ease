@@ -14,29 +14,15 @@ export interface StartPageProps {
 export class StartPage extends React.Component<StartPageProps, {}> {
     private idInput: HTMLInputElement;
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.idInput = null;
+
+        // Listen for file
         this.listen();
     }
 
-    onUploadClick() {
-        ipcRenderer.send(UPLOAD_REQUEST, UploadCommand.CLICK);
-    }
-
-    onUploadDrag(filepath: string) {
-
-    }
-
-    private onIdButtonClick = () => {
-        this.useHostID();
-    }
-
-    private onIdFieldKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.keyCode === 13) {
-            this.useHostID();
-        }
-    }
+    /********************* Methods ***********************/
 
     private useHostID() {
         const guid = this.idInput.value;
@@ -51,15 +37,37 @@ export class StartPage extends React.Component<StartPageProps, {}> {
         }
     }
 
-    private setIdInput = (input: HTMLInputElement) => {
-        this.idInput = input;
-    }
-
     private listen() {
         ipcRenderer.on(UPLOAD_RESPONSE, (event, payload: string) => {
             this.props.filepathCallback(payload);
         });
     }
+
+    /********************* Callbacks ***********************/
+
+    private onUploadClick = () => {
+        ipcRenderer.send(UPLOAD_REQUEST, UploadCommand.CLICK);
+    }
+
+    private onUploadDrag = (payload: string) => {
+        this.props.filepathCallback(payload);
+    }
+
+    private onIdButtonClick = () => {
+        this.useHostID();
+    }
+
+    private onIdFieldKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.keyCode === 13) {
+            this.useHostID();
+        }
+    }
+
+    private setIdInput = (input: HTMLInputElement) => {
+        this.idInput = input;
+    }
+
+    /********************* React Lifecycle ***********************/
 
     render(): JSX.Element {
         return (
@@ -70,7 +78,7 @@ export class StartPage extends React.Component<StartPageProps, {}> {
                         type="text"
                         name="id"
                         placeholder="Host ID"
-                        onKeyDown={this.onIdFieldKeyDown}
+                        onKeyPress={this.onIdFieldKeyPress}
                         ref={this.setIdInput}
                     />
                     <button

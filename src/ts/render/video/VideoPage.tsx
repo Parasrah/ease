@@ -30,11 +30,10 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
 
     protected videoReady: boolean;
     protected videoListeners: Function[];
+    protected peer: SimplePeer.Instance;
+    protected socket: SocketIOClient.Socket;
 
     private videoElement: HTMLMediaElement;
-
-    peer: SimplePeer.Instance;
-    socket: SocketIOClient.Socket;
 
     constructor(props) {
         super(props);
@@ -43,30 +42,14 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoListeners = [];
         this.videoElement = null;
 
-        (localStorage as any).debug = "*";
-
         // Initiate socket
-        this.socket = SocketIO.connect(this.props.signalHost , {
-            reconnection: true,
-            reconnectionDelay: 300,
-            reconnectionDelayMax: 1000
-        });
-        this.socket.on("disconnect", () => {
-            console.log("Disconnected");
-        });
-        console.log(this.socket.connected);
+        this.socket = SocketIO.connect(this.props.signalHost);
     }
 
-    private setVideo = (video: HTMLVideoElement) => {
-        this.videoElement = video;
-    }
+    /********************* Methods ***********************/
 
-    getVideo(): HTMLMediaElement {
+    public getVideo(): HTMLMediaElement {
         return this.videoElement;
-    }
-
-    componentDidMount() {
-        console.log("video mounted");
     }
 
     public registerListener(fn: Function): void {
@@ -87,6 +70,18 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
             fn();
         }
         this.videoListeners = null;
+    }
+
+    /********************* Callbacks ***********************/
+
+    private setVideo = (video: HTMLVideoElement) => {
+        this.videoElement = video;
+    }
+
+    /********************* React Lifecycle ***********************/
+
+    componentDidMount() {
+        console.log("video mounted");
     }
 
     /**
