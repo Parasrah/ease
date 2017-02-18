@@ -1,16 +1,8 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as Electron from "electron";
 import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
 import * as Exception from "../../common/Exceptions";
-
-interface User {
-    name: string;
-    password: string;
-    signal: any;
-}
 
 export interface OfferMessage {
     hostID: string;
@@ -22,10 +14,6 @@ export interface VideoPageProps {
     videoSource: string;
     signalHost: string;
     id: string;
-}
-
-export interface VideoPageState {
-    videoSource: string | MediaStream;
 }
 
 interface Subscriber {
@@ -50,7 +38,6 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     protected videoListeners: Function[];
     protected peer: SimplePeer.Instance;
     protected socket: SocketIOClient.Socket;
-    private socketListeners: SocketListener[];
     private subscriptions: Subscription[];
 
     private videoElement: HTMLMediaElement;
@@ -61,7 +48,6 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoReady = false;
         this.videoListeners = [];
         this.videoElement = null;
-        this.socketListeners = [];
         this.subscriptions = [];
 
         // Initiate socket
@@ -169,13 +155,6 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
 
     private setVideo = (video: HTMLVideoElement) => {
         this.videoElement = video;
-    }
-
-    private connectionListener = () => {
-        this.socket.off("connect", this.connectionListener);
-        for (let listener of this.socketListeners) {
-            listener.fn(listener.args);
-        }
     }
 
     /********************* Abstract Methods ***********************/

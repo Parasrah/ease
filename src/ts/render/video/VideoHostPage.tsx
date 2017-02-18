@@ -1,5 +1,4 @@
 import * as SimplePeer from "simple-peer";
-import * as SocketIO from "socket.io-client";
 
 import { VideoPage, VideoPageProps, OfferMessage } from "./VideoPage";
 
@@ -10,10 +9,6 @@ export interface ResponseMessage {
 
 export interface InitMessage {
     id: string;
-}
-
-export interface SignalCallback {
-    (message: OfferMessage, cb: (message: OfferMessage) => void): void;
 }
 
 export class VideoHostPage extends VideoPage<VideoPageProps> {

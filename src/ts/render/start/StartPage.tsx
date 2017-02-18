@@ -24,7 +24,7 @@ export class StartPage extends React.Component<StartPageProps, {}> {
 
     /********************* Methods ***********************/
 
-    private useHostID() {
+    private useHostID = () => {
         const guid = this.idInput.value;
         if (guid === "") {
             // TODO warning message
@@ -37,13 +37,11 @@ export class StartPage extends React.Component<StartPageProps, {}> {
         }
     }
 
-    private listen() {
+    private listen = () => {
         ipcRenderer.on(UPLOAD_RESPONSE, (event, payload: string) => {
             this.props.filepathCallback(payload);
         });
     }
-
-    /********************* Callbacks ***********************/
 
     private onUploadClick = () => {
         ipcRenderer.send(UPLOAD_REQUEST, UploadCommand.CLICK);

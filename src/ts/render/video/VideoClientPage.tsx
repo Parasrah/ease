@@ -1,5 +1,4 @@
 import * as SimplePeer from "simple-peer";
-import * as SocketIO from "socket.io-client";
 
 import { VideoPage, VideoPageProps, OfferMessage } from "./VideoPage";
 
