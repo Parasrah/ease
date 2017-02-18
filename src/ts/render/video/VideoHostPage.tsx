@@ -24,7 +24,7 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
         super(props);
 
         // Send host information to the server
-        this.whenConnected(this.initServer);
+        this.subscribe("connect", this.initServer, true);
 
         // Send socket error info to console
         this.socket.on("signal_error", (error: string) => {

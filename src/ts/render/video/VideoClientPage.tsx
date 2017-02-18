@@ -17,6 +17,7 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
             initiator: true,
             trickle: false
         });
+        this.subscribe("connect", this.sendOffer);
     }
 
     /********************* Methods ***********************/
@@ -40,7 +41,7 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
                 });
             });
 
-            this.whenConnected(this.sendOffer, data);
+            this.publish("connect", data);
         });
     }
 

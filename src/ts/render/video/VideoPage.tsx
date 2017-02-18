@@ -4,6 +4,8 @@ import * as Electron from "electron";
 import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
+import * as Exception from "../../common/Exceptions";
+
 interface User {
     name: string;
     password: string;
@@ -26,13 +28,20 @@ export interface VideoPageState {
     videoSource: string | MediaStream;
 }
 
-interface SocketFunction {
+interface Subscriber {
     (args: any[]): void;
 }
 
 interface SocketListener {
-    fn: SocketFunction;
+    fn: Subscriber;
     args: any[];
+}
+
+interface Subscription {
+    event: string;
+    happened: boolean;
+    subscribers: Subscriber[];
+    publishData: any[];
 }
 
 export abstract class VideoPage<P extends VideoPageProps> extends React.Component<P, {}> {
@@ -42,6 +51,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     protected peer: SimplePeer.Instance;
     protected socket: SocketIOClient.Socket;
     private socketListeners: SocketListener[];
+    private subscriptions: Subscription[];
 
     private videoElement: HTMLMediaElement;
 
@@ -52,9 +62,11 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoListeners = [];
         this.videoElement = null;
         this.socketListeners = [];
+        this.subscriptions = [];
 
         // Initiate socket
         this.socket = SocketIO.connect(this.props.signalHost);
+        this.createSubscription("connect");
     }
 
     /********************* Methods ***********************/
@@ -83,19 +95,76 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoListeners = null;
     }
 
-    protected whenConnected = (fn: SocketFunction, ...args) => {
-        if (this.socket.connected) {
-            fn(args);
+    protected subscribe = (event: string, fn: Subscriber, now?: boolean) => {
+        let sub = null;
+        try {
+            sub = this.getSubscription(event);
+            sub.subscribers.push(fn);
         }
-        else {
-            this.socketListeners.push({
-                fn: fn,
-                args: args
-            });
-            if (this.socketListeners.length === 1) {
-                this.socket.on("connect", this.connectionListener);
+        catch (ex) {
+            if (ex instanceof Exception.NoSuchSubscription) {
+                // Create a subscription
+                sub = this.createSubscription(event);
+            }
+            else {
+                throw ex;
             }
         }
+        if (now) {
+            this.updateSubscribers(sub);
+        }
+    }
+
+    protected publish = (event: string, ...publishData: any[]) => {
+        const sub = this.getSubscription(event);
+        if (sub.happened) {
+            this.updateSubscribers(sub, publishData);
+        }
+        else {
+            sub.publishData.push(publishData);
+        }
+    }
+
+    protected createSubscription = (event: string) => {
+        const sub = {
+            event: event,
+            happened: false,
+            subscribers: [],
+            publishData: []
+        };
+        this.subscriptions.push(sub);
+        this.waitForEvent(event);
+        return sub;
+    }
+
+    private waitForEvent = (event: string) => {
+        this.socket.on(event, () => {
+            const sub = this.getSubscription(event);
+            sub.happened = true;
+
+            // Event has occurred, publish all data to subscribers
+            for (let publishData of sub.publishData) {
+                this.updateSubscribers(sub, publishData);
+            }
+
+            // Remove all publish data
+            sub.publishData = [];
+        });
+    }
+
+    private updateSubscribers(subscription: Subscription, ...publishData) {
+        for (let subscriber of subscription.subscribers) {
+            subscriber(publishData);
+        }
+    }
+
+    private getSubscription = (event: string): Subscription => {
+        for (let sub of this.subscriptions) {
+            if (sub.event === event) {
+                return sub;
+            }
+        }
+        throw new Exception.NoSuchSubscription();
     }
 
     private setVideo = (video: HTMLVideoElement) => {
