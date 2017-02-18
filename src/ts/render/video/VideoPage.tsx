@@ -26,12 +26,22 @@ export interface VideoPageState {
     videoSource: string | MediaStream;
 }
 
+interface SocketFunction {
+    (args: any[]): void;
+}
+
+interface SocketListener {
+    fn: SocketFunction;
+    args: any[];
+}
+
 export abstract class VideoPage<P extends VideoPageProps> extends React.Component<P, {}> {
 
     protected videoReady: boolean;
     protected videoListeners: Function[];
     protected peer: SimplePeer.Instance;
     protected socket: SocketIOClient.Socket;
+    private socketListeners: SocketListener[];
 
     private videoElement: HTMLMediaElement;
 
@@ -41,6 +51,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoReady = false;
         this.videoListeners = [];
         this.videoElement = null;
+        this.socketListeners = [];
 
         // Initiate socket
         this.socket = SocketIO.connect(this.props.signalHost);
@@ -48,11 +59,11 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
 
     /********************* Methods ***********************/
 
-    public getVideo(): HTMLMediaElement {
+    public getVideo = (): HTMLMediaElement => {
         return this.videoElement;
     }
 
-    public registerListener(fn: Function): void {
+    public registerListener = (fn: Function): void => {
         if (this.videoReady) {
             fn();
         }
@@ -61,7 +72,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         }
     }
 
-    protected setVideoReady() {
+    protected setVideoReady = () => {
         // Set state to true
         this.videoReady = true;
 
@@ -72,22 +83,44 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoListeners = null;
     }
 
-    /********************* Callbacks ***********************/
+    protected whenConnected = (fn: SocketFunction, ...args) => {
+        if (this.socket.connected) {
+            fn(args);
+        }
+        else {
+            this.socketListeners.push({
+                fn: fn,
+                args: args
+            });
+            if (this.socketListeners.length === 1) {
+                this.socket.on("connect", this.connectionListener);
+            }
+        }
+    }
 
     private setVideo = (video: HTMLVideoElement) => {
         this.videoElement = video;
     }
+
+    private connectionListener = () => {
+        this.socket.off("connect", this.connectionListener);
+        for (let listener of this.socketListeners) {
+            listener.fn(listener.args);
+        }
+    }
+
+    /********************* Abstract Methods ***********************/
+
+    /**
+     * Setup the socketIO connection and the signalling
+     */
+    protected abstract performSignaling: () => void;
 
     /********************* React Lifecycle ***********************/
 
     componentDidMount() {
         console.log("video mounted");
     }
-
-    /**
-     * Setup the socketIO connection and the signalling
-     */
-    protected abstract performSignaling();
 
     render(): JSX.Element {
         return (

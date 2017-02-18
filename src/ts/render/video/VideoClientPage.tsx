@@ -21,12 +21,9 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
 
     /********************* Methods ***********************/
 
-    protected performSignaling() {
+    protected performSignaling = () => {
         // Prepare signalling data and send offer via socket.io
         this.peer.on("signal", (data: SimplePeer.SignalData) => {
-            this.socket.on("connect", () => {
-                this.sendOffer(data);
-            });
 
             this.socket.on("response", (message: string) => {
                 // Signal peer
@@ -42,10 +39,12 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
                     this.stream(stream);
                 });
             });
+
+            this.whenConnected(this.sendOffer, data);
         });
     }
 
-    private stream(stream: MediaStream) {
+    private stream = (stream: MediaStream) => {
         let video = this.getVideo();
         video.srcObject = stream;
         this.setVideoReady();

@@ -24,9 +24,7 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
         super(props);
 
         // Send host information to the server
-        this.socket.on("connect", () => {
-            this.initServer();
-        });
+        this.whenConnected(this.initServer);
 
         // Send socket error info to console
         this.socket.on("signal_error", (error: string) => {
@@ -39,18 +37,9 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
     /**
      * Must be performed AFTER simple peer initialized
      */
-    protected performSignaling() {
+    protected performSignaling = () => {
         this.socket.on("offer", this.setupSignal);
     }
-
-    private initServer() {
-        let message: InitMessage = {
-            id: this.props.id
-        };
-        this.socket.emit("host", JSON.stringify(message));
-    }
-
-    /********************* Callbacks ***********************/
 
     /**
      * Handle incoming offers
@@ -67,7 +56,7 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
 
         // Signal peer
         const parsedOffer: OfferMessage = JSON.parse(offer);
-        this.peer.signal(parsedOffer.signalData);
+        this.peer.signal(parsedOffer.signalData[0]);
     }
 
     private respond = (message: ResponseMessage) => {
@@ -76,6 +65,13 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
             signalData: message.signalData,
         };
         this.socket.emit("respond", JSON.stringify(offerResponse));
+    }
+
+    private initServer = () => {
+        let message: InitMessage = {
+            id: this.props.id
+        };
+        this.socket.emit("host", JSON.stringify(message));
     }
 
     /********************* React Lifecycle ***********************/
