@@ -1,5 +1,6 @@
 {
     "extends": [
+        "tslint:latest",
         "tslint-react"
     ],
     "jsRules": {
@@ -66,6 +67,16 @@
         "no-trailing-whitespace": true,
         "no-unsafe-finally": true,
         "no-var-keyword": true,
+        "no-unused-new": true,
+        "no-string-literal": true,
+        "no-string-throw": true,
+        "no-invalid-this": true,
+        "member-ordering": [
+            false
+        ],
+        "only-arrow-functions": [
+            true
+        ],
         "one-line": [
             true,
             "check-open-brace",
@@ -104,6 +115,16 @@
             "check-operator",
             "check-separator",
             "check-type"
+        ],
+        "eofline": true,
+        "prefer-const": true,
+        "switch-default": true,
+        "no-console": [
+            false
+        ],
+        "no-empty-interface": false,
+        "max-line-length": [
+            false
         ]
     }
 }

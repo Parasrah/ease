@@ -4,41 +4,39 @@ import * as SocketIO from "socket.io-client";
 
 import * as Exception from "../../common/Exceptions";
 
-export interface OfferMessage {
+export interface IOfferMessage {
     hostID: string;
     clientID: string;
     signalData: SimplePeer.SignalData;
 }
 
-export interface VideoPageProps {
+export interface IVideoPageProps {
     videoSource: string;
     signalHost: string;
     id: string;
 }
 
-interface Subscriber {
-    (args: any[]): void;
-}
+type Subscriber = (args: any[]) => void;
 
-interface SocketListener {
+interface ISocketListener {
     fn: Subscriber;
     args: any[];
 }
 
-interface Subscription {
+interface ISubscription {
     event: string;
     happened: boolean;
     subscribers: Subscriber[];
     publishData: any[];
 }
 
-export abstract class VideoPage<P extends VideoPageProps> extends React.Component<P, {}> {
+export abstract class VideoPage<P extends IVideoPageProps> extends React.Component<P, {}> {
 
     protected videoReady: boolean;
     protected videoListeners: Function[];
     protected peer: SimplePeer.Instance;
     protected socket: SocketIOClient.Socket;
-    private subscriptions: Subscription[];
+    private Isubscriptions: ISubscription[];
 
     private videoElement: HTMLMediaElement;
 
@@ -48,11 +46,11 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoReady = false;
         this.videoListeners = [];
         this.videoElement = null;
-        this.subscriptions = [];
+        this.Isubscriptions = [];
 
         // Initiate socket
         this.socket = SocketIO.connect(this.props.signalHost);
-        this.createSubscription("connect");
+        this.createISubscription("connect");
     }
 
     /********************* Methods ***********************/
@@ -75,7 +73,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         this.videoReady = true;
 
         // Alert the listeners
-        for (let fn of this.videoListeners) {
+        for (const fn of this.videoListeners) {
             fn();
         }
         this.videoListeners = null;
@@ -84,13 +82,13 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     protected subscribe = (event: string, fn: Subscriber, now?: boolean) => {
         let sub = null;
         try {
-            sub = this.getSubscription(event);
+            sub = this.getISubscription(event);
             sub.subscribers.push(fn);
         }
         catch (ex) {
             if (ex instanceof Exception.NoSuchSubscription) {
-                // Create a subscription
-                sub = this.createSubscription(event);
+                // Create a Isubscription
+                sub = this.createISubscription(event);
             }
             else {
                 throw ex;
@@ -102,7 +100,7 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
     }
 
     protected publish = (event: string, ...publishData: any[]) => {
-        const sub = this.getSubscription(event);
+        const sub = this.getISubscription(event);
         if (sub.happened) {
             this.updateSubscribers(sub, publishData);
         }
@@ -111,25 +109,25 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         }
     }
 
-    protected createSubscription = (event: string) => {
+    protected createISubscription = (event: string) => {
         const sub = {
-            event: event,
+            event,
             happened: false,
+            publishData: [],
             subscribers: [],
-            publishData: []
         };
-        this.subscriptions.push(sub);
+        this.Isubscriptions.push(sub);
         this.waitForEvent(event);
         return sub;
     }
 
     private waitForEvent = (event: string) => {
         this.socket.on(event, () => {
-            const sub = this.getSubscription(event);
+            const sub = this.getISubscription(event);
             sub.happened = true;
 
             // Event has occurred, publish all data to subscribers
-            for (let publishData of sub.publishData) {
+            for (const publishData of sub.publishData) {
                 this.updateSubscribers(sub, publishData);
             }
 
@@ -138,14 +136,14 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
         });
     }
 
-    private updateSubscribers(subscription: Subscription, ...publishData) {
-        for (let subscriber of subscription.subscribers) {
+    private updateSubscribers(Isubscription: ISubscription, ...publishData) {
+        for (const subscriber of Isubscription.subscribers) {
             subscriber(publishData);
         }
     }
 
-    private getSubscription = (event: string): Subscription => {
-        for (let sub of this.subscriptions) {
+    private getISubscription = (event: string): ISubscription => {
+        for (const sub of this.Isubscriptions) {
             if (sub.event === event) {
                 return sub;
             }
@@ -166,11 +164,11 @@ export abstract class VideoPage<P extends VideoPageProps> extends React.Componen
 
     /********************* React Lifecycle ***********************/
 
-    componentDidMount() {
+    protected componentDidMount() {
         console.log("video mounted");
     }
 
-    render(): JSX.Element {
+    public render(): JSX.Element {
         return (
             <div className="video">
                 <b> ID: </b> {this.props.id}

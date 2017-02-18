@@ -1,8 +1,9 @@
+/* tslint:disable:only-arrow-functions */
 import { assert as Assert } from "chai";
+import { app } from "electron";
+import * as React from "react";
 import * as TestUtils from "react-addons-test-utils";
 import { spyOnComponentMethod, stubComponentMethod } from "sinon-spy-react";
-import * as React from "react";
-import { app } from "electron";
 
 import { VideoHostPage } from "../../src/ts/render/video/VideoHostPage";
 
@@ -17,11 +18,11 @@ const EXPECTED_POSTER = "file://" + __dirname + "/ease/src/data/heart.gif";
 describe("VideoClientPage Logic", () => {
 
     beforeEach(() => {
-
+        "TODO";
     });
 
     afterEach(() => {
-
+        "TODO";
     });
 
     describe("#dummyTest", function() {

@@ -1,20 +1,18 @@
 import * as SimplePeer from "simple-peer";
 
-import { VideoPage, VideoPageProps, OfferMessage } from "./VideoPage";
+import { IOfferMessage, IVideoPageProps, VideoPage  } from "./VideoPage";
 
-interface VideoClientProps extends VideoPageProps {
+interface IVideoClientProps extends IVideoPageProps {
     hostID: string;
 }
 
-export class VideoClientPage extends VideoPage<VideoClientProps> {
-    peer: SimplePeer.Instance;
-    socket: SocketIOClient.Socket;
+export class VideoClientPage extends VideoPage<IVideoClientProps> {
 
     constructor(props) {
         super(props);
         this.peer = new SimplePeer({
             initiator: true,
-            trickle: false
+            trickle: false,
         });
         this.subscribe("connect", this.sendOffer);
     }
@@ -45,16 +43,16 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
     }
 
     private stream = (stream: MediaStream) => {
-        let video = this.getVideo();
+        const video = this.getVideo();
         video.srcObject = stream;
         this.setVideoReady();
     }
 
     private sendOffer = (data: SimplePeer.SignalData) => {
-        let offerMessage: OfferMessage = {
-            hostID: this.props.hostID,
+        const offerMessage: IOfferMessage = {
             clientID: this.props.id,
-            signalData: data
+            hostID: this.props.hostID,
+            signalData: data,
         };
         this.socket.emit("offer", JSON.stringify(offerMessage));
     }
@@ -65,7 +63,7 @@ export class VideoClientPage extends VideoPage<VideoClientProps> {
 
     /********************* React Lifecycle ***********************/
 
-    componentDidMount() {
+    protected componentDidMount() {
         super.componentDidMount();
         this.performSignaling();
     }

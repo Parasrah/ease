@@ -1,8 +1,8 @@
-interface Exception {
+interface IException {
     toString(): string;
 }
 
-export class NoSuchSubscription implements Exception {
+export class NoSuchSubscription implements IException {
     private message: string;
 
     constructor() {

@@ -1,19 +1,19 @@
 import * as SimplePeer from "simple-peer";
 
-import { VideoPage, VideoPageProps, OfferMessage } from "./VideoPage";
+import { IOfferMessage, IVideoPageProps, VideoPage  } from "./VideoPage";
 
-export interface ResponseMessage {
+export interface IResponseMessage {
     clientID: string;
     signalData: SimplePeer.SignalData;
 }
 
-export interface InitMessage {
+export interface IInitMessage {
     id: string;
 }
 
-export class VideoHostPage extends VideoPage<VideoPageProps> {
-    peers: SimplePeer.Instance;
-    socket: SocketIOClient.Socket;
+export class VideoHostPage extends VideoPage<IVideoPageProps> {
+    protected socket: SocketIOClient.Socket;
+    private peers: SimplePeer.Instance;
 
     constructor(props) {
         super(props);
@@ -42,20 +42,20 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
     private setupSignal = (offer: string) => {
         // Setup for signal ready
         this.peer.on("signal", (data: SimplePeer.SignalData) => {
-            let responseMessage: ResponseMessage = {
+            const IresponseMessage: IResponseMessage = {
+                clientID: parsedOffer.clientID,
                 signalData: data,
-                clientID: parsedOffer.clientID
             };
-            this.respond(responseMessage);
+            this.respond(IresponseMessage);
         });
 
         // Signal peer
-        const parsedOffer: OfferMessage = JSON.parse(offer);
+        const parsedOffer: IOfferMessage = JSON.parse(offer);
         this.peer.signal(parsedOffer.signalData[0]);
     }
 
-    private respond = (message: ResponseMessage) => {
-        let offerResponse: ResponseMessage = {
+    private respond = (message: IResponseMessage) => {
+        const offerResponse: IResponseMessage = {
             clientID: message.clientID,
             signalData: message.signalData,
         };
@@ -63,25 +63,25 @@ export class VideoHostPage extends VideoPage<VideoPageProps> {
     }
 
     private initServer = () => {
-        let message: InitMessage = {
-            id: this.props.id
+        const message: IInitMessage = {
+            id: this.props.id,
         };
         this.socket.emit("host", JSON.stringify(message));
     }
 
     /********************* React Lifecycle ***********************/
 
-    componentDidMount() {
+    protected componentDidMount() {
         super.componentDidMount();
 
         // Initialize peer from video stream (must be called before VideoPage setup)
-        let video: any = this.getVideo();
+        const video: any = this.getVideo();
         video.onplay = () => {
-            let stream: any = video.captureStream();
+            const stream: any = video.captureStream();
             this.peer = new SimplePeer({
                 initiator: false,
-                stream: stream,
-                trickle: false
+                stream,
+                trickle: false,
             });
 
             this.performSignaling();

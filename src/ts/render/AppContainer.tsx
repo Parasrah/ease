@@ -1,27 +1,27 @@
-import * as React from "react";
 import * as Guid from "guid";
+import * as React from "react";
 
-import { StartPage } from "./start/StartPage";
-import { VideoPage } from "./video/VideoPage";
-import { VideoHostPage } from "./video/VideoHostPage";
-import { VideoClientPage } from "./video/VideoClientPage";
 import * as Constants from "../constants/Constants";
+import { StartPage } from "./start/StartPage";
+import { VideoClientPage } from "./video/VideoClientPage";
+import { VideoHostPage } from "./video/VideoHostPage";
+import { VideoPage } from "./video/VideoPage";
 
-export interface AppProps {
+export interface IAppProps {
 
 }
 
-export interface AppState {
+export interface IAppState {
     page: Page;
     height: number;
     width: number;
 }
 
 export enum Page {
-    START, VIDEO_HOST, VIDEO_CLIENT
+    START, VIDEO_HOST, VIDEO_CLIENT,
 }
 
-export class AppContainer extends React.Component<AppProps, AppState> {
+export class AppContainer extends React.Component<IAppProps, IAppState> {
     private videoPath: string;
     private hostID: string;
     private renderedPage: JSX.Element;
@@ -32,36 +32,36 @@ export class AppContainer extends React.Component<AppProps, AppState> {
         this.hostID = null;
 
         this.state = {
-            page: Page.START,
             height: Constants.DEFAULT_HEIGHT,
-            width: Constants.DEFAULT_WIDTH
+            page: Page.START,
+            width: Constants.DEFAULT_WIDTH,
         };
-        this.renderedPage = <StartPage filepathCallback={this.startVideo} idCallback={this.connectHost}/>;
+        this.renderedPage = <StartPage filepathCallback={this.startVideo} idCallback={this.connectHost} />;
         this.setPageSize();
         this.watchPageSize();
     }
 
-    setPage(page: Page) {
+    public setPage(page: Page) {
         this.setState({
-            page: page
+            page,
         });
     }
 
-    startVideo = (filepath: string) => {
+    public startVideo = (filepath: string) => {
         this.videoPath = filepath;
         this.setState({
-            page: Page.VIDEO_HOST
+            page: Page.VIDEO_HOST,
         });
     }
 
-    connectHost = (id: string) => {
+    public connectHost = (id: string) => {
         this.hostID = id;
         this.setState({
-            page: Page.VIDEO_CLIENT
+            page: Page.VIDEO_CLIENT,
         });
     }
 
-    componentWillUpdate = (nextProps, nextState) => {
+    public componentWillUpdate = (nextProps, nextState) => {
         if (this.state.page !== nextState.page) {
             let guid = null;
             switch (nextState.page) {
@@ -82,16 +82,18 @@ export class AppContainer extends React.Component<AppProps, AppState> {
                     guid = Guid.raw();
                     this.renderedPage = <VideoClientPage hostID={this.hostID} id={guid} signalHost={Constants.SIGNAL_HOST} videoSource="" />;
                     break;
+                default:
+                    throw new Error("NoSuchEnum");
             }
         }
     }
 
     private setPageSize() {
-
+        "TODO";
     }
 
     private watchPageSize() {
-
+        "TODO";
     }
 
     /**
@@ -103,10 +105,10 @@ export class AppContainer extends React.Component<AppProps, AppState> {
      * }
      */
     private getDimensions() {
-
+        "TODO";
     }
 
-    render(): JSX.Element {
+    public render(): JSX.Element {
         return this.renderedPage;
     }
 }

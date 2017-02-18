@@ -1,10 +1,10 @@
 import * as React from "react";
 
-export interface UploadBoxProps {
+export interface IUploadBoxProps {
     onClick: () => void;
 }
 
-export const UploadBox = (props: UploadBoxProps) => {
+export const UploadBox = (props: IUploadBoxProps) => {
 
     return (
         <div className="upload-box">

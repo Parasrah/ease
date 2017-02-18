@@ -1,17 +1,17 @@
-import * as React from "react";
 import { ipcRenderer } from "electron";
 import * as Guid from "guid";
+import * as React from "react";
 
-import { UploadBox } from "./UploadBox";
 import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../constants/Channels";
 import { UploadCommand } from "../../constants/Commands";
+import { UploadBox } from "./UploadBox";
 
-export interface StartPageProps {
+export interface IStartPageProps {
     filepathCallback: (file: string) => void;
     idCallback: (id: string) => void;
 }
 
-export class StartPage extends React.Component<StartPageProps, {}> {
+export class StartPage extends React.Component<IStartPageProps, {}> {
     private idInput: HTMLInputElement;
 
     constructor(props) {
@@ -67,7 +67,7 @@ export class StartPage extends React.Component<StartPageProps, {}> {
 
     /********************* React Lifecycle ***********************/
 
-    render(): JSX.Element {
+    public render(): JSX.Element {
         return (
             <div className="session">
                 <div className="join">
