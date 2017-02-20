@@ -27,7 +27,7 @@ const videoPageReducer = (state: State.IVideoState = initialVideoState, action: 
     const types = Action.ActionType.videoAction;
 
     switch (action.type) {
-        case types.fullscreenVideo:
+        case types.fullscreen:
             return Object.assign({}, state, {
                 fullscreen: (action as Action.IFullscreen).fullscreen,
             });
@@ -53,6 +53,7 @@ const peerReducer = (state: State.IPeerState = initialPeerState, action: Action.
     const types = Action.ActionType.peerAction;
 
     switch (action.type) {
+
         case types.signalServer:
             return Object.assign({}, state, {
                 signalStatus: (action as Action.ISignalServer).signalStatus,

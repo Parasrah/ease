@@ -11,7 +11,7 @@ export const ActionType = {
     videoAction: {
         playPause: "PLAY_PAUSE",
         seekVideo: "SEEK_VIDEO",
-        fullscreenVideo: "FULLSCREEN_VIDEO",
+        fullscreen: "FULLSCREEN",
     },
     peerAction: {
         signalServer: "SIGNAL_SERVER",
@@ -68,3 +68,62 @@ export interface ISignalServer extends IAction {
 export interface ISimplePeer extends IAction {
     readonly webrtcStatus: Def.WebrtcStatus;
 }
+
+/*************************************************************/
+/*********************** Action Creators *********************/
+/*************************************************************/
+
+/**************************** App ****************************/
+
+export const createChangePage = (page: Def.Page): IChangePage => {
+    return {
+        type: ActionType.appAction.changePage,
+        page,
+    };
+};
+
+export const createResizePage = (width: number, height: number): IResizePage => {
+    return {
+        type: ActionType.appAction.resizePage,
+        width,
+        height,
+    };
+};
+
+/**************************** Video **************************/
+
+export const createPlayPause = (play: boolean): IPlayPause => {
+    return {
+        type: ActionType.videoAction.playPause,
+        play,
+    };
+};
+
+export const createSeekVideo = (): ISeekVideo => {
+    return {
+        type: ActionType.videoAction.seekVideo,
+    };
+};
+
+export const createFullscreen = (fullscreen: boolean): IFullscreen => {
+    return {
+        type: ActionType.videoAction.fullscreen,
+        fullscreen,
+    };
+};
+
+/**************************** Peer ***************************/
+
+export const createSignalServer = (signalStatus: Def.SignalStatus): ISignalServer => {
+    return {
+        type: ActionType.peerAction.signalServer,
+        signalStatus,
+    };
+};
+
+export const createSimplePeer = (webrtcStatus: Def.WebrtcStatus): ISimplePeer => {
+    return {
+        type: ActionType.peerAction.simplePeer,
+        webrtcStatus,
+    };
+};
