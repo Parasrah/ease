@@ -1,49 +1,71 @@
 import { combineReducers } from "redux";
 
-import { ActionType , IChangePage, VideoPageAction, ContainerAction } from "./Actions";
-import { IVideoState, IAppState } from "./State";
-import { Page } from "./Definitions";
+import * as Action from "./Actions";
+import * as State from "./State";
+import * as Def from "./Definitions";
 
-/************************* Container *************************/
+/**************************** App ****************************/
 
-const initialAppState: IAppState = {
+const initialAppState: State.IAppState = {
     height: 600,
     width: 800,
-    page: Page.START,
+    page: Def.Page.START,
 };
 
-const containerReducer = (state: IAppState = initialAppState, action: ContainerAction): IAppState => {
+const containerReducer = (state: State.IAppState = initialAppState, action: Action.AppAction): State.IAppState => {
     return state;
 };
 
-/************************* Video Page ************************/
+/**************************** Video **************************/
 
-const initialVideoState: IVideoState = {
+const initialVideoState: State.IVideoState = {
     play: false,
     fullscreen: false,
 };
 
-const videoPageReducer = (state: IVideoState = initialVideoState, action: VideoPageAction): IVideoState => {
-    return state;
+const videoPageReducer = (state: State.IVideoState = initialVideoState, action: Action.VideoAction): State.IVideoState => {
+    const types = Action.ActionType.videoAction;
 
-    // const types = ActionType.videoPageAction;
+    switch (action.type) {
+        case types.fullscreenVideo:
+            return Object.assign({}, state, {
+                fullscreen: (action as Action.IFullscreen).fullscreen,
+            });
 
-    // switch (action.type) {
-    //     case types.fullscreenVideo:
+        case types.playPause:
+            return Object.assign({}, state, {
+                play: (action as Action.IPlayPause).play,
+            });
 
-    //         break;
+        default:
+            return state;
+    }
+};
 
-    //     case types.playPause:
+/*************************** Peer ****************************/
 
-    //         break;
+const initialPeerState: State.IPeerState = {
+    signalStatus: Def.SignalStatus.PENDING,
+    webrtcStatus: Def.WebrtcStatus.PENDING,
+};
 
-    //     case types.seekVideo:
+const peerReducer = (state: State.IPeerState = initialPeerState, action: Action.PeerAction): State.IPeerState => {
+    const types = Action.ActionType.peerAction;
 
-    //         break;
+    switch (action.type) {
+        case types.signalServer:
+            return Object.assign({}, state, {
+                signalStatus: (action as Action.ISignalServer).signalStatus,
+            });
 
-    //     default:
-    //         return state;
-    // }
+        case types.simplePeer:
+            return Object.assign({}, state, {
+                webrtcStatus: (action as Action.ISimplePeer).webrtcStatus,
+            });
+
+        default:
+            return state;
+    }
 };
 
 /*************************** End *****************************/
@@ -51,6 +73,7 @@ const videoPageReducer = (state: IVideoState = initialVideoState, action: VideoP
 const app = combineReducers({
     containerReducer,
     videoPageReducer,
+    peerReducer,
 });
 
 export default app;

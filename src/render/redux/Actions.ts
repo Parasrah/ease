@@ -1,17 +1,21 @@
-import { Page } from "./Definitions";
+import * as Def from "./Definitions";
 
 /**
  * The various action types
  */
 export const ActionType = {
-    containerAction: {
+    appAction: {
         changePage: "CHANGE_PAGE",
         resizePage: "RESIZE_PAGE",
     },
-    videoPageAction: {
+    videoAction: {
         playPause: "PLAY_PAUSE",
         seekVideo: "SEEK_VIDEO",
         fullscreenVideo: "FULLSCREEN_VIDEO",
+    },
+    peerAction: {
+        signalServer: "SIGNAL_SERVER",
+        simplePeer: "SIMPLE_PEER",
     },
 };
 
@@ -25,12 +29,12 @@ export interface IAction {
 /********************* Action Definitions ********************/
 /*************************************************************/
 
-/************************* Container *************************/
+/**************************** App ****************************/
 
-export type ContainerAction = IChangePage;
+export type AppAction = IChangePage;
 
 export interface IChangePage extends IAction {
-    readonly page: Page;
+    readonly page: Def.Page;
 }
 
 export interface IResizePage extends IAction {
@@ -38,19 +42,29 @@ export interface IResizePage extends IAction {
     readonly width: number;
 }
 
-/************************* Video Page ************************/
+/**************************** Video **************************/
 
-export type VideoPageAction = IPlayPause | ISeekVideo | IFullscreen;
+export type VideoAction = IPlayPause | ISeekVideo | IFullscreen;
 
 export interface IPlayPause extends IAction {
     readonly play: boolean;
-    readonly time: number;
 }
 
-export interface ISeekVideo extends IAction {
-    readonly time: number;
-}
+// Used to change behaviour of seeking in reducer
+export type ISeekVideo = IAction;
 
 export interface IFullscreen extends IAction {
     readonly fullscreen: boolean;
+}
+
+/**************************** Peer ***************************/
+
+export type PeerAction = ISignalServer | ISimplePeer;
+
+export interface ISignalServer extends IAction {
+    readonly signalStatus: Def.SignalStatus;
+}
+
+export interface ISimplePeer extends IAction {
+    readonly webrtcStatus: Def.WebrtcStatus;
 }
