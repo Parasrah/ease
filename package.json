@@ -2,7 +2,7 @@
   "name": "ease",
   "version": "0.1.0",
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
-  "main": "dist/src/App.js",
+  "main": "dist/src/main/App.js",
   "scripts": {
     "start": "electron .",
     "clean": "rimraf dist/*",

@@ -1,20 +1,20 @@
 import { dialog, ipcMain } from "electron";
-import * as Channel from "../constants/Channels";
-import * as Command from "../constants/Commands";
+import * as Channel from "../../constants/Channels";
+import * as Command from "../../constants/Commands";
 
 export class ListenerUtils {
 
-    static listen = () => {
+    public static listen = () => {
         ipcMain.on(Channel.UPLOAD_REQUEST, (event, command: Command.UploadCommand, payload: any) => {
 
             switch (command) {
                 case Command.UploadCommand.CLICK:
                     dialog.showOpenDialog({
-                        title: "Select your movie",
-                        properties: ["openFile"],
                         filters: [
                             { name: "Movies", extensions: ["mp4"] },
                         ],
+                        properties: ["openFile"],
+                        title: "Select your movie",
                     }, (fileNames) => {
                         if (!fileNames) {
                             console.log("No file chosen");

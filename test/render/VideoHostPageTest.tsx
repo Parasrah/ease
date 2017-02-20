@@ -5,9 +5,9 @@ import * as React from "react";
 import * as TestUtils from "react-addons-test-utils";
 import { spyOnComponentMethod, stubComponentMethod } from "sinon-spy-react";
 
-import { VideoHostPage } from "../../src/ts/render/video/VideoHostPage";
+import { VideoHostPage } from "../../src/render/video/VideoHostPage";
 
-import {AppContainer} from "../../src/ts/render/AppContainer";
+import {AppContainer} from "../../src/render/AppContainer";
 
 const TEST_DATA = __dirname + "/../../../test/data";
 const VIDEO_SOURCE = TEST_DATA + "/small.mp4";

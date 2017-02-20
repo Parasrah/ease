@@ -5,13 +5,13 @@
  */
 
 import { BrowserWindow, ipcMain } from "electron";
-import { ListenerUtils } from "./ts//main/ListenerUtils";
-import * as Constants from "./ts/constants/Constants";
+import * as Constants from "../constants/Constants";
+import { ListenerUtils } from "./utils/ListenerUtils";
 
 export default class Main {
-    static mainWindow: Electron.BrowserWindow;
-    static application: Electron.App;
-    static BrowserWindow: typeof BrowserWindow;
+    private static mainWindow: Electron.BrowserWindow;
+    private static application: Electron.App;
+    private static BrowserWindow: typeof BrowserWindow;
 
     private static onWindowAllClosed() {
         if (process.platform !== "darwin") {
@@ -26,7 +26,7 @@ export default class Main {
 
     private static onReady() {
         Main.mainWindow = new Main.BrowserWindow({width: Constants.DEFAULT_WIDTH, height: Constants.DEFAULT_HEIGHT, webPreferences: { experimentalFeatures: true }});
-        Main.mainWindow.loadURL("file://" + __dirname + "/../../src/index.html");
+        Main.mainWindow.loadURL("file://" + __dirname + "/../../../src/render/index.html");
         ListenerUtils.listen();
         Main.mainWindow.on("closed", Main.onClose);
     }
@@ -36,7 +36,7 @@ export default class Main {
         console.log("File open");
     }
 
-    static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
+    public static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
         Main.BrowserWindow = browserWindow;
         Main.application = app;
         Main.application.on("window-all-closed", Main.onWindowAllClosed);
