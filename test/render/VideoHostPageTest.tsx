@@ -5,7 +5,7 @@ import * as React from "react";
 import * as TestUtils from "react-addons-test-utils";
 import { spyOnComponentMethod, stubComponentMethod } from "sinon-spy-react";
 
-import { VideoHostPage } from "../../src/render/video/VideoHostPage";
+import { VideoHostPage } from "../../src/render/pages/video/VideoHostPage";
 
 import {AppContainer} from "../../src/render/AppContainer";
 

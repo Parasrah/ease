@@ -2,23 +2,15 @@ import * as Guid from "guid";
 import * as React from "react";
 
 import * as Constants from "../constants/Constants";
-import { StartPage } from "./start/StartPage";
-import { VideoClientPage } from "./video/VideoClientPage";
-import { VideoHostPage } from "./video/VideoHostPage";
-import { VideoPage } from "./video/VideoPage";
+import { Page } from "./redux/Definitions";
+import { StartPage } from "./pages/start/StartPage";
+import { VideoClientPage } from "./pages/video/VideoClientPage";
+import { VideoHostPage } from "./pages/video/VideoHostPage";
+import { VideoPage } from "./pages/video/VideoPage";
+import { IAppState } from "./redux/State";
 
 export interface IAppProps {
 
-}
-
-export interface IAppState {
-    page: Page;
-    height: number;
-    width: number;
-}
-
-export enum Page {
-    START, VIDEO_HOST, VIDEO_CLIENT,
 }
 
 export class AppContainer extends React.Component<IAppProps, IAppState> {

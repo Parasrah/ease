@@ -2,8 +2,8 @@ import { ipcRenderer } from "electron";
 import * as Guid from "guid";
 import * as React from "react";
 
-import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../constants/Channels";
-import { UploadCommand } from "../../constants/Commands";
+import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../constants/Channels";
+import { UploadCommand } from "../../../constants/Commands";
 import { UploadBox } from "./UploadBox";
 
 export interface IStartPageProps {

@@ -19,10 +19,10 @@
     "test:render": "electron-mocha --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
     "test:debug-render": "electron-mocha -u tdd --debug --interactive --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
     "lint": "npm run lint:src && npm run lint:test",
-    "lint:src": "tslint ./src/**/*.ts?",
-    "lint:src-fix": "tslint ./src/**/*.ts? --fix",
-    "lint:test": "tslint ./test/**/*.ts?",
-    "lint:test-fix": "tslint ./test/**/*.ts? --fix"
+    "lint:src": "tslint ./src/**/*.ts*",
+    "lint:src-fix": "tslint ./src/**/*.ts* --fix",
+    "lint:test": "tslint ./test/**/*.ts*",
+    "lint:test-fix": "tslint ./test/**/*.ts* --fix"
   },
   "repository": {
     "type": "git",
@@ -69,6 +69,7 @@
     "purecss": "^0.6.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "redux": "^3.6.0",
     "simple-peer": "^6.2.1",
     "socket.io": "^1.7.2",
     "socket.io-client": "^1.7.2"

@@ -2,7 +2,7 @@ import * as React from "react";
 import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
-import * as Exception from "../../common/Exceptions";
+import * as Exception from "../../../common/Exceptions";
 
 export interface IOfferMessage {
     hostID: string;
