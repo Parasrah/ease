@@ -7,17 +7,17 @@ export interface IState {
 }
 
 export interface IAppState {
-    page: Def.Page;
-    height: number;
-    width: number;
+    page?: Def.Page;
+    height?: number;
+    width?: number;
 }
 
 export interface IVideoState {
-    play: boolean;
-    fullscreen: boolean;
+    play?: boolean;
+    fullscreen?: boolean;
 }
 
 export interface IPeerState {
-    signalStatus: Def.SignalStatus;
-    webrtcStatus: Def.WebrtcStatus;
+    signalStatus?: Def.SignalStatus;
+    webrtcStatus?: Def.WebrtcStatus;
 }

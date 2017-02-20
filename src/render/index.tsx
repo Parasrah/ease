@@ -1,9 +1,10 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import app from "./redux/Reducers";
 
-import { AppContainer } from "./AppContainer";
+import { Ease } from "./Ease";
 
 ReactDOM.render(
-    <AppContainer />,
+    <Ease />,
     document.getElementById("app"),
 );
