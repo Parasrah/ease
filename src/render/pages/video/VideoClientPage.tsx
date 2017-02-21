@@ -1,8 +1,8 @@
 import * as SimplePeer from "simple-peer";
 
-import { IOfferMessage, IVideoPageProps, VideoPage  } from "./VideoPage";
+import { IOfferMessage, ICombinedVideoProps, VideoPage  } from "./VideoPage";
 
-interface IVideoClientProps extends IVideoPageProps {
+interface IVideoClientProps extends ICombinedVideoProps {
     hostID: string;
 }
 
@@ -14,7 +14,6 @@ export class VideoClientPage extends VideoPage<IVideoClientProps> {
             initiator: true,
             trickle: false,
         });
-        this.subscribe("connect", this.sendOffer);
     }
 
     /********************* Methods ***********************/
@@ -37,15 +36,12 @@ export class VideoClientPage extends VideoPage<IVideoClientProps> {
                     this.stream(stream);
                 });
             });
-
-            this.publish("connect", data);
         });
     }
 
     private stream = (stream: MediaStream) => {
         const video = this.getVideo();
         video.srcObject = stream;
-        this.setVideoReady();
     }
 
     private sendOffer = (data: SimplePeer.SignalData) => {

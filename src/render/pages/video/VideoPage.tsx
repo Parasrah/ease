@@ -3,6 +3,7 @@ import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
 import * as Exception from "../../../common/Exceptions";
+import IState from "../../redux/State";
 
 export interface IOfferMessage {
     hostID: string;
@@ -10,145 +11,36 @@ export interface IOfferMessage {
     signalData: SimplePeer.SignalData;
 }
 
-export interface IVideoPageProps {
+interface IVideoInputProps {
     videoSource: string;
     signalHost: string;
-    id: string;
 }
 
-type Subscriber = (args: any[]) => void;
+interface IVideoDispatchProps {}
 
-interface ISocketListener {
-    fn: Subscriber;
-    args: any[];
+interface IVideoStateProps {
+    id?: string;
 }
 
-interface ISubscription {
-    event: string;
-    happened: boolean;
-    subscribers: Subscriber[];
-    publishData: any[];
-}
+export interface ICombinedVideoProps extends IVideoStateProps, IVideoInputProps, IVideoDispatchProps {}
 
-export abstract class VideoPage<P extends IVideoPageProps> extends React.Component<P, {}> {
-
-    protected videoReady: boolean;
-    protected videoListeners: Function[];
+export abstract class VideoPage<P extends ICombinedVideoProps> extends React.Component<P, {}> {
     protected peer: SimplePeer.Instance;
     protected socket: SocketIOClient.Socket;
-    private Isubscriptions: ISubscription[];
 
     private videoElement: HTMLMediaElement;
 
     constructor(props) {
         super(props);
 
-        this.videoReady = false;
-        this.videoListeners = [];
-        this.videoElement = null;
-        this.Isubscriptions = [];
-
         // Initiate socket
         this.socket = SocketIO.connect(this.props.signalHost);
-        this.createISubscription("connect");
     }
 
     /********************* Methods ***********************/
 
     public getVideo = (): HTMLMediaElement => {
         return this.videoElement;
-    }
-
-    public registerListener = (fn: Function): void => {
-        if (this.videoReady) {
-            fn();
-        }
-        else {
-            this.videoListeners.push(fn);
-        }
-    }
-
-    protected setVideoReady = () => {
-        // Set state to true
-        this.videoReady = true;
-
-        // Alert the listeners
-        for (const fn of this.videoListeners) {
-            fn();
-        }
-        this.videoListeners = null;
-    }
-
-    protected subscribe = (event: string, fn: Subscriber, now?: boolean) => {
-        let sub = null;
-        try {
-            sub = this.getISubscription(event);
-            sub.subscribers.push(fn);
-        }
-        catch (ex) {
-            if (ex instanceof Exception.NoSuchSubscription) {
-                // Create a Isubscription
-                sub = this.createISubscription(event);
-            }
-            else {
-                throw ex;
-            }
-        }
-        if (now) {
-            this.updateSubscribers(sub);
-        }
-    }
-
-    protected publish = (event: string, ...publishData: any[]) => {
-        const sub = this.getISubscription(event);
-        if (sub.happened) {
-            this.updateSubscribers(sub, publishData);
-        }
-        else {
-            sub.publishData.push(publishData);
-        }
-    }
-
-    protected createISubscription = (event: string) => {
-        const sub = {
-            event,
-            happened: false,
-            publishData: [],
-            subscribers: [],
-        };
-        this.Isubscriptions.push(sub);
-        this.waitForEvent(event);
-        return sub;
-    }
-
-    private waitForEvent = (event: string) => {
-        this.socket.on(event, () => {
-            const sub = this.getISubscription(event);
-            sub.happened = true;
-
-            // Event has occurred, publish all data to subscribers
-            for (const publishData of sub.publishData) {
-                this.updateSubscribers(sub, publishData);
-            }
-
-            // Remove all publish data
-            sub.publishData = [];
-        });
-    }
-
-    private updateSubscribers(Isubscription: ISubscription, ...publishData) {
-        for (const subscriber of Isubscription.subscribers) {
-            subscriber(publishData);
-        }
-    }
-
-    private getISubscription = (event: string): ISubscription => {
-        for (const sub of this.Isubscriptions) {
-            if (sub.event === event) {
-                return sub;
-            }
-        }
-        throw new Exception.NoSuchSubscription();
     }
 
     private setVideo = (video: HTMLVideoElement) => {
@@ -182,5 +74,11 @@ export abstract class VideoPage<P extends IVideoPageProps> extends React.Compone
                 />
             </div>
         );
+    }
+
+    /*********************** Redux ***************************/
+
+    public static mapStateToProps = (state: IState) => {
+        return Object.assign({}, state.appState.id);
     }
 }

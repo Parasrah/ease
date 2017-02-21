@@ -3,6 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import * as Constants from "../constants/Constants";
+import { changePage, setID } from "./redux/Actions";
 import { Page } from "./redux/Definitions";
 import { StartPage } from "./pages/start/StartPage";
 import { VideoClientPage } from "./pages/video/VideoClientPage";
@@ -10,7 +11,14 @@ import { VideoHostPage } from "./pages/video/VideoHostPage";
 import { VideoPage } from "./pages/video/VideoPage";
 import { IState, IAppState } from "./redux/State";
 
-export interface IEaseProps extends IAppState {}
+type IEaseStateProps = IAppState;
+
+interface IEaseDispatchProps {
+    changePage: (page: Page) => void;
+    setID: (id: string) => void;
+}
+
+export type IEaseProps = IEaseStateProps & IEaseDispatchProps;
 
 export class Ease extends React.Component<IEaseProps, {}> {
     private videoPath: string;
@@ -21,31 +29,23 @@ export class Ease extends React.Component<IEaseProps, {}> {
         super(props);
         this.videoPath = null;
         this.hostID = null;
+
+        this.props.setID(Guid.raw());
     }
 
     /*********************** Methods *************************/
 
-    public setPage = (page: Page) => {
-        this.setState({
-            page,
-        });
-    }
-
     public startVideo = (filepath: string) => {
         this.videoPath = filepath;
-        this.setState({
-            page: Page.VIDEO_HOST,
-        });
+        this.props.changePage(Page.VIDEO_HOST);
     }
 
     public connectHost = (id: string) => {
         this.hostID = id;
-        this.setState({
-            page: Page.VIDEO_CLIENT,
-        });
+        this.props.changePage(Page.VIDEO_CLIENT);
     }
 
-    private setPageSize = () => {
+    private changePageSize = () => {
         "TODO";
     }
 
@@ -66,24 +66,32 @@ export class Ease extends React.Component<IEaseProps, {}> {
     }
 
     private mapPage() {
-        let guid: string = null;
         switch (this.props.page) {
             case Page.START:
-                this.renderedPage = <StartPage filepathCallback={this.startVideo} idCallback={this.connectHost} />;
+                this.renderedPage = (
+                    <StartPage
+                        filepathCallback={this.startVideo}
+                        idCallback={this.connectHost}
+                    />
+                );
                 break;
             case Page.VIDEO_HOST:
-                guid = Guid.raw();
-                this.renderedPage =
+                this.renderedPage = (
                     <VideoHostPage
-                        id={guid}
                         signalHost={Constants.SIGNAL_HOST}
                         videoSource={this.videoPath}
-                    />;
+                    />
+                );
                 break;
 
             case Page.VIDEO_CLIENT:
-                guid = Guid.raw();
-                this.renderedPage = <VideoClientPage hostID={this.hostID} id={guid} signalHost={Constants.SIGNAL_HOST} videoSource="" />;
+                this.renderedPage = (
+                    <VideoClientPage
+                        hostID={this.hostID}
+                        signalHost={Constants.SIGNAL_HOST}
+                        videoSource=""
+                    />
+                );
                 break;
             default:
                 throw new Error("NoSuchEnum");
@@ -96,7 +104,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.mapPage();
     }
 
-    public componentWillUpdate = (nextProps: IEaseProps, nextState) => {
+    public componentWillUpdate = (nextProps: IEaseStateProps, nextState) => {
         if (this.props.page !== nextProps.page) {
             this.mapPage();
         }
@@ -108,13 +116,21 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     /*********************** Redux ***************************/
 
-    public static mapStateToProps = (state: IState): IEaseProps => {
+    public static mapStateToProps = (state: IState): IEaseStateProps => {
         return Object.assign({}, state.appState);
+    }
+
+    public static mapDispatchToProps = (dispatch): IEaseDispatchProps => {
+        return {
+            changePage: (page) => { dispatch(changePage(page)); },
+            setID: (id) => { dispatch(setID(id)); },
+        };
     }
 }
 
 const EaseContainer = connect(
     Ease.mapStateToProps,
+    Ease.mapDispatchToProps,
 )(Ease);
 
 export default EaseContainer;

@@ -10,10 +10,32 @@ const initialAppState: State.IAppState = {
     height: 600,
     width: 800,
     page: Def.Page.START,
+    id: null,
 };
 
 const appState = (state: State.IAppState = initialAppState, action: Action.AppAction): State.IAppState => {
-    return state;
+    const types = Action.ActionType.appAction;
+
+    switch (action.type) {
+        case types.changePage:
+            return Object.assign({}, state, {
+                page: (action as Action.IChangePage).page,
+            });
+
+        case types.resizePage:
+            return Object.assign({}, state, {
+                height: (action as Action.IResizePage).height,
+                width: (action as Action.IResizePage).width,
+            });
+
+        case types.setID:
+            return Object.assign({}, state, {
+                id: (action as Action.ISetID).id,
+            });
+
+        default:
+            return state;
+    }
 };
 
 /**************************** Video **************************/
@@ -71,10 +93,10 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action.Pe
 
 /*************************** End *****************************/
 
-const app = combineReducers({
+const appReducer = combineReducers({
     appState,
     videoState,
     peerState,
 });
 
-export default app;
+export default appReducer;

@@ -10,6 +10,7 @@ export interface IAppState {
     page?: Def.Page;
     height?: number;
     width?: number;
+    id?: string;
 }
 
 export interface IVideoState {
@@ -22,3 +23,5 @@ export interface IPeerState {
     signalStatus?: Def.SignalStatus;
     webrtcStatus?: Def.WebrtcStatus;
 }
+
+export default IState;

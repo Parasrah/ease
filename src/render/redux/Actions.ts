@@ -9,6 +9,7 @@ export const ActionType = {
     appAction: {
         changePage: "CHANGE_PAGE",
         resizePage: "RESIZE_PAGE",
+        setID: "SET_ID",
     },
     videoAction: {
         playPause: "PLAY_PAUSE",
@@ -34,7 +35,7 @@ export interface IAction {
 
 /**************************** App ****************************/
 
-export type AppAction = IChangePage;
+export type AppAction = IChangePage | IResizePage | ISetID;
 
 export interface IChangePage extends IAction {
     readonly page: Def.Page;
@@ -43,6 +44,10 @@ export interface IChangePage extends IAction {
 export interface IResizePage extends IAction {
     readonly height: number;
     readonly width: number;
+}
+
+export interface ISetID extends IAction {
+    readonly id: string;
 }
 
 /**************************** Video **************************/
@@ -82,14 +87,14 @@ export interface IServerStatus extends IAction {
 
 /**************************** App ****************************/
 
-export const createChangePage = (page: Def.Page): IChangePage => {
+export const changePage = (page: Def.Page): IChangePage => {
     return {
         type: ActionType.appAction.changePage,
         page,
     };
 };
 
-export const createResizePage = (width: number, height: number): IResizePage => {
+export const resizePage = (width: number, height: number): IResizePage => {
     return {
         type: ActionType.appAction.resizePage,
         width,
@@ -97,22 +102,29 @@ export const createResizePage = (width: number, height: number): IResizePage => 
     };
 };
 
+export const setID = (id: string) => {
+    return {
+        type: ActionType.appAction.setID,
+        id,
+    };
+};
+
 /**************************** Video **************************/
 
-export const createPlayPause = (play: boolean): IPlayPause => {
+export const playPause = (play: boolean): IPlayPause => {
     return {
         type: ActionType.videoAction.playPause,
         play,
     };
 };
 
-export const createSeekVideo = (): ISeekVideo => {
+export const seekVideo = (): ISeekVideo => {
     return {
         type: ActionType.videoAction.seekVideo,
     };
 };
 
-export const createFullscreen = (fullscreen: boolean): IFullscreen => {
+export const setFullscreen = (fullscreen: boolean): IFullscreen => {
     return {
         type: ActionType.videoAction.fullscreen,
         fullscreen,

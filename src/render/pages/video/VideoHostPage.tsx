@@ -1,6 +1,6 @@
 import * as SimplePeer from "simple-peer";
 
-import { IOfferMessage, IVideoPageProps, VideoPage  } from "./VideoPage";
+import { IOfferMessage, ICombinedVideoProps, VideoPage  } from "./VideoPage";
 
 export interface IResponseMessage {
     clientID: string;
@@ -11,15 +11,14 @@ export interface IInitMessage {
     id: string;
 }
 
-export class VideoHostPage extends VideoPage<IVideoPageProps> {
+export interface ICombinedHostProps extends ICombinedVideoProps {}
+
+export class VideoHostPage extends VideoPage<ICombinedHostProps> {
     protected socket: SocketIOClient.Socket;
     private peers: SimplePeer.Instance;
 
     constructor(props) {
         super(props);
-
-        // Send host information to the server
-        this.subscribe("connect", this.initServer, true);
 
         // Send socket error info to console
         this.socket.on("signal_error", (error: string) => {
@@ -85,7 +84,6 @@ export class VideoHostPage extends VideoPage<IVideoPageProps> {
             });
 
             this.performSignaling();
-            this.setVideoReady();
         };
     }
 }
