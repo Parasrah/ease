@@ -1,4 +1,6 @@
 import * as Def from "./Definitions";
+import * as State from "./State";
+import "socket.io-client";
 
 /**
  * The various action types
@@ -16,6 +18,7 @@ export const ActionType = {
     peerAction: {
         signalServer: "SIGNAL_SERVER",
         simplePeer: "SIMPLE_PEER",
+        serverStatus: "SERVER_STATUS",
     },
 };
 
@@ -69,6 +72,10 @@ export interface ISimplePeer extends IAction {
     readonly webrtcStatus: Def.WebrtcStatus;
 }
 
+export interface IServerStatus extends IAction {
+    readonly serverStatus: Def.ServerStatus;
+}
+
 /*************************************************************/
 /*********************** Action Creators *********************/
 /*************************************************************/
@@ -114,16 +121,31 @@ export const createFullscreen = (fullscreen: boolean): IFullscreen => {
 
 /**************************** Peer ***************************/
 
-export const createSignalServer = (signalStatus: Def.SignalStatus): ISignalServer => {
+export const setServerStatus = (serverStatus: Def.ServerStatus): IServerStatus => {
     return {
-        type: ActionType.peerAction.signalServer,
-        signalStatus,
+        type: ActionType.peerAction.serverStatus,
+        serverStatus,
     };
 };
 
-export const createSimplePeer = (webrtcStatus: Def.WebrtcStatus): ISimplePeer => {
-    return {
-        type: ActionType.peerAction.simplePeer,
-        webrtcStatus,
+const shouldConnectToServer = (state: State.IPeerState) => {
+    return (state.serverStatus === Def.ServerStatus.DISCONNECTED);
+};
+
+export const connectToSignalServer = (socket: SocketIOClient.Socket, callback: Function) => {
+    return (dispatch, getState) => {
+        if (shouldConnectToServer(getState().peerState)) {
+            if (socket.connected) {
+                dispatch(setServerStatus(Def.ServerStatus.CONNECTED));
+                callback();
+            }
+            else {
+                dispatch(setServerStatus(Def.ServerStatus.PENDING));
+                socket.on("connect", () => {
+                    dispatch(setServerStatus(Def.ServerStatus.CONNECTED));
+                    callback();
+                });
+            }
+        }
     };
 };

@@ -18,6 +18,7 @@ export interface IVideoState {
 }
 
 export interface IPeerState {
+    serverStatus?: Def.ServerStatus;
     signalStatus?: Def.SignalStatus;
     webrtcStatus?: Def.WebrtcStatus;
 }

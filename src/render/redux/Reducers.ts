@@ -12,7 +12,7 @@ const initialAppState: State.IAppState = {
     page: Def.Page.START,
 };
 
-const containerReducer = (state: State.IAppState = initialAppState, action: Action.AppAction): State.IAppState => {
+const appState = (state: State.IAppState = initialAppState, action: Action.AppAction): State.IAppState => {
     return state;
 };
 
@@ -23,7 +23,7 @@ const initialVideoState: State.IVideoState = {
     fullscreen: false,
 };
 
-const videoPageReducer = (state: State.IVideoState = initialVideoState, action: Action.VideoAction): State.IVideoState => {
+const videoState = (state: State.IVideoState = initialVideoState, action: Action.VideoAction): State.IVideoState => {
     const types = Action.ActionType.videoAction;
 
     switch (action.type) {
@@ -49,7 +49,7 @@ const initialPeerState: State.IPeerState = {
     webrtcStatus: Def.WebrtcStatus.PENDING,
 };
 
-const peerReducer = (state: State.IPeerState = initialPeerState, action: Action.PeerAction): State.IPeerState => {
+const peerState = (state: State.IPeerState = initialPeerState, action: Action.PeerAction): State.IPeerState => {
     const types = Action.ActionType.peerAction;
 
     switch (action.type) {
@@ -72,9 +72,9 @@ const peerReducer = (state: State.IPeerState = initialPeerState, action: Action.
 /*************************** End *****************************/
 
 const app = combineReducers({
-    containerReducer,
-    videoPageReducer,
-    peerReducer,
+    appState,
+    videoState,
+    peerState,
 });
 
 export default app;

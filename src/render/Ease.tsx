@@ -1,7 +1,6 @@
 import * as Guid from "guid";
 import * as React from "react";
-import { connect, Provider } from "react-redux";
-import { createStore } from "redux";
+import { connect } from "react-redux";
 
 import * as Constants from "../constants/Constants";
 import { Page } from "./redux/Definitions";
@@ -10,9 +9,6 @@ import { VideoClientPage } from "./pages/video/VideoClientPage";
 import { VideoHostPage } from "./pages/video/VideoHostPage";
 import { VideoPage } from "./pages/video/VideoPage";
 import { IState, IAppState } from "./redux/State";
-import app from "./redux/Reducers";
-
-const store = createStore(app);
 
 export interface IEaseProps extends IAppState {}
 
@@ -107,11 +103,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
     }
 
     public render(): JSX.Element {
-        return (
-            <Provider store={store} >
-                {this.renderedPage}
-            </Provider>
-        );
+        return this.renderedPage;
     }
 
     /*********************** Redux ***************************/
