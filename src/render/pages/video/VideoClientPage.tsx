@@ -2,7 +2,7 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { watchServerStatus } from "../../redux/Actions";
+import { watchServerStatus, setVideoReady } from "../../redux/Actions";
 import { IOfferMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
 
 interface IClientInputProps extends IVideoInputProps {
@@ -50,12 +50,14 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             id: state.peerState.id,
             hostID: state.peerState.hostID,
             signalHost: state.settingsState.signalHost,
+            videoReady: state.videoState.videoReady,
         });
     }
 
     public static mapDispatchToProps = (dispatch): IVideoDispatchProps => {
         return {
             watchServerStatus: (socket) => dispatch(watchServerStatus(socket)),
+            setVideoReady: (videoReady) => dispatch(setVideoReady(videoReady)),
         };
     }
 }

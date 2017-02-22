@@ -18,6 +18,7 @@ export const ActionType = {
         playPause: "PLAY_PAUSE",
         jumpToTime: "JUMP_TO_TIME",
         fullscreen: "FULLSCREEN",
+        setVideoReady: "SET_VIDEO_STATUS",
     },
     peerAction: {
         createPeer: "CREATE_PEER",
@@ -57,7 +58,7 @@ export interface IResizePage extends IAction {
 
 /**************************** Video **************************/
 
-export type VideoAction = IPlayPause | IFullscreen;
+export type VideoAction = IPlayPause | IFullscreen | ISetVideoReady;
 
 export interface IPlayPause extends IAction {
     readonly play: boolean;
@@ -65,6 +66,10 @@ export interface IPlayPause extends IAction {
 
 export interface IFullscreen extends IAction {
     readonly fullscreen: boolean;
+}
+
+export interface ISetVideoReady extends IAction {
+    readonly videoReady: boolean;
 }
 
 /**************************** Peer ***************************/
@@ -129,6 +134,13 @@ export const setFullscreen = (fullscreen: boolean): IFullscreen => {
     return {
         type: ActionType.videoAction.fullscreen,
         fullscreen,
+    };
+};
+
+export const setVideoReady = (videoReady: boolean): ISetVideoReady => {
+    return {
+        type: ActionType.videoAction.setVideoReady,
+        videoReady,
     };
 };
 

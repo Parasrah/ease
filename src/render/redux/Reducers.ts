@@ -75,6 +75,11 @@ const videoState = (state: State.IVideoState = initialVideoState, action: Action
                 play: (action as Action.IPlayPause).play,
             });
 
+        case types.setVideoReady:
+            return Object.assign({}, state, {
+                videoReady: (action as Action.ISetVideoReady).videoReady,
+            });
+
         default:
             return state;
     }

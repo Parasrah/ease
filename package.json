@@ -74,7 +74,6 @@
     "redux-logger": "^2.8.1",
     "redux-thunk": "^2.2.0",
     "simple-peer": "^6.2.1",
-    "socket.io": "^1.7.2",
     "socket.io-client": "^1.7.2"
   }
 }
