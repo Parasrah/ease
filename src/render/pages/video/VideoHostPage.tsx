@@ -1,21 +1,35 @@
 import * as SimplePeer from "simple-peer";
+import { connect } from "react-redux";
 
-import { IOfferMessage, ICombinedVideoProps, VideoPage  } from "./VideoPage";
+import IState from "../../redux/State";
+import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, VideoPage  } from "./VideoPage";
 
-export interface IResponseMessage {
-    clientID: string;
-    signalData: SimplePeer.SignalData;
-}
-
-export interface IInitMessage {
+interface IInitMessage {
     id: string;
 }
 
-export interface ICombinedHostProps extends ICombinedVideoProps {}
+interface IHostPeer {
+    peer: SimplePeer.Instance;
+    clientID: string;
+}
 
-export class VideoHostPage extends VideoPage<ICombinedHostProps> {
+interface IHostInputProps extends IVideoInputProps {
+
+}
+
+interface IHostStoreProps extends IVideoStoreProps {
+
+}
+
+interface IHostDispatchProps {
+
+}
+
+type IHostProps = IHostInputProps & IHostStoreProps & IHostDispatchProps;
+
+export class VideoHostPage extends VideoPage<IHostProps> {
     protected socket: SocketIOClient.Socket;
-    private peers: SimplePeer.Instance;
+    private peers: IHostPeer[];
 
     constructor(props) {
         super(props);
@@ -28,46 +42,6 @@ export class VideoHostPage extends VideoPage<ICombinedHostProps> {
 
     /********************* Methods ***********************/
 
-    /**
-     * Must be performed AFTER simple peer initialized
-     */
-    protected performSignaling = () => {
-        this.socket.on("offer", this.setupSignal);
-    }
-
-    /**
-     * Handle incoming offers
-     */
-    private setupSignal = (offer: string) => {
-        // Setup for signal ready
-        this.peer.on("signal", (data: SimplePeer.SignalData) => {
-            const IresponseMessage: IResponseMessage = {
-                clientID: parsedOffer.clientID,
-                signalData: data,
-            };
-            this.respond(IresponseMessage);
-        });
-
-        // Signal peer
-        const parsedOffer: IOfferMessage = JSON.parse(offer);
-        this.peer.signal(parsedOffer.signalData[0]);
-    }
-
-    private respond = (message: IResponseMessage) => {
-        const offerResponse: IResponseMessage = {
-            clientID: message.clientID,
-            signalData: message.signalData,
-        };
-        this.socket.emit("respond", JSON.stringify(offerResponse));
-    }
-
-    private initServer = () => {
-        const message: IInitMessage = {
-            id: this.props.id,
-        };
-        this.socket.emit("host", JSON.stringify(message));
-    }
-
     /********************* React Lifecycle ***********************/
 
     protected componentDidMount() {
@@ -77,13 +51,20 @@ export class VideoHostPage extends VideoPage<ICombinedHostProps> {
         const video: any = this.getVideo();
         video.onplay = () => {
             const stream: any = video.captureStream();
-            this.peer = new SimplePeer({
-                initiator: false,
-                stream,
-                trickle: false,
-            });
-
-            this.performSignaling();
         };
     }
+
+    /*********************** Redux ***************************/
+
+    public static mapStateToProps = (state: IState, ownProps: IHostInputProps): IHostStoreProps & IHostInputProps => {
+        return Object.assign({}, ownProps, {
+            id: state.peerState.id,
+        });
+    }
 }
+
+const VideoHostPageContainer = connect(
+    VideoHostPage.mapStateToProps,
+)(VideoHostPage);
+
+export default VideoHostPageContainer;

@@ -7,30 +7,41 @@ import * as Def from "./Definitions";
 /**************************** App ****************************/
 
 const initialAppState: State.IAppState = {
-    height: 600,
-    width: 800,
     page: Def.Page.START,
-    id: null,
+    error: [],
 };
 
 const appState = (state: State.IAppState = initialAppState, action: Action.AppAction): State.IAppState => {
     const types = Action.ActionType.appAction;
 
     switch (action.type) {
+
         case types.changePage:
             return Object.assign({}, state, {
                 page: (action as Action.IChangePage).page,
             });
 
+        default:
+            return state;
+    }
+};
+
+/**************************** Window *************************/
+
+const initialWindowState = {
+    height: 600,
+    width: 800,
+};
+
+const windowState = (state: State.IWindowState = initialWindowState, action: Action.WindowAction): State.IWindowState => {
+    const types = Action.ActionType.windowAction;
+
+    switch (action.type) {
+
         case types.resizePage:
             return Object.assign({}, state, {
                 height: (action as Action.IResizePage).height,
                 width: (action as Action.IResizePage).width,
-            });
-
-        case types.setID:
-            return Object.assign({}, state, {
-                id: (action as Action.ISetID).id,
             });
 
         default:
@@ -43,6 +54,11 @@ const appState = (state: State.IAppState = initialAppState, action: Action.AppAc
 const initialVideoState: State.IVideoState = {
     play: false,
     fullscreen: false,
+    subtitles: null,
+    jumpToTime: null,
+    controlStatus: null,
+    volume: null,
+    videoReady: false,
 };
 
 const videoState = (state: State.IVideoState = initialVideoState, action: Action.VideoAction): State.IVideoState => {
@@ -67,8 +83,11 @@ const videoState = (state: State.IVideoState = initialVideoState, action: Action
 /*************************** Peer ****************************/
 
 const initialPeerState: State.IPeerState = {
-    signalStatus: Def.SignalStatus.PENDING,
-    webrtcStatus: Def.WebrtcStatus.PENDING,
+    id: "",
+    serverStatus: false,
+    hostSignalData: false,
+    hostPeers: [],
+    hostID: "",
 };
 
 const peerState = (state: State.IPeerState = initialPeerState, action: Action.PeerAction): State.IPeerState => {
@@ -76,14 +95,34 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action.Pe
 
     switch (action.type) {
 
-        case types.signalServer:
+        case types.addSignalData:
+            const addSignalAction = action as Action.IAddSignalData;
             return Object.assign({}, state, {
-                signalStatus: (action as Action.ISignalServer).signalStatus,
+                hostPeers: state.hostPeers.map((peer) => {
+                    return (peer.id === addSignalAction.id) ?
+                       Object.assign(peer, {
+                           signalData: peer.signalData.concat(addSignalAction.signalData),
+                       }) : peer;
+                }),
             });
 
-        case types.simplePeer:
+        case types.createPeer:
             return Object.assign({}, state, {
-                webrtcStatus: (action as Action.ISimplePeer).webrtcStatus,
+                hostPeers: state.hostPeers.concat({
+                    signalStatus: false,
+                    id: (action as Action.ICreatePeer).id,
+                    signalData: (action as Action.ICreatePeer).signalData,
+                }),
+            });
+
+        case types.setServerStatus:
+            return Object.assign({}, state, {
+                serverStatus: (action as Action.ISetServerStatus).serverStatus,
+            });
+
+        case types.setID:
+            return Object.assign({}, state, {
+                id: (action as Action.ISetID).id,
             });
 
         default:
@@ -95,6 +134,7 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action.Pe
 
 const appReducer = combineReducers({
     appState,
+    windowState,
     videoState,
     peerState,
 });

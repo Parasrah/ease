@@ -1,6 +1,8 @@
+import { SignalData } from "simple-peer";
+import "socket.io-client";
+
 import * as Def from "./Definitions";
 import * as State from "./State";
-import "socket.io-client";
 
 /**
  * The various action types
@@ -8,18 +10,21 @@ import "socket.io-client";
 export const ActionType = {
     appAction: {
         changePage: "CHANGE_PAGE",
+    },
+    windowAction: {
         resizePage: "RESIZE_PAGE",
-        setID: "SET_ID",
     },
     videoAction: {
         playPause: "PLAY_PAUSE",
-        seekVideo: "SEEK_VIDEO",
+        jumpToTime: "JUMP_TO_TIME",
         fullscreen: "FULLSCREEN",
     },
     peerAction: {
-        signalServer: "SIGNAL_SERVER",
-        simplePeer: "SIMPLE_PEER",
-        serverStatus: "SERVER_STATUS",
+        createPeer: "CREATE_PEER",
+        setServerStatus: "SET_SERVER_STATUS",
+        addSignalData: "ADD_SIGNAL_DATA",
+        setID: "SET_ID",
+        setHostID: "SET_HOST_ID",
     },
 };
 
@@ -35,31 +40,28 @@ export interface IAction {
 
 /**************************** App ****************************/
 
-export type AppAction = IChangePage | IResizePage | ISetID;
+export type AppAction = IChangePage | ISetID;
 
 export interface IChangePage extends IAction {
     readonly page: Def.Page;
 }
+
+/**************************** Window *************************/
+
+export type WindowAction = IResizePage;
 
 export interface IResizePage extends IAction {
     readonly height: number;
     readonly width: number;
 }
 
-export interface ISetID extends IAction {
-    readonly id: string;
-}
-
 /**************************** Video **************************/
 
-export type VideoAction = IPlayPause | ISeekVideo | IFullscreen;
+export type VideoAction = IPlayPause | IFullscreen;
 
 export interface IPlayPause extends IAction {
     readonly play: boolean;
 }
-
-// Used to change behaviour of seeking in reducer
-export type ISeekVideo = IAction;
 
 export interface IFullscreen extends IAction {
     readonly fullscreen: boolean;
@@ -67,18 +69,28 @@ export interface IFullscreen extends IAction {
 
 /**************************** Peer ***************************/
 
-export type PeerAction = ISignalServer | ISimplePeer;
+export type PeerAction = ICreatePeer | ISetServerStatus | ISetID | IAddSignalData;
 
-export interface ISignalServer extends IAction {
-    readonly signalStatus: Def.SignalStatus;
+export interface ICreatePeer extends IAction {
+    id: string;
+    signalData?: SignalData[];
 }
 
-export interface ISimplePeer extends IAction {
-    readonly webrtcStatus: Def.WebrtcStatus;
+export interface ISetServerStatus extends IAction {
+    readonly serverStatus: boolean;
 }
 
-export interface IServerStatus extends IAction {
-    readonly serverStatus: Def.ServerStatus;
+export interface ISetID extends IAction {
+    readonly id: string;
+}
+
+export interface ISetHostID extends IAction {
+    readonly hostID: string;
+}
+
+export interface IAddSignalData extends IAction {
+    signalData: SignalData;
+    id: string;
 }
 
 /*************************************************************/
@@ -94,18 +106,13 @@ export const changePage = (page: Def.Page): IChangePage => {
     };
 };
 
+/**************************** Window *************************/
+
 export const resizePage = (width: number, height: number): IResizePage => {
     return {
-        type: ActionType.appAction.resizePage,
+        type: ActionType.windowAction.resizePage,
         width,
         height,
-    };
-};
-
-export const setID = (id: string) => {
-    return {
-        type: ActionType.appAction.setID,
-        id,
     };
 };
 
@@ -118,12 +125,6 @@ export const playPause = (play: boolean): IPlayPause => {
     };
 };
 
-export const seekVideo = (): ISeekVideo => {
-    return {
-        type: ActionType.videoAction.seekVideo,
-    };
-};
-
 export const setFullscreen = (fullscreen: boolean): IFullscreen => {
     return {
         type: ActionType.videoAction.fullscreen,
@@ -133,31 +134,57 @@ export const setFullscreen = (fullscreen: boolean): IFullscreen => {
 
 /**************************** Peer ***************************/
 
-export const setServerStatus = (serverStatus: Def.ServerStatus): IServerStatus => {
+export const setID = (id: string): ISetID => {
     return {
-        type: ActionType.peerAction.serverStatus,
+        type: ActionType.peerAction.setID,
+        id,
+    };
+};
+
+export const setHostID = (hostID: string): ISetHostID => {
+    return {
+        type: ActionType.peerAction.setHostID,
+        hostID,
+    };
+};
+
+export const createPeer = (id: string, ...signalData: SignalData[]): ICreatePeer => {
+    return {
+        type: ActionType.peerAction.createPeer,
+        id,
+        signalData,
+    };
+};
+
+export const addSignalData = (id: string, signalData: SignalData): IAddSignalData => {
+    return {
+        type: ActionType.peerAction.addSignalData,
+        signalData,
+        id,
+    };
+};
+
+const setServerStatus = (serverStatus: boolean): ISetServerStatus => {
+    return {
+        type: ActionType.peerAction.setServerStatus,
         serverStatus,
     };
 };
 
-const shouldConnectToServer = (state: State.IPeerState) => {
-    return (state.serverStatus === Def.ServerStatus.DISCONNECTED);
-};
-
-export const connectToSignalServer = (socket: SocketIOClient.Socket, callback: Function) => {
+export const watchServerStatus = (socket: SocketIOClient.Socket) => {
     return (dispatch, getState) => {
-        if (shouldConnectToServer(getState().peerState)) {
-            if (socket.connected) {
-                dispatch(setServerStatus(Def.ServerStatus.CONNECTED));
-                callback();
-            }
-            else {
-                dispatch(setServerStatus(Def.ServerStatus.PENDING));
-                socket.on("connect", () => {
-                    dispatch(setServerStatus(Def.ServerStatus.CONNECTED));
-                    callback();
-                });
-            }
+
+        if (socket.connected) {
+            dispatch(setServerStatus(true));
         }
+
+        socket.on("connect", () => {
+            dispatch(setServerStatus(true));
+        });
+
+        socket.on("disconnect", () => {
+            dispatch(setServerStatus(false));
+        });
+
     };
 };

@@ -1,17 +1,31 @@
-import { ipcRenderer } from "electron";
 import * as Guid from "guid";
 import * as React from "react";
+import { ipcRenderer } from "electron";
+import { connect } from "react-redux";
 
+import { IState } from "../../redux/State";
+import { changePage, setHostID } from "../../redux/Actions";
+import { Page } from "../../redux/Definitions";
 import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../constants/Channels";
 import { UploadCommand } from "../../../constants/Commands";
 import { UploadBox } from "./UploadBox";
 
-export interface IStartPageProps {
+interface IStartInputProps {
     filepathCallback: (file: string) => void;
-    idCallback: (id: string) => void;
 }
 
-export class StartPage extends React.Component<IStartPageProps, {}> {
+interface IStartStoreProps {
+
+}
+
+interface IStartDispatchProps {
+    setHostID?: (id: string) => void;
+    changePage?: (page: Page) => void;
+}
+
+type IStartProps = IStartInputProps & IStartStoreProps & IStartDispatchProps;
+
+class StartPage extends React.Component<IStartProps, {}> {
     private idInput: HTMLInputElement;
 
     constructor(props) {
@@ -33,7 +47,7 @@ export class StartPage extends React.Component<IStartPageProps, {}> {
             // TODO warning message
         }
         else {
-            this.props.idCallback(guid);
+            this.props.setHostID(guid);
         }
     }
 
@@ -100,4 +114,27 @@ export class StartPage extends React.Component<IStartPageProps, {}> {
             </div>
         );
     }
+
+    /*********************** Redux ***************************/
+
+    public static mapStateToProps = (state: IState, ownProps: IStartInputProps): IStartStoreProps & IStartInputProps => {
+        return Object.assign({}, ownProps, {
+            id: state.peerState.id,
+            page: state.appState.page,
+        });
+    }
+
+    public static mapDispatchToProps = (dispatch): IStartDispatchProps => {
+        return {
+            changePage: (page) => { dispatch(changePage(page)); },
+            setHostID: (hostID) => { dispatch(setHostID(hostID)); },
+        };
+    }
 }
+
+const StartPageContainer = connect(
+    StartPage.mapStateToProps,
+    StartPage.mapDispatchToProps,
+)(StartPage);
+
+export default StartPageContainer;

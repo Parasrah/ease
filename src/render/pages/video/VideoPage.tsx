@@ -3,7 +3,6 @@ import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
 import * as Exception from "../../../common/Exceptions";
-import IState from "../../redux/State";
 
 export interface IOfferMessage {
     hostID: string;
@@ -11,21 +10,22 @@ export interface IOfferMessage {
     signalData: SimplePeer.SignalData;
 }
 
-interface IVideoInputProps {
-    videoSource: string;
-    signalHost: string;
+export interface IResponseMessage {
+    clientID: string;
+    signalData: SimplePeer.SignalData;
 }
 
-interface IVideoDispatchProps {}
+export interface IVideoInputProps {
+    videoSource: string;
+}
 
-interface IVideoStateProps {
+export interface IVideoStoreProps {
     id?: string;
 }
 
-export interface ICombinedVideoProps extends IVideoStateProps, IVideoInputProps, IVideoDispatchProps {}
+export type IVideoProps = IVideoInputProps & IVideoStoreProps;
 
-export abstract class VideoPage<P extends ICombinedVideoProps> extends React.Component<P, {}> {
-    protected peer: SimplePeer.Instance;
+export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, {}> {
     protected socket: SocketIOClient.Socket;
 
     private videoElement: HTMLMediaElement;
@@ -34,7 +34,7 @@ export abstract class VideoPage<P extends ICombinedVideoProps> extends React.Com
         super(props);
 
         // Initiate socket
-        this.socket = SocketIO.connect(this.props.signalHost);
+        // this.socket = SocketIO.connect(this.props.signalHost);
     }
 
     /********************* Methods ***********************/
@@ -46,13 +46,6 @@ export abstract class VideoPage<P extends ICombinedVideoProps> extends React.Com
     private setVideo = (video: HTMLVideoElement) => {
         this.videoElement = video;
     }
-
-    /********************* Abstract Methods ***********************/
-
-    /**
-     * Setup the socketIO connection and the signalling
-     */
-    protected abstract performSignaling: () => void;
 
     /********************* React Lifecycle ***********************/
 
@@ -74,11 +67,5 @@ export abstract class VideoPage<P extends ICombinedVideoProps> extends React.Com
                 />
             </div>
         );
-    }
-
-    /*********************** Redux ***************************/
-
-    public static mapStateToProps = (state: IState) => {
-        return Object.assign({}, state.appState.id);
     }
 }

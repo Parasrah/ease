@@ -3,22 +3,25 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import * as Constants from "../constants/Constants";
+import StartPageContainer from "./pages/start/StartPage";
 import { changePage, setID } from "./redux/Actions";
 import { Page } from "./redux/Definitions";
-import { StartPage } from "./pages/start/StartPage";
 import { VideoClientPage } from "./pages/video/VideoClientPage";
 import { VideoHostPage } from "./pages/video/VideoHostPage";
 import { VideoPage } from "./pages/video/VideoPage";
 import { IState, IAppState } from "./redux/State";
 
-type IEaseStateProps = IAppState;
+interface IEaseStoreProps {
+    id: string;
+    page: Page;
+}
 
 interface IEaseDispatchProps {
     changePage: (page: Page) => void;
     setID: (id: string) => void;
 }
 
-export type IEaseProps = IEaseStateProps & IEaseDispatchProps;
+export type IEaseProps = IEaseStoreProps & IEaseDispatchProps;
 
 export class Ease extends React.Component<IEaseProps, {}> {
     private videoPath: string;
@@ -69,16 +72,14 @@ export class Ease extends React.Component<IEaseProps, {}> {
         switch (this.props.page) {
             case Page.START:
                 this.renderedPage = (
-                    <StartPage
+                    <StartPageContainer
                         filepathCallback={this.startVideo}
-                        idCallback={this.connectHost}
                     />
                 );
                 break;
             case Page.VIDEO_HOST:
                 this.renderedPage = (
                     <VideoHostPage
-                        signalHost={Constants.SIGNAL_HOST}
                         videoSource={this.videoPath}
                     />
                 );
@@ -88,7 +89,6 @@ export class Ease extends React.Component<IEaseProps, {}> {
                 this.renderedPage = (
                     <VideoClientPage
                         hostID={this.hostID}
-                        signalHost={Constants.SIGNAL_HOST}
                         videoSource=""
                     />
                 );
@@ -104,7 +104,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.mapPage();
     }
 
-    public componentWillUpdate = (nextProps: IEaseStateProps, nextState) => {
+    public componentWillUpdate = (nextProps: IEaseStoreProps, nextState) => {
         if (this.props.page !== nextProps.page) {
             this.mapPage();
         }
@@ -116,8 +116,11 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     /*********************** Redux ***************************/
 
-    public static mapStateToProps = (state: IState): IEaseStateProps => {
-        return Object.assign({}, state.appState);
+    public static mapStateToProps = (state: IState): IEaseStoreProps => {
+        return Object.assign({}, {
+            id: state.peerState.id,
+            page: state.appState.page,
+        });
     }
 
     public static mapDispatchToProps = (dispatch): IEaseDispatchProps => {
