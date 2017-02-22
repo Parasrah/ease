@@ -13,6 +13,7 @@ export enum Page {
  * @field HAS_DATA - has signaling data to share with other peer
  * @field CONNECTED - connection between peers is successful
  * @field ERROR - error has occurred
+ * TODO remove if unused
  */
 export enum WebrtcStatus {
     PENDING = 1, CONNECTED, ERROR,

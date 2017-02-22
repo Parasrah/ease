@@ -125,8 +125,8 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     public static mapDispatchToProps = (dispatch): IEaseDispatchProps => {
         return {
-            changePage: (page) => { dispatch(changePage(page)); },
-            setID: (id) => { dispatch(setID(id)); },
+            changePage: (page) => dispatch(changePage(page)),
+            setID: (id) => dispatch(setID(id)),
         };
     }
 }

@@ -186,5 +186,7 @@ export const watchServerStatus = (socket: SocketIOClient.Socket) => {
             dispatch(setServerStatus(false));
         });
 
+        // TODO watch for errors and log to store via `dispatch(action)`
+
     };
 };

@@ -21,9 +21,14 @@ export interface IVideoInputProps {
 
 export interface IVideoStoreProps {
     id?: string;
+    signalHost?: string;
 }
 
-export type IVideoProps = IVideoInputProps & IVideoStoreProps;
+export interface IVideoDispatchProps {
+    watchServerStatus?: (socket: SocketIOClient.Socket) => void;
+}
+
+export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
 
 export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, {}> {
     protected socket: SocketIOClient.Socket;
@@ -33,8 +38,8 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     constructor(props) {
         super(props);
 
-        // Initiate socket
-        // this.socket = SocketIO.connect(this.props.signalHost);
+        this.socket = SocketIO.connect(this.props.signalHost);
+        this.props.watchServerStatus(this.socket);
     }
 
     /********************* Methods ***********************/

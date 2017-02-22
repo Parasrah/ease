@@ -2,7 +2,8 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, VideoPage  } from "./VideoPage";
+import { watchServerStatus } from "../../redux/Actions";
+import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
 
 interface IInitMessage {
     id: string;
@@ -21,7 +22,7 @@ interface IHostStoreProps extends IVideoStoreProps {
 
 }
 
-interface IHostDispatchProps {
+interface IHostDispatchProps extends IVideoDispatchProps {
 
 }
 
@@ -33,11 +34,6 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     constructor(props) {
         super(props);
-
-        // Send socket error info to console
-        this.socket.on("signal_error", (error: string) => {
-            console.log(error);
-        });
     }
 
     /********************* Methods ***********************/
@@ -59,7 +55,14 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     public static mapStateToProps = (state: IState, ownProps: IHostInputProps): IHostStoreProps & IHostInputProps => {
         return Object.assign({}, ownProps, {
             id: state.peerState.id,
+            signalHost: state.settingsState.signalHost,
         });
+    }
+
+    public static mapDispatchToProps = (dispatch): IHostDispatchProps => {
+        return {
+            watchServerStatus: (socket) => dispatch(watchServerStatus(socket)),
+        };
     }
 }
 
