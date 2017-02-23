@@ -120,6 +120,11 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action.Pe
                 }),
             });
 
+        case types.clearSignalData:
+            return Object.assign({}, state, {
+                hostPeers: state.hostPeers.map((peer) => (peer.id === (action as Action.IClearSignalData).id) ? [] : peer),
+            });
+
         case types.setServerStatus:
             return Object.assign({}, state, {
                 serverStatus: (action as Action.ISetServerStatus).serverStatus,

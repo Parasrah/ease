@@ -2,15 +2,12 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { watchServerStatus, setVideoReady } from "../../redux/Actions";
+import { watchServerStatus, setVideoReady, createPeer, addSignalData, clearSignalData } from "../../redux/Actions";
+import { IPeer } from "../../redux/Definitions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
 
 interface IInitMessage {
     id: string;
-}
-
-interface IExtendedPeer extends SimplePeer.Instance {
-    clientID: string;
 }
 
 interface IHostInputProps extends IVideoInputProps {
@@ -18,25 +15,28 @@ interface IHostInputProps extends IVideoInputProps {
 }
 
 interface IHostStoreProps extends IVideoStoreProps {
-    serverStatus?: boolean;
+    readonly serverStatus?: boolean;
+    readonly hostPeers?: IPeer[];
 }
 
 interface IHostDispatchProps extends IVideoDispatchProps {
-
+    readonly createPeer?: (id: string, ...signalData: SimplePeer.SignalData[]) => void;
+    readonly addSignalData?: (id: string, signalData: SimplePeer.SignalData) => void;
+    readonly clearSignalData?: (id: string) => void;
 }
 
 type IHostProps = IHostInputProps & IHostStoreProps & IHostDispatchProps;
 
 export class VideoHostPage extends VideoPage<IHostProps> {
-    private peers: IExtendedPeer[];
+    private peers: SimplePeer.Instance[];
     private stream: any;
 
     constructor(props) {
         super(props);
 
-        this.socket.on("offer", this.dealWithOffer);
         this.peers = [];
         this.stream = null;
+        this.socket.on("offer", this.dealWithOffer);
     }
 
     /********************* Methods ***********************/
@@ -48,27 +48,51 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     }
 
     private dealWithOffer = (offer: IOfferMessage) => {
-        // TODO create peer in store
+        let storePeerExists = false;
+        let storePeer: IPeer = null;
+        this.props.hostPeers.forEach((peer) => {
+            if (peer.id === offer.clientID) {
+                storePeerExists = true;
+                storePeer = peer;
+                if (!this.props.videoReady || !this.props.serverStatus) {
+                    this.props.addSignalData(offer.clientID, offer.signalData);
+                }
+            }
+        });
 
-        // TODO if server not connected, add signal data to store
+        if (!storePeerExists) {
+            this.props.createPeer(
+                offer.clientID,
+                (this.props.videoReady && this.props.serverStatus) ? [] : offer.signalData,
+            );
+        }
 
-        // TODO if server connected & peer doesn't exist, create a peer
+        if (!this.peers[offer.clientID] && this.props.videoReady && this.props.serverStatus) {
+            this.peers[offer.clientID] = this.createPeer(offer.clientID, storePeer.signalData.concat(offer.signalData));
+            this.props.clearSignalData(offer.clientID);
+        }
 
-        // TODO if server connected & peer does exist, signal that peer
+        else if (this.peers[offer.clientID] && this.props.videoReady && this.props.serverStatus) {
+            this.peers[offer.clientID].signal(offer.signalData);
+        }
     }
 
-    private createPeer = (clientID: string, ...offerData: SimplePeer.SignalData[]): IExtendedPeer => {
+    private createPeer = (clientID: string, ...offerData: SimplePeer.SignalData[]): SimplePeer.Instance => {
         const peer = new SimplePeer({
             initiator: false,
             stream: this.stream,
             trickle: true,
         });
 
-        const extendedPeer = Object.defineProperty(peer, "clientID", clientID);
-        extendedPeer.on("signal", (signalData: SimplePeer.SignalData) => {
+        peer.on("signal", (signalData: SimplePeer.SignalData) => {
             this.respond(clientID, signalData);
         });
-        return extendedPeer;
+
+        for (const data of offerData) {
+            peer.signal(data);
+        }
+
+        return peer;
     }
 
     private respond = (clientID: string, signalData: SimplePeer.SignalData) => {
@@ -85,6 +109,22 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         if (!this.props.serverStatus && nextProps.serverStatus) {
             this.discover();
         }
+
+        // See if signal data can be used
+        nextProps.hostPeers.forEach((storePeer) => {
+            if (this.peers[storePeer.id]) {
+                if (storePeer.signalData.length > 0) {
+                    for (const data of storePeer.signalData) {
+                        this.peers[storePeer.id].signal(data);
+                    }
+                    nextProps.clearSignalData(storePeer.id);
+                }
+            }
+            else if (storePeer.signalData.length > 0 && this.props.videoReady) {
+                this.peers[storePeer.id] = this.createPeer(storePeer.id, storePeer.signalData);
+                nextProps.clearSignalData(storePeer.id);
+            }
+        });
     }
 
     protected componentDidMount() {
@@ -106,6 +146,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             signalHost: state.settingsState.signalHost,
             serverStatus: state.peerState.serverStatus,
             videoReady: state.videoState.videoReady,
+            hostPeers: state.peerState.hostPeers,
         });
     }
 
@@ -113,6 +154,9 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         return {
             watchServerStatus: (socket) => dispatch(watchServerStatus(socket)),
             setVideoReady: (videoReady) => dispatch(setVideoReady(videoReady)),
+            createPeer: (id, ...signalData) => dispatch(createPeer(id, signalData)),
+            addSignalData: (id, signalData) => dispatch(addSignalData(id, signalData)),
+            clearSignalData: (id) => dispatch(clearSignalData(id)),
         };
     }
 }

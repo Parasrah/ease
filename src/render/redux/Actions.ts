@@ -26,6 +26,7 @@ export const ActionType = {
         addSignalData: "ADD_SIGNAL_DATA",
         setID: "SET_ID",
         setHostID: "SET_HOST_ID",
+        clearSignalData: "CLEAR_SIGNAL_DATA",
     },
 };
 
@@ -95,6 +96,10 @@ export interface ISetHostID extends IAction {
 
 export interface IAddSignalData extends IAction {
     signalData: SignalData;
+    id: string;
+}
+
+export interface IClearSignalData extends IAction {
     id: string;
 }
 
@@ -172,6 +177,13 @@ export const addSignalData = (id: string, signalData: SignalData): IAddSignalDat
     return {
         type: ActionType.peerAction.addSignalData,
         signalData,
+        id,
+    };
+};
+
+export const clearSignalData = (id: string): IClearSignalData => {
+    return {
+        type: ActionType.peerAction.clearSignalData,
         id,
     };
 };

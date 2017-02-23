@@ -10,7 +10,7 @@ interface IClientInputProps extends IVideoInputProps {
 }
 
 interface IClientStoreProps extends IVideoStoreProps {
-    hostID: string;
+    readonly hostID?: string;
 }
 
 interface IClientDispatchProps extends IVideoDispatchProps {

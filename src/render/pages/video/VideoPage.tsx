@@ -20,14 +20,14 @@ export interface IVideoInputProps {
 }
 
 export interface IVideoStoreProps {
-    id?: string;
-    signalHost?: string;
-    videoReady?: boolean;
+    readonly id?: string;
+    readonly signalHost?: string;
+    readonly videoReady?: boolean;
 }
 
 export interface IVideoDispatchProps {
-    watchServerStatus?: (socket: SocketIOClient.Socket) => void;
-    setVideoReady?: (videoReady: boolean) => void;
+    readonly watchServerStatus?: (socket: SocketIOClient.Socket) => void;
+    readonly setVideoReady?: (videoReady: boolean) => void;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
