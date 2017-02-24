@@ -27,7 +27,8 @@ export const ActionType = {
     peerAction: {
         createPeer: "CREATE_PEER",
         setServerStatus: "SET_SERVER_STATUS",
-        addSignalData: "ADD_SIGNAL_DATA",
+        addClientSignalData: "ADD_CLIENT_SIGNAL_DATA",
+        addHostSignalData: "ADD_HOST_SIGNAL_DATA",
         setID: "SET_ID",
         setHostID: "SET_HOST_ID",
         clearSignalData: "CLEAR_SIGNAL_DATA",
@@ -93,7 +94,7 @@ export interface ISetVideoReady extends ICheck {
 export type PeerAction = ICreatePeer | ISetServerStatus | ISetID | IAddSignalData;
 
 export interface ICreatePeer extends ICheck {
-    id: string;
+    clientID: string;
     signalData?: SignalData[];
 }
 
@@ -111,7 +112,7 @@ export interface ISetHostID extends ICheck {
 
 export interface IAddSignalData extends ICheck {
     signalData: SignalData;
-    id: string;
+    clientID: string;
 }
 
 export interface IClearSignalData extends ICheck {
@@ -202,25 +203,35 @@ export const setHostID = (hostID: string): Action<ISetHostID> => {
 
 export type setHostID = (hostID: string) => Action<ISetHostID>;
 
-export const createPeer = (id: string, ...signalData: SignalData[]): Action<ICreatePeer> => {
+export const createPeer = (clientID: string, ...signalData: SignalData[]): Action<ICreatePeer> => {
     return {
         type: ActionType.peerAction.createPeer,
-        id,
+        clientID,
         signalData,
     };
 };
 
-export type createPeer = (id: string, ...signalData: SignalData[]) => Action<ICreatePeer>;
+export type createPeer = (clientID: string, ...signalData: SignalData[]) => Action<ICreatePeer>;
 
-export const addSignalData = (id: string, signalData: SignalData): Action<IAddSignalData> => {
+export const addClientSignalData = (clientID: string, signalData: SignalData): Action<IAddSignalData> => {
     return {
-        type: ActionType.peerAction.addSignalData,
+        type: ActionType.peerAction.addClientSignalData,
         signalData,
-        id,
+        clientID,
     };
 };
 
-export type addSignalData = (id: string, signalData: SignalData) => Action<IAddSignalData>;
+export type addClientSignalData = (clientID: string, signalData: SignalData) => Action<IAddSignalData>;
+
+export const addHostSignalData = (clientID: string, signalData: SignalData): Action<IAddSignalData> => {
+    return {
+        type: ActionType.peerAction.addHostSignalData,
+        signalData,
+        clientID,
+    };
+};
+
+export type addHostSignalData = (clientID: string, signalData: SignalData) => Action<IAddSignalData>;
 
 export const clearSignalData = (id: string): Action<IClearSignalData> => {
     return {

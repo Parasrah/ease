@@ -2,7 +2,7 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { watchServerStatus, setVideoReady, createPeer, addSignalData, clearSignalData } from "../../redux/Actions";
+import { watchServerStatus, setVideoReady, createPeer, addClientSignalData, clearSignalData, addHostSignalData } from "../../redux/Actions";
 import { IPeer } from "../../redux/Definitions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
 
@@ -21,7 +21,8 @@ interface IHostStoreProps extends IVideoStoreProps {
 
 interface IHostDispatchProps extends IVideoDispatchProps {
     readonly createPeer?: createPeer;
-    readonly addSignalData?: addSignalData;
+    readonly addClientSignalData?: addClientSignalData;
+    readonly addHostSignalData?: addHostSignalData;
     readonly clearSignalData?: clearSignalData;
 }
 
@@ -42,20 +43,22 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     /********************* Methods ***********************/
 
     public discover = () => {
-        this.socket.emit("discover", {
+        const initMessage: IInitMessage = {
             id: this.props.id,
-        });
+        };
+        console.log("Emitting to 'discover': " + JSON.stringify(initMessage));
+        this.socket.emit("discover", JSON.stringify(initMessage));
     }
 
     private dealWithOffer = (offer: IOfferMessage) => {
         let storePeerExists = false;
         let storePeer: IPeer = null;
         this.props.hostPeers.forEach((peer) => {
-            if (peer.id === offer.clientID) {
+            if (peer.clientID === offer.clientID) {
                 storePeerExists = true;
                 storePeer = peer;
                 if (!this.props.videoReady || !this.props.serverStatus) {
-                    this.props.addSignalData(offer.clientID, offer.signalData);
+                    this.props.addClientSignalData(offer.clientID, offer.signalData);
                 }
             }
         });
@@ -68,7 +71,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         }
 
         if (!this.peers[offer.clientID] && this.props.videoReady && this.props.serverStatus) {
-            this.peers[offer.clientID] = this.createPeer(offer.clientID, storePeer.signalData.concat(offer.signalData));
+            this.peers[offer.clientID] = this.createPeer(offer.clientID, storePeer.clientSignalData.concat(offer.signalData));
             this.props.clearSignalData(offer.clientID);
         }
 
@@ -85,7 +88,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         });
 
         peer.on("signal", (signalData: SimplePeer.SignalData) => {
-            this.respond(clientID, signalData);
+            this.tryToRespond(clientID, signalData);
         });
 
         for (const data of offerData) {
@@ -93,6 +96,16 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         }
 
         return peer;
+    }
+
+    private tryToRespond = (clientID: string, signalData: SimplePeer.SignalData) => {
+        if (this.props.serverStatus) {
+            this.respond(clientID, signalData);
+        }
+        else {
+            // Put into the store
+            this.props.addHostSignalData(clientID, signalData);
+        }
     }
 
     private respond = (clientID: string, signalData: SimplePeer.SignalData) => {
@@ -105,26 +118,35 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     /********************* React Lifecycle ***********************/
 
-    protected componentWillRecieveProps(nextProps: IHostProps) {
+    protected componentWillReceiveProps(nextProps: IHostProps) {
         if (!this.props.serverStatus && nextProps.serverStatus) {
             this.discover();
         }
 
-        // See if signal data can be used
+        // See if client signal data can be used (waiting for video or server)
         nextProps.hostPeers.forEach((storePeer) => {
-            if (this.peers[storePeer.id]) {
-                if (storePeer.signalData.length > 0) {
-                    for (const data of storePeer.signalData) {
-                        this.peers[storePeer.id].signal(data);
+            if (this.peers[storePeer.clientID]) {
+                if (storePeer.clientSignalData.length > 0) {
+                    for (const data of storePeer.clientSignalData) {
+                        this.peers[storePeer.clientID].signal(data);
                     }
-                    nextProps.clearSignalData(storePeer.id);
+                    nextProps.clearSignalData(storePeer.clientID);
                 }
             }
-            else if (storePeer.signalData.length > 0 && this.props.videoReady) {
-                this.peers[storePeer.id] = this.createPeer(storePeer.id, storePeer.signalData);
-                nextProps.clearSignalData(storePeer.id);
+            else if (storePeer.clientSignalData.length > 0 && this.props.videoReady) {
+                this.peers[storePeer.clientID] = this.createPeer(storePeer.clientID, storePeer.clientSignalData);
+                nextProps.clearSignalData(storePeer.clientID);
             }
         });
+
+        // See if host signal data can be used (waiting on server)
+        if (this.props.serverStatus) {
+            nextProps.hostPeers.forEach((storePeer) => {
+                for (const data of storePeer.hostSignalData) {
+                    this.respond(storePeer.clientID, data);
+                }
+            });
+        }
     }
 
     protected componentDidMount() {
@@ -155,7 +177,8 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             watchServerStatus: (socket) => dispatch(watchServerStatus(socket)),
             setVideoReady: (videoReady) => dispatch(setVideoReady(videoReady)),
             createPeer: (id, ...signalData) => dispatch(createPeer(id, signalData)),
-            addSignalData: (id, signalData) => dispatch(addSignalData(id, signalData)),
+            addClientSignalData: (clientID, signalData) => dispatch(addClientSignalData(clientID, signalData)),
+            addHostSignalData: (clientID, signalData) => dispatch(addHostSignalData(clientID, signalData)),
             clearSignalData: (id) => dispatch(clearSignalData(id)),
         };
     }

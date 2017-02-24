@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 
 import { Action, ActionType, AppAction, WindowAction, VideoAction, PeerAction, SettingsAction, IChangePage, IResizePage, IFullscreen, IAddSignalData, IClearSignalData, ICreatePeer, IPlayPause, ISetHostID, ISetID, ISetServerStatus, ISetVideoReady, ISetSignalHost } from "./Actions";
 import { SIGNAL_HOST } from "../../constants/Constants";
+import { addSignalData } from "./ReduxUtils";
 import * as State from "./State";
 import * as Def from "./Definitions";
 
@@ -91,7 +92,6 @@ const videoState = (state: State.IVideoState = initialVideoState, action: Action
 const initialPeerState: State.IPeerState = {
     id: "",
     serverStatus: false,
-    hostSignalData: false,
     hostPeers: [],
     hostID: "",
 };
@@ -101,29 +101,25 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action<Pe
 
     switch (action.type) {
 
-        case types.addSignalData:
-            const addSignalAction = action as IAddSignalData;
-            return Object.assign({}, state, {
-                hostPeers: state.hostPeers.map((peer) => {
-                    return (peer.id === addSignalAction.id) ?
-                       Object.assign(peer, {
-                           signalData: peer.signalData.concat(addSignalAction.signalData),
-                       }) : peer;
-                }),
-            });
+        case types.addClientSignalData:
+            return addSignalData(state, action as IAddSignalData, Def.DataType.HOST);
+
+        case types.addHostSignalData:
+            return addSignalData(state, action as IAddSignalData, Def.DataType.HOST);
 
         case types.createPeer:
             return Object.assign({}, state, {
                 hostPeers: state.hostPeers.concat({
                     signalStatus: false,
-                    id: (action as ICreatePeer).id,
-                    signalData: (action as ICreatePeer).signalData,
+                    clientID: (action as ICreatePeer).clientID,
+                    clientSignalData: (action as ICreatePeer).signalData,
+                    hostSignalData: [],
                 }),
             });
 
         case types.clearSignalData:
             return Object.assign({}, state, {
-                hostPeers: state.hostPeers.map((peer) => (peer.id === (action as IClearSignalData).id) ? [] : peer),
+                hostPeers: state.hostPeers.map((peer) => (peer.clientID === (action as IClearSignalData).id) ? [] : peer),
             });
 
         case types.setServerStatus:
@@ -145,7 +141,7 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action<Pe
 
 const initialSettingsState: State.ISettingsState = {
     signalHost: SIGNAL_HOST,
-}
+};
 
 const settingsState = (state: State.ISettingsState = initialSettingsState, action: Action<SettingsAction>) => {
     const types = ActionType.settingsAction;

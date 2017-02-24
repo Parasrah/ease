@@ -32,7 +32,6 @@ export interface IPeerState {
     id: string;
     hostID: string;
     serverStatus: boolean;
-    hostSignalData: boolean; // Host only
     hostPeers: Def.IPeer[]; // Host only
 }
 

@@ -21,6 +21,12 @@ export enum WebrtcStatus {
 
 export interface IPeer {
     signalStatus: boolean;
-    id: string;
-    signalData: SignalData[];
+    clientID: string;
+    clientSignalData: SignalData[];
+    hostSignalData: SignalData[];
+}
+
+export enum DataType {
+    HOST = 1,
+    CLIENT,
 }
