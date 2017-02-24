@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 
-import * as Action from "./Actions";
+import { Action, AppAction, WindowAction, VideoAction, PeerAction, IChangePage, IResizePage, IFullscreen, IAddSignalData, IClearSignalData, ICreatePeer, IPlayPause, ISetHostID, ISetID, ISetServerStatus, ISetVideoReady, ActionType } from "./Actions";
 import * as State from "./State";
 import * as Def from "./Definitions";
 
@@ -11,14 +11,14 @@ const initialAppState: State.IAppState = {
     error: [],
 };
 
-const appState = (state: State.IAppState = initialAppState, action: Action.AppAction): State.IAppState => {
-    const types = Action.ActionType.appAction;
+const appState = (state: State.IAppState = initialAppState, action: Action<AppAction>): State.IAppState => {
+    const types = ActionType.appAction;
 
     switch (action.type) {
 
         case types.changePage:
             return Object.assign({}, state, {
-                page: (action as Action.IChangePage).page,
+                page: (action as IChangePage).page,
             });
 
         default:
@@ -33,15 +33,15 @@ const initialWindowState = {
     width: 800,
 };
 
-const windowState = (state: State.IWindowState = initialWindowState, action: Action.WindowAction): State.IWindowState => {
-    const types = Action.ActionType.windowAction;
+const windowState = (state: State.IWindowState = initialWindowState, action: Action<WindowAction>): State.IWindowState => {
+    const types = ActionType.windowAction;
 
     switch (action.type) {
 
         case types.resizePage:
             return Object.assign({}, state, {
-                height: (action as Action.IResizePage).height,
-                width: (action as Action.IResizePage).width,
+                height: (action as IResizePage).height,
+                width: (action as IResizePage).width,
             });
 
         default:
@@ -61,23 +61,23 @@ const initialVideoState: State.IVideoState = {
     videoReady: false,
 };
 
-const videoState = (state: State.IVideoState = initialVideoState, action: Action.VideoAction): State.IVideoState => {
-    const types = Action.ActionType.videoAction;
+const videoState = (state: State.IVideoState = initialVideoState, action: Action<VideoAction>): State.IVideoState => {
+    const types = ActionType.videoAction;
 
     switch (action.type) {
         case types.fullscreen:
             return Object.assign({}, state, {
-                fullscreen: (action as Action.IFullscreen).fullscreen,
+                fullscreen: (action as IFullscreen).fullscreen,
             });
 
         case types.playPause:
             return Object.assign({}, state, {
-                play: (action as Action.IPlayPause).play,
+                play: (action as IPlayPause).play,
             });
 
         case types.setVideoReady:
             return Object.assign({}, state, {
-                videoReady: (action as Action.ISetVideoReady).videoReady,
+                videoReady: (action as ISetVideoReady).videoReady,
             });
 
         default:
@@ -95,13 +95,13 @@ const initialPeerState: State.IPeerState = {
     hostID: "",
 };
 
-const peerState = (state: State.IPeerState = initialPeerState, action: Action.PeerAction): State.IPeerState => {
-    const types = Action.ActionType.peerAction;
+const peerState = (state: State.IPeerState = initialPeerState, action: Action<PeerAction>): State.IPeerState => {
+    const types = ActionType.peerAction;
 
     switch (action.type) {
 
         case types.addSignalData:
-            const addSignalAction = action as Action.IAddSignalData;
+            const addSignalAction = action as IAddSignalData;
             return Object.assign({}, state, {
                 hostPeers: state.hostPeers.map((peer) => {
                     return (peer.id === addSignalAction.id) ?
@@ -115,24 +115,24 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action.Pe
             return Object.assign({}, state, {
                 hostPeers: state.hostPeers.concat({
                     signalStatus: false,
-                    id: (action as Action.ICreatePeer).id,
-                    signalData: (action as Action.ICreatePeer).signalData,
+                    id: (action as ICreatePeer).id,
+                    signalData: (action as ICreatePeer).signalData,
                 }),
             });
 
         case types.clearSignalData:
             return Object.assign({}, state, {
-                hostPeers: state.hostPeers.map((peer) => (peer.id === (action as Action.IClearSignalData).id) ? [] : peer),
+                hostPeers: state.hostPeers.map((peer) => (peer.id === (action as IClearSignalData).id) ? [] : peer),
             });
 
         case types.setServerStatus:
             return Object.assign({}, state, {
-                serverStatus: (action as Action.ISetServerStatus).serverStatus,
+                serverStatus: (action as ISetServerStatus).serverStatus,
             });
 
         case types.setID:
             return Object.assign({}, state, {
-                id: (action as Action.ISetID).id,
+                id: (action as ISetID).id,
             });
 
         default:

@@ -20,9 +20,9 @@ interface IHostStoreProps extends IVideoStoreProps {
 }
 
 interface IHostDispatchProps extends IVideoDispatchProps {
-    readonly createPeer?: (id: string, ...signalData: SimplePeer.SignalData[]) => void;
-    readonly addSignalData?: (id: string, signalData: SimplePeer.SignalData) => void;
-    readonly clearSignalData?: (id: string) => void;
+    readonly createPeer?: createPeer;
+    readonly addSignalData?: addSignalData;
+    readonly clearSignalData?: clearSignalData;
 }
 
 type IHostProps = IHostInputProps & IHostStoreProps & IHostDispatchProps;

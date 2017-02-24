@@ -3,6 +3,7 @@ import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
 import * as Exception from "../../../common/Exceptions";
+import { watchServerStatus, setVideoReady } from "../../redux/Actions";
 
 export interface IOfferMessage {
     hostID: string;
@@ -26,8 +27,8 @@ export interface IVideoStoreProps {
 }
 
 export interface IVideoDispatchProps {
-    readonly watchServerStatus?: (socket: SocketIOClient.Socket) => void;
-    readonly setVideoReady?: (videoReady: boolean) => void;
+    readonly watchServerStatus?: watchServerStatus;
+    readonly setVideoReady?: setVideoReady;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
