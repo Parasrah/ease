@@ -32,6 +32,9 @@ export const ActionType = {
         setHostID: "SET_HOST_ID",
         clearSignalData: "CLEAR_SIGNAL_DATA",
     },
+    settingsAction: {
+        setSignalHost: "SET_SIGNAL_HOST",
+    },
 };
 
 /**
@@ -113,6 +116,14 @@ export interface IAddSignalData extends ICheck {
 
 export interface IClearSignalData extends ICheck {
     id: string;
+}
+
+/************************** Settings *************************/
+
+export type SettingsAction = ISetSignalHost;
+
+export interface ISetSignalHost extends ICheck {
+    signalHost: string;
 }
 
 /*************************************************************/
@@ -248,3 +259,14 @@ export const watchServerStatus = (socket: SocketIOClient.Socket) => {
 };
 
 export type watchServerStatus = (socket: SocketIOClient.Socket) => Action<ISetServerStatus>;
+
+/************************** Settings *************************/
+
+export const setSignalHost = (signalHost: string) => {
+    return {
+        type: ActionType.settingsAction.setSignalHost,
+        signalHost,
+    };
+};
+
+export type setSignalHost = (signalHost: string) => Action<ISetSignalHost>;

@@ -163,6 +163,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
 const VideoHostPageContainer = connect(
     VideoHostPage.mapStateToProps,
+    VideoHostPage.mapDispatchToProps,
 )(VideoHostPage);
 
 export default VideoHostPageContainer;

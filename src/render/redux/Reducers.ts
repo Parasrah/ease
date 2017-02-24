@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 
-import { Action, AppAction, WindowAction, VideoAction, PeerAction, IChangePage, IResizePage, IFullscreen, IAddSignalData, IClearSignalData, ICreatePeer, IPlayPause, ISetHostID, ISetID, ISetServerStatus, ISetVideoReady, ActionType } from "./Actions";
+import { Action, ActionType, AppAction, WindowAction, VideoAction, PeerAction, SettingsAction, IChangePage, IResizePage, IFullscreen, IAddSignalData, IClearSignalData, ICreatePeer, IPlayPause, ISetHostID, ISetID, ISetServerStatus, ISetVideoReady, ISetSignalHost } from "./Actions";
+import { SIGNAL_HOST } from "../../constants/Constants";
 import * as State from "./State";
 import * as Def from "./Definitions";
 
@@ -140,6 +141,26 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action<Pe
     }
 };
 
+/************************* Settings **************************/
+
+const initialSettingsState: State.ISettingsState = {
+    signalHost: SIGNAL_HOST,
+}
+
+const settingsState = (state: State.ISettingsState = initialSettingsState, action: Action<SettingsAction>) => {
+    const types = ActionType.settingsAction;
+
+    switch (action.type) {
+        case types.setSignalHost:
+            return Object.assign({}, state, {
+                signalHost: (action as ISetSignalHost).signalHost,
+            });
+
+        default:
+            return state;
+    }
+};
+
 /*************************** End *****************************/
 
 const appReducer = combineReducers({
@@ -147,6 +168,7 @@ const appReducer = combineReducers({
     windowState,
     videoState,
     peerState,
+    settingsState,
 });
 
 export default appReducer;

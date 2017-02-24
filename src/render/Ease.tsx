@@ -6,8 +6,8 @@ import * as Constants from "../constants/Constants";
 import StartPageContainer from "./pages/start/StartPage";
 import { changePage, setID } from "./redux/Actions";
 import { Page } from "./redux/Definitions";
-import { VideoClientPage } from "./pages/video/VideoClientPage";
-import { VideoHostPage } from "./pages/video/VideoHostPage";
+import VideoClientPageContainer from "./pages/video/VideoClientPage";
+import VideoHostPageContainer from "./pages/video/VideoHostPage";
 import { VideoPage } from "./pages/video/VideoPage";
 import { IState, IAppState } from "./redux/State";
 
@@ -68,8 +68,8 @@ export class Ease extends React.Component<IEaseProps, {}> {
         "TODO";
     }
 
-    private mapPage() {
-        switch (this.props.page) {
+    private mapPage(page: Page) {
+        switch (page) {
             case Page.START:
                 this.renderedPage = (
                     <StartPageContainer
@@ -79,7 +79,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
                 break;
             case Page.VIDEO_HOST:
                 this.renderedPage = (
-                    <VideoHostPage
+                    <VideoHostPageContainer
                         videoSource={this.videoPath}
                     />
                 );
@@ -87,8 +87,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
             case Page.VIDEO_CLIENT:
                 this.renderedPage = (
-                    <VideoClientPage
-                        hostID={this.hostID}
+                    <VideoClientPageContainer
                         videoSource=""
                     />
                 );
@@ -101,12 +100,12 @@ export class Ease extends React.Component<IEaseProps, {}> {
     /*********************** Lifecycle ***********************/
 
     public componentWillMount() {
-        this.mapPage();
+        this.mapPage(this.props.page);
     }
 
-    public componentWillUpdate = (nextProps: IEaseStoreProps, nextState) => {
+    public componentWillReceiveProps = (nextProps: IEaseStoreProps) => {
         if (this.props.page !== nextProps.page) {
-            this.mapPage();
+            this.mapPage(nextProps.page);
         }
     }
 
