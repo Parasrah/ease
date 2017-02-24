@@ -31,6 +31,7 @@ type IHostProps = IHostInputProps & IHostStoreProps & IHostDispatchProps;
 export class VideoHostPage extends VideoPage<IHostProps> {
     private peers: SimplePeer.Instance[];
     private stream: any;
+    private initialPlay: boolean;
 
     constructor(props) {
         super(props);
@@ -38,6 +39,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         this.peers = [];
         this.stream = null;
         this.socket.on("offer", this.dealWithOffer);
+        this.initialPlay = true;
     }
 
     /********************* Methods ***********************/
@@ -153,10 +155,14 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         super.componentDidMount();
 
         // Initialize peer from video stream (must be called before VideoPage setup)
-        const video: any = this.getVideo();
+        const video: HTMLMediaElement = this.getVideo();
         video.onplay = () => {
-            this.stream = video.captureStream();
-            this.props.setVideoReady(true);
+            if (this.initialPlay) {
+                video.pause();
+                this.stream = (video as any).captureStream();
+                this.props.setVideoReady(true);
+                this.initialPlay = false;
+            }
         };
     }
 

@@ -8,7 +8,7 @@ import { changePage, setHostID } from "../../redux/Actions";
 import { Page } from "../../redux/Definitions";
 import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../constants/Channels";
 import { UploadCommand } from "../../../constants/Commands";
-import { UploadBox } from "./UploadBox";
+import { UploadBox } from "../../components/UploadBox";
 
 interface IStartInputProps {
     filepathCallback: (file: string) => void;

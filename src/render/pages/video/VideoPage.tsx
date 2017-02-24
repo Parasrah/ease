@@ -4,6 +4,7 @@ import * as SocketIO from "socket.io-client";
 
 import * as Exception from "../../../common/Exceptions";
 import { watchServerStatus, setVideoReady } from "../../redux/Actions";
+import { EaseVideoElement } from "../../components/EaseVideoElement";
 
 export interface IOfferMessage {
     hostID: string;
@@ -18,6 +19,7 @@ export interface IResponseMessage {
 
 export interface IVideoInputProps {
     videoSource: string;
+    poster: string;
 }
 
 export interface IVideoStoreProps {
@@ -65,14 +67,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         return (
             <div className="video">
                 <b> ID: </b> {this.props.id}
-                <video
-                    src={this.props.videoSource}
-                    ref={this.setVideo}
-                    poster={__dirname + "/data/heart.gif"}
-                    type="video/mp4"
-                    width="100%"
-                    controls
-                />
+                <EaseVideoElement poster={this.props.poster} videoSource={this.props.videoSource} setVideo={this.setVideo} />
             </div>
         );
     }
