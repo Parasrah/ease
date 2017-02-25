@@ -15,7 +15,6 @@ interface IHostInputProps extends IVideoInputProps {
 }
 
 interface IHostStoreProps extends IVideoStoreProps {
-    readonly serverStatus?: boolean;
     readonly hostPeers?: IPeer[];
 }
 
@@ -52,7 +51,9 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         this.socket.emit("discover", JSON.stringify(initMessage));
     }
 
-    private dealWithOffer = (offer: IOfferMessage) => {
+    private dealWithOffer = (message: string) => {
+        const offer: IOfferMessage = JSON.parse(message);
+        console.log("Offer:\n" + JSON.stringify(offer.signalData));
         let storePeerExists = false;
         let storePeer: IPeer = null;
         this.props.hostPeers.forEach((peer) => {
@@ -78,7 +79,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         }
 
         else if (this.peers[offer.clientID] && this.props.videoReady && this.props.serverStatus) {
-            this.peers[offer.clientID].signal(offer.signalData);
+            this.peers[offer.clientID].signal(offer.signalData[0]);
         }
     }
 
@@ -130,7 +131,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             if (this.peers[storePeer.clientID]) {
                 if (storePeer.clientSignalData.length > 0) {
                     for (const data of storePeer.clientSignalData) {
-                        this.peers[storePeer.clientID].signal(data);
+                        this.peers[storePeer.clientID].signal(data); // TODO investigate this
                     }
                     nextProps.clearSignalData(storePeer.clientID);
                 }

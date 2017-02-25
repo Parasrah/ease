@@ -48,6 +48,7 @@ class StartPage extends React.Component<IStartProps, {}> {
         }
         else {
             this.props.setHostID(guid);
+            this.props.changePage(Page.VIDEO_CLIENT);
         }
     }
 

@@ -32,6 +32,7 @@ export const ActionType = {
         setID: "SET_ID",
         setHostID: "SET_HOST_ID",
         clearSignalData: "CLEAR_SIGNAL_DATA",
+        storeOfferData: "STORE_OFFER_DATA",
     },
     settingsAction: {
         setSignalHost: "SET_SIGNAL_HOST",
@@ -91,7 +92,7 @@ export interface ISetVideoReady extends ICheck {
 
 /**************************** Peer ***************************/
 
-export type PeerAction = ICreatePeer | ISetServerStatus | ISetID | IAddSignalData;
+export type PeerAction = ICreatePeer | ISetServerStatus | ISetID | IAddSignalData | ISetHostID;
 
 export interface ICreatePeer extends ICheck {
     clientID: string;
@@ -113,6 +114,10 @@ export interface ISetHostID extends ICheck {
 export interface IAddSignalData extends ICheck {
     signalData: SignalData;
     clientID: string;
+}
+
+export interface IStoreOffer {
+    signalData: SignalData;
 }
 
 export interface IClearSignalData extends ICheck {
@@ -232,6 +237,15 @@ export const addHostSignalData = (clientID: string, signalData: SignalData): Act
 };
 
 export type addHostSignalData = (clientID: string, signalData: SignalData) => Action<IAddSignalData>;
+
+export const storeOfferData = (signalData: SignalData): Action<IStoreOffer> => {
+    return {
+        type: ActionType.peerAction.storeOfferData,
+        signalData,
+    };
+};
+
+export type storeOfferData = (signalData: SignalData) => Action<IStoreOffer>;
 
 export const clearSignalData = (id: string): Action<IClearSignalData> => {
     return {

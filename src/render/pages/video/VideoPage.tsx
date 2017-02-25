@@ -26,6 +26,7 @@ export interface IVideoStoreProps {
     readonly id?: string;
     readonly signalHost?: string;
     readonly videoReady?: boolean;
+    readonly serverStatus?: boolean;
 }
 
 export interface IVideoDispatchProps {

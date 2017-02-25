@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 
-import { Action, ActionType, AppAction, WindowAction, VideoAction, PeerAction, SettingsAction, IChangePage, IResizePage, IFullscreen, IAddSignalData, IClearSignalData, ICreatePeer, IPlayPause, ISetHostID, ISetID, ISetServerStatus, ISetVideoReady, ISetSignalHost } from "./Actions";
+import { Action, ActionType, AppAction, WindowAction, VideoAction, PeerAction, SettingsAction, IChangePage, IResizePage, IFullscreen, IAddSignalData, IClearSignalData, ICreatePeer, IPlayPause, ISetHostID, IStoreOffer, ISetID, ISetServerStatus, ISetVideoReady, ISetSignalHost } from "./Actions";
 import { SIGNAL_HOST } from "../../constants/Constants";
 import { addSignalData } from "./ReduxUtils";
 import * as State from "./State";
@@ -94,6 +94,7 @@ const initialPeerState: State.IPeerState = {
     serverStatus: false,
     hostPeers: [],
     hostID: "",
+    offerData: [],
 };
 
 const peerState = (state: State.IPeerState = initialPeerState, action: Action<PeerAction>): State.IPeerState => {
@@ -117,6 +118,11 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action<Pe
                 }),
             });
 
+        case types.storeOfferData:
+            return Object.assign({}, state, {
+                offerData: state.offerData.concat((action as IStoreOffer).signalData),
+            });
+
         case types.clearSignalData:
             return Object.assign({}, state, {
                 hostPeers: state.hostPeers.map((peer) => (peer.clientID === (action as IClearSignalData).id) ? [] : peer),
@@ -130,6 +136,11 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action<Pe
         case types.setID:
             return Object.assign({}, state, {
                 id: (action as ISetID).id,
+            });
+
+        case types.setHostID:
+            return Object.assign({}, state, {
+                hostID: (action as ISetHostID).hostID,
             });
 
         default:
