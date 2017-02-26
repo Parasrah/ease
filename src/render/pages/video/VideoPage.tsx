@@ -23,16 +23,16 @@ export interface IVideoInputProps {
 }
 
 export interface IVideoStoreProps {
-    readonly id?: string;
-    readonly signalHost?: string;
-    readonly videoReady?: boolean;
-    readonly serverStatus?: boolean;
+    readonly id: string;
+    readonly signalHost: string;
+    readonly videoReady: boolean;
+    readonly serverStatus: boolean;
 }
 
 export interface IVideoDispatchProps {
-    readonly watchServerStatusDispatch?: watchServerStatusAction;
-    readonly setVideoReadyDispatch?: setVideoReadyAction;
-    readonly setPeerSignalStatusDispatch?: setPeerSignalStatusAction;
+    readonly watchServerStatusDispatch: watchServerStatusAction;
+    readonly setVideoReadyDispatch: setVideoReadyAction;
+    readonly setPeerSignalStatusDispatch: setPeerSignalStatusAction;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;

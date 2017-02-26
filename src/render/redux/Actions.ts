@@ -34,6 +34,7 @@ export const ActionType = {
         setHostIDAction: "SET_HOST_ID",
         clearSignalDataAction: "CLEAR_SIGNAL_DATA",
         storeOfferDataAction: "STORE_OFFER_DATA",
+        clearOfferDataAction: "CLEAR_OFFER_DATA_ACTION",
     },
     settingsAction: {
         setSignalHostAction: "SET_SIGNAL_HOST",
@@ -93,7 +94,7 @@ export interface ISetVideoReadyAction extends ICheck {
 
 /**************************** Peer ***************************/
 
-export type PeerAction = ICreatePeerAction | ISetServerStatusAction | ISetIDAction | IAddSignalDataAction | ISetHostIDAction | IStoreOfferAction | IClearSignalDataAction | ISetPeerSignalStatusAction;
+export type PeerAction = ICreatePeerAction | ISetServerStatusAction | ISetIDAction | IAddSignalDataAction | ISetHostIDAction | IStoreOfferAction | IClearSignalDataAction | ISetPeerSignalStatusAction | IClearOfferDataAction;
 
 export interface ICreatePeerAction extends ICheck {
     clientID: string;
@@ -128,6 +129,10 @@ export interface IClearSignalDataAction extends ICheck {
 export interface ISetPeerSignalStatusAction extends ICheck {
     clientID: string;
     status: boolean;
+}
+
+export interface IClearOfferDataAction extends ICheck {
+
 }
 
 /************************** Settings *************************/
@@ -272,6 +277,14 @@ export const setPeerSignalStatusAction: setPeerSignalStatusAction = (clientID, s
 };
 
 export type setPeerSignalStatusAction = (clientID: string, status: boolean) => Action<ISetPeerSignalStatusAction>;
+
+export const clearOfferDataAction: clearOfferDataAction = () => {
+    return {
+        type: ActionType.peerAction.clearOfferDataAction,
+    };
+};
+
+export type clearOfferDataAction = () => Action<IClearOfferDataAction>;
 
 const setServerStatusAction = (serverStatus: boolean): Action<ISetServerStatusAction> => {
     return {

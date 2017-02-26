@@ -16,14 +16,14 @@ interface IHostInputProps extends IVideoInputProps {
 }
 
 interface IHostStoreProps extends IVideoStoreProps {
-    readonly hostPeers?: IPeer[];
+    readonly hostPeers: IPeer[];
 }
 
 interface IHostDispatchProps extends IVideoDispatchProps {
-    readonly createPeerDispatch?: createPeerAction;
-    readonly addClientSignalDataDispatch?: addClientSignalDataAction;
-    readonly addHostSignalDataDispatch?: addHostSignalDataAction;
-    readonly clearSignalDataDispatch?: clearSignalDataAction;
+    readonly createPeerDispatch: createPeerAction;
+    readonly addClientSignalDataDispatch: addClientSignalDataAction;
+    readonly addHostSignalDataDispatch: addHostSignalDataAction;
+    readonly clearSignalDataDispatch: clearSignalDataAction;
 }
 
 type IHostProps = IHostInputProps & IHostStoreProps & IHostDispatchProps;

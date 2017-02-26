@@ -163,6 +163,11 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action<Pe
                 }),
             });
 
+        case types.clearOfferDataAction:
+            return Object.assign({}, state, {
+                offerData: [],
+            });
+
         default:
             return state;
     }
