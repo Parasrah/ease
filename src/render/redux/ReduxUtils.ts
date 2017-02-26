@@ -1,8 +1,8 @@
 import { IPeerState } from "./State";
-import { IAddSignalData } from "./Actions";
+import { IAddSignalDataAction } from "./Actions";
 import { DataType } from "./Definitions";
 
-export const addSignalData = (state: IPeerState, action: IAddSignalData, type: DataType): IPeerState => {
+export const addSignalData = (state: IPeerState, action: IAddSignalDataAction, type: DataType): IPeerState => {
     let combinedSignalData = null;
 
     return Object.assign({}, state, {

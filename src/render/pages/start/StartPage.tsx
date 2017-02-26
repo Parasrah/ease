@@ -4,7 +4,7 @@ import { ipcRenderer } from "electron";
 import { connect } from "react-redux";
 
 import { IState } from "../../redux/State";
-import { changePage, setHostID } from "../../redux/Actions";
+import { changePageAction, setHostIDAction } from "../../redux/Actions";
 import { Page } from "../../redux/Definitions";
 import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../constants/Channels";
 import { UploadCommand } from "../../../constants/Commands";
@@ -127,8 +127,8 @@ class StartPage extends React.Component<IStartProps, {}> {
 
     public static mapDispatchToProps = (dispatch): IStartDispatchProps => {
         return {
-            changePage: (page) => { dispatch(changePage(page)); },
-            setHostID: (hostID) => { dispatch(setHostID(hostID)); },
+            changePage: (page) => { dispatch(changePageAction(page)); },
+            setHostID: (hostID) => { dispatch(setHostIDAction(hostID)); },
         };
     }
 }

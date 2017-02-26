@@ -3,7 +3,7 @@ import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
 import * as Exception from "../../../common/Exceptions";
-import { watchServerStatus, setVideoReady } from "../../redux/Actions";
+import { watchServerStatusAction, setVideoReadyAction } from "../../redux/Actions";
 import { EaseVideoElement } from "../../components/EaseVideoElement";
 
 export interface IOfferMessage {
@@ -30,8 +30,8 @@ export interface IVideoStoreProps {
 }
 
 export interface IVideoDispatchProps {
-    readonly watchServerStatus?: watchServerStatus;
-    readonly setVideoReady?: setVideoReady;
+    readonly watchServerStatus?: watchServerStatusAction;
+    readonly setVideoReady?: setVideoReadyAction;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;

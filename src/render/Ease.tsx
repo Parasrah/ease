@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import * as Constants from "../constants/Constants";
 import StartPageContainer from "./pages/start/StartPage";
-import { changePage, setID } from "./redux/Actions";
+import { changePageAction, setIDAction } from "./redux/Actions";
 import { Page } from "./redux/Definitions";
 import VideoClientPageContainer from "./pages/video/VideoClientPage";
 import VideoHostPageContainer from "./pages/video/VideoHostPage";
@@ -127,8 +127,8 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     public static mapDispatchToProps = (dispatch): IEaseDispatchProps => {
         return {
-            changePage: (page) => dispatch(changePage(page)),
-            setID: (id) => dispatch(setID(id)),
+            changePage: (page) => dispatch(changePageAction(page)),
+            setID: (id) => dispatch(setIDAction(id)),
         };
     }
 }

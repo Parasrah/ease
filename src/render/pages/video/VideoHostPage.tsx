@@ -2,7 +2,7 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { watchServerStatus, setVideoReady, createPeer, addClientSignalData, clearSignalData, addHostSignalData } from "../../redux/Actions";
+import { watchServerStatusAction, setVideoReadyAction, createPeerAction, addClientSignalDataAction, clearSignalDataAction, addHostSignalDataAction } from "../../redux/Actions";
 import { IPeer } from "../../redux/Definitions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
 
@@ -19,10 +19,10 @@ interface IHostStoreProps extends IVideoStoreProps {
 }
 
 interface IHostDispatchProps extends IVideoDispatchProps {
-    readonly createPeer?: createPeer;
-    readonly addClientSignalData?: addClientSignalData;
-    readonly addHostSignalData?: addHostSignalData;
-    readonly clearSignalData?: clearSignalData;
+    readonly createPeer?: createPeerAction;
+    readonly addClientSignalData?: addClientSignalDataAction;
+    readonly addHostSignalData?: addHostSignalDataAction;
+    readonly clearSignalData?: clearSignalDataAction;
 }
 
 type IHostProps = IHostInputProps & IHostStoreProps & IHostDispatchProps;
@@ -181,12 +181,12 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     public static mapDispatchToProps = (dispatch): IHostDispatchProps => {
         return {
-            watchServerStatus: (socket) => dispatch(watchServerStatus(socket)),
-            setVideoReady: (videoReady) => dispatch(setVideoReady(videoReady)),
-            createPeer: (id, ...signalData) => dispatch(createPeer(id, signalData)),
-            addClientSignalData: (clientID, signalData) => dispatch(addClientSignalData(clientID, signalData)),
-            addHostSignalData: (clientID, signalData) => dispatch(addHostSignalData(clientID, signalData)),
-            clearSignalData: (id) => dispatch(clearSignalData(id)),
+            watchServerStatus: (socket) => dispatch(watchServerStatusAction(socket)),
+            setVideoReady: (videoReady) => dispatch(setVideoReadyAction(videoReady)),
+            createPeer: (id, ...signalData) => dispatch(createPeerAction(id, signalData)),
+            addClientSignalData: (clientID, signalData) => dispatch(addClientSignalDataAction(clientID, signalData)),
+            addHostSignalData: (clientID, signalData) => dispatch(addHostSignalDataAction(clientID, signalData)),
+            clearSignalData: (id) => dispatch(clearSignalDataAction(id)),
         };
     }
 }

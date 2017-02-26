@@ -13,29 +13,29 @@ import * as State from "./State";
  */
 export const ActionType = {
     appAction: {
-        changePage: "CHANGE_PAGE",
+        changePageAction: "CHANGE_PAGE",
     },
     windowAction: {
-        resizePage: "RESIZE_PAGE",
+        resizePageAction: "RESIZE_PAGE",
     },
     videoAction: {
-        playPause: "PLAY_PAUSE",
-        jumpToTime: "JUMP_TO_TIME",
-        fullscreen: "FULLSCREEN",
-        setVideoReady: "SET_VIDEO_STATUS",
+        playPauseAction: "PLAY_PAUSE",
+        jumpToTimeAction: "JUMP_TO_TIME",
+        fullscreenAction: "FULLSCREEN",
+        setVideoReadyAction: "SET_VIDEO_STATUS",
     },
     peerAction: {
-        createPeer: "CREATE_PEER",
-        setServerStatus: "SET_SERVER_STATUS",
-        addClientSignalData: "ADD_CLIENT_SIGNAL_DATA",
-        addHostSignalData: "ADD_HOST_SIGNAL_DATA",
-        setID: "SET_ID",
-        setHostID: "SET_HOST_ID",
-        clearSignalData: "CLEAR_SIGNAL_DATA",
-        storeOfferData: "STORE_OFFER_DATA",
+        createPeerAction: "CREATE_PEER",
+        setServerStatusAction: "SET_SERVER_STATUS",
+        addClientSignalDataAction: "ADD_CLIENT_SIGNAL_DATA",
+        addHostSignalDataAction: "ADD_HOST_SIGNAL_DATA",
+        setIDAction: "SET_ID",
+        setHostIDAction: "SET_HOST_ID",
+        clearSignalDataAction: "CLEAR_SIGNAL_DATA",
+        storeOfferDataAction: "STORE_OFFER_DATA",
     },
     settingsAction: {
-        setSignalHost: "SET_SIGNAL_HOST",
+        setSignalHostAction: "SET_SIGNAL_HOST",
     },
 };
 
@@ -59,76 +59,76 @@ export type Action<T extends ICheck> = T & IType;
 
 /**************************** App ****************************/
 
-export type AppAction = IChangePage | ISetID;
+export type AppAction = IChangePageAction;
 
-export interface IChangePage extends ICheck {
+export interface IChangePageAction extends ICheck {
     readonly page: Def.Page;
 }
 
 /**************************** Window *************************/
 
-export type WindowAction = IResizePage;
+export type WindowAction = IResizePageAction;
 
-export interface IResizePage extends ICheck {
+export interface IResizePageAction extends ICheck {
     readonly height: number;
     readonly width: number;
 }
 
 /**************************** Video **************************/
 
-export type VideoAction = IPlayPause | IFullscreen | ISetVideoReady;
+export type VideoAction = IPlayPauseAction | IFullscreenAction | ISetVideoReadyAction;
 
-export interface IPlayPause extends ICheck {
+export interface IPlayPauseAction extends ICheck {
     readonly play: boolean;
 }
 
-export interface IFullscreen extends ICheck {
+export interface IFullscreenAction extends ICheck {
     readonly fullscreen: boolean;
 }
 
-export interface ISetVideoReady extends ICheck {
+export interface ISetVideoReadyAction extends ICheck {
     readonly videoReady: boolean;
 }
 
 /**************************** Peer ***************************/
 
-export type PeerAction = ICreatePeer | ISetServerStatus | ISetID | IAddSignalData | ISetHostID;
+export type PeerAction = ICreatePeerAction | ISetServerStatusAction | ISetIDAction | IAddSignalDataAction | ISetHostIDAction;
 
-export interface ICreatePeer extends ICheck {
+export interface ICreatePeerAction extends ICheck {
     clientID: string;
     signalData?: SignalData[];
 }
 
-export interface ISetServerStatus extends ICheck {
+export interface ISetServerStatusAction extends ICheck {
     readonly serverStatus: boolean;
 }
 
-export interface ISetID extends ICheck {
+export interface ISetIDAction extends ICheck {
     readonly id: string;
 }
 
-export interface ISetHostID extends ICheck {
+export interface ISetHostIDAction extends ICheck {
     readonly hostID: string;
 }
 
-export interface IAddSignalData extends ICheck {
+export interface IAddSignalDataAction extends ICheck {
     signalData: SignalData;
     clientID: string;
 }
 
-export interface IStoreOffer {
+export interface IStoreOfferAction {
     signalData: SignalData;
 }
 
-export interface IClearSignalData extends ICheck {
+export interface IClearSignalDataAction extends ICheck {
     id: string;
 }
 
 /************************** Settings *************************/
 
-export type SettingsAction = ISetSignalHost;
+export type SettingsAction = ISetSignalHostAction;
 
-export interface ISetSignalHost extends ICheck {
+export interface ISetSignalHostAction extends ICheck {
     signalHost: string;
 }
 
@@ -138,144 +138,145 @@ export interface ISetSignalHost extends ICheck {
 
 /**************************** App ****************************/
 
-export const changePage = (page: Def.Page): Action<IChangePage> => {
+export const changePageAction = (page: Def.Page): Action<IChangePageAction> => {
     return {
-        type: ActionType.appAction.changePage,
+        type: ActionType.appAction.changePageAction,
         page,
     };
 };
 
-export type changePage = (page: Def.Page) => Action<IChangePage>;
+export type changePageAction = (page: Def.Page) => Action<IChangePageAction>;
 
 /**************************** Window *************************/
 
-export const resizePage = (width: number, height: number): Action<IResizePage> => {
+export const resizePageAction = (width: number, height: number): Action<IResizePageAction> => {
     return {
-        type: ActionType.windowAction.resizePage,
+        type: ActionType.windowAction.resizePageAction,
         width,
         height,
     };
 };
 
-export type resizePage = (width: number, height: number) => Action<IResizePage> ;
+export type resizePageAction = (width: number, height: number) => Action<IResizePageAction> ;
 
 /**************************** Video **************************/
 
-export const playPause = (play: boolean): Action<IPlayPause> => {
+// TODO split this into two separate actions
+export const playPauseAction = (play: boolean): Action<IPlayPauseAction> => {
     return {
-        type: ActionType.videoAction.playPause,
+        type: ActionType.videoAction.playPauseAction,
         play,
     };
 };
 
-export type playPause = (play: boolean) => Action<IPlayPause>;
+export type playPauseAction = (play: boolean) => Action<IPlayPauseAction>;
 
-export const setFullscreen = (fullscreen: boolean): Action<IFullscreen> => {
+export const setFullscreenAction = (fullscreen: boolean): Action<IFullscreenAction> => {
     return {
-        type: ActionType.videoAction.fullscreen,
+        type: ActionType.videoAction.fullscreenAction,
         fullscreen,
     };
 };
 
-export type setFullscreen = (fullscreen: boolean) => Action<IFullscreen>;
+export type setFullscreenAction = (fullscreen: boolean) => Action<IFullscreenAction>;
 
-export const setVideoReady = (videoReady: boolean): Action<ISetVideoReady> => {
+export const setVideoReadyAction = (videoReady: boolean): Action<ISetVideoReadyAction> => {
     return {
-        type: ActionType.videoAction.setVideoReady,
+        type: ActionType.videoAction.setVideoReadyAction,
         videoReady,
     };
 };
 
-export type setVideoReady = (videoReady: boolean) => Action<ISetVideoReady>;
+export type setVideoReadyAction = (videoReady: boolean) => Action<ISetVideoReadyAction>;
 
 /**************************** Peer ***************************/
 
-export const setID = (id: string): Action<ISetID> => {
+export const setIDAction = (id: string): Action<ISetIDAction> => {
     return {
-        type: ActionType.peerAction.setID,
+        type: ActionType.peerAction.setIDAction,
         id,
     };
 };
 
-export type setID = (id: string) => Action<ISetID>;
+export type setIDAction = (id: string) => Action<ISetIDAction>;
 
-export const setHostID = (hostID: string): Action<ISetHostID> => {
+export const setHostIDAction = (hostID: string): Action<ISetHostIDAction> => {
     return {
-        type: ActionType.peerAction.setHostID,
+        type: ActionType.peerAction.setHostIDAction,
         hostID,
     };
 };
 
-export type setHostID = (hostID: string) => Action<ISetHostID>;
+export type setHostIDAction = (hostID: string) => Action<ISetHostIDAction>;
 
-export const createPeer = (clientID: string, ...signalData: SignalData[]): Action<ICreatePeer> => {
+export const createPeerAction = (clientID: string, ...signalData: SignalData[]): Action<ICreatePeerAction> => {
     return {
-        type: ActionType.peerAction.createPeer,
+        type: ActionType.peerAction.createPeerAction,
         clientID,
         signalData,
     };
 };
 
-export type createPeer = (clientID: string, ...signalData: SignalData[]) => Action<ICreatePeer>;
+export type createPeerAction = (clientID: string, ...signalData: SignalData[]) => Action<ICreatePeerAction>;
 
-export const addClientSignalData = (clientID: string, signalData: SignalData): Action<IAddSignalData> => {
+export const addClientSignalDataAction = (clientID: string, signalData: SignalData): Action<IAddSignalDataAction> => {
     return {
-        type: ActionType.peerAction.addClientSignalData,
+        type: ActionType.peerAction.addClientSignalDataAction,
         signalData,
         clientID,
     };
 };
 
-export type addClientSignalData = (clientID: string, signalData: SignalData) => Action<IAddSignalData>;
+export type addClientSignalDataAction = (clientID: string, signalData: SignalData) => Action<IAddSignalDataAction>;
 
-export const addHostSignalData = (clientID: string, signalData: SignalData): Action<IAddSignalData> => {
+export const addHostSignalDataAction = (clientID: string, signalData: SignalData): Action<IAddSignalDataAction> => {
     return {
-        type: ActionType.peerAction.addHostSignalData,
+        type: ActionType.peerAction.addHostSignalDataAction,
         signalData,
         clientID,
     };
 };
 
-export type addHostSignalData = (clientID: string, signalData: SignalData) => Action<IAddSignalData>;
+export type addHostSignalDataAction = (clientID: string, signalData: SignalData) => Action<IAddSignalDataAction>;
 
-export const storeOfferData = (signalData: SignalData): Action<IStoreOffer> => {
+export const storeOfferDataAction = (signalData: SignalData): Action<IStoreOfferAction> => {
     return {
-        type: ActionType.peerAction.storeOfferData,
+        type: ActionType.peerAction.storeOfferDataAction,
         signalData,
     };
 };
 
-export type storeOfferData = (signalData: SignalData) => Action<IStoreOffer>;
+export type storeOfferDataAction = (signalData: SignalData) => Action<IStoreOfferAction>;
 
-export const clearSignalData = (id: string): Action<IClearSignalData> => {
+export const clearSignalDataAction = (id: string): Action<IClearSignalDataAction> => {
     return {
-        type: ActionType.peerAction.clearSignalData,
+        type: ActionType.peerAction.clearSignalDataAction,
         id,
     };
 };
 
-export type clearSignalData = (id: string) => Action<IClearSignalData>;
+export type clearSignalDataAction = (id: string) => Action<IClearSignalDataAction>;
 
-const setServerStatus = (serverStatus: boolean): Action<ISetServerStatus> => {
+const setServerStatusAction = (serverStatus: boolean): Action<ISetServerStatusAction> => {
     return {
-        type: ActionType.peerAction.setServerStatus,
+        type: ActionType.peerAction.setServerStatusAction,
         serverStatus,
     };
 };
 
-export const watchServerStatus = (socket: SocketIOClient.Socket) => {
+export const watchServerStatusAction = (socket: SocketIOClient.Socket) => {
     return (dispatch, getState) => {
 
         if (socket.connected) {
-            dispatch(setServerStatus(true));
+            dispatch(setServerStatusAction(true));
         }
 
         socket.on("connect", () => {
-            dispatch(setServerStatus(true));
+            dispatch(setServerStatusAction(true));
         });
 
         socket.on("disconnect", () => {
-            dispatch(setServerStatus(false));
+            dispatch(setServerStatusAction(false));
         });
 
         // TODO watch for errors and log to store via `dispatch(action)`
@@ -283,15 +284,15 @@ export const watchServerStatus = (socket: SocketIOClient.Socket) => {
     };
 };
 
-export type watchServerStatus = (socket: SocketIOClient.Socket) => Action<ISetServerStatus>;
+export type watchServerStatusAction = (socket: SocketIOClient.Socket) => Action<ISetServerStatusAction>;
 
 /************************** Settings *************************/
 
-export const setSignalHost = (signalHost: string) => {
+export const setSignalHostAction = (signalHost: string) => {
     return {
-        type: ActionType.settingsAction.setSignalHost,
+        type: ActionType.settingsAction.setSignalHostAction,
         signalHost,
     };
 };
 
-export type setSignalHost = (signalHost: string) => Action<ISetSignalHost>;
+export type setSignalHostAction = (signalHost: string) => Action<ISetSignalHostAction>;

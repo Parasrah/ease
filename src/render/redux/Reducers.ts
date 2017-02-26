@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 
-import { Action, ActionType, AppAction, WindowAction, VideoAction, PeerAction, SettingsAction, IChangePage, IResizePage, IFullscreen, IAddSignalData, IClearSignalData, ICreatePeer, IPlayPause, ISetHostID, IStoreOffer, ISetID, ISetServerStatus, ISetVideoReady, ISetSignalHost } from "./Actions";
+import { Action, ActionType, AppAction, WindowAction, VideoAction, PeerAction, SettingsAction, IChangePageAction, IResizePageAction, IFullscreenAction, IAddSignalDataAction, IClearSignalDataAction, ICreatePeerAction, IPlayPauseAction, IStoreOfferAction, ISetIDAction, ISetServerStatusAction, ISetVideoReadyAction, ISetSignalHostAction, ISetHostIDAction } from "./Actions";
 import { SIGNAL_HOST } from "../../constants/Constants";
 import { addSignalData } from "./ReduxUtils";
 import * as State from "./State";
@@ -18,9 +18,9 @@ const appState = (state: State.IAppState = initialAppState, action: Action<AppAc
 
     switch (action.type) {
 
-        case types.changePage:
+        case types.changePageAction:
             return Object.assign({}, state, {
-                page: (action as IChangePage).page,
+                page: (action as IChangePageAction).page,
             });
 
         default:
@@ -40,10 +40,10 @@ const windowState = (state: State.IWindowState = initialWindowState, action: Act
 
     switch (action.type) {
 
-        case types.resizePage:
+        case types.resizePageAction:
             return Object.assign({}, state, {
-                height: (action as IResizePage).height,
-                width: (action as IResizePage).width,
+                height: (action as IResizePageAction).height,
+                width: (action as IResizePageAction).width,
             });
 
         default:
@@ -67,19 +67,19 @@ const videoState = (state: State.IVideoState = initialVideoState, action: Action
     const types = ActionType.videoAction;
 
     switch (action.type) {
-        case types.fullscreen:
+        case types.fullscreenAction:
             return Object.assign({}, state, {
-                fullscreen: (action as IFullscreen).fullscreen,
+                fullscreen: (action as IFullscreenAction).fullscreen,
             });
 
-        case types.playPause:
+        case types.playPauseAction:
             return Object.assign({}, state, {
-                play: (action as IPlayPause).play,
+                play: (action as IPlayPauseAction).play,
             });
 
-        case types.setVideoReady:
+        case types.setVideoReadyAction:
             return Object.assign({}, state, {
-                videoReady: (action as ISetVideoReady).videoReady,
+                videoReady: (action as ISetVideoReadyAction).videoReady,
             });
 
         default:
@@ -102,45 +102,45 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action<Pe
 
     switch (action.type) {
 
-        case types.addClientSignalData:
-            return addSignalData(state, action as IAddSignalData, Def.DataType.HOST);
+        case types.addClientSignalDataAction:
+            return addSignalData(state, action as IAddSignalDataAction, Def.DataType.HOST);
 
-        case types.addHostSignalData:
-            return addSignalData(state, action as IAddSignalData, Def.DataType.HOST);
+        case types.addHostSignalDataAction:
+            return addSignalData(state, action as IAddSignalDataAction, Def.DataType.HOST);
 
-        case types.createPeer:
+        case types.createPeerAction:
             return Object.assign({}, state, {
                 hostPeers: state.hostPeers.concat({
                     signalStatus: false,
-                    clientID: (action as ICreatePeer).clientID,
-                    clientSignalData: (action as ICreatePeer).signalData,
+                    clientID: (action as ICreatePeerAction).clientID,
+                    clientSignalData: (action as ICreatePeerAction).signalData,
                     hostSignalData: [],
                 }),
             });
 
-        case types.storeOfferData:
+        case types.storeOfferDataAction:
             return Object.assign({}, state, {
-                offerData: state.offerData.concat((action as IStoreOffer).signalData),
+                offerData: state.offerData.concat((action as IStoreOfferAction).signalData),
             });
 
-        case types.clearSignalData:
+        case types.clearSignalDataAction:
             return Object.assign({}, state, {
-                hostPeers: state.hostPeers.map((peer) => (peer.clientID === (action as IClearSignalData).id) ? [] : peer),
+                hostPeers: state.hostPeers.map((peer) => (peer.clientID === (action as IClearSignalDataAction).id) ? [] : peer),
             });
 
-        case types.setServerStatus:
+        case types.setServerStatusAction:
             return Object.assign({}, state, {
-                serverStatus: (action as ISetServerStatus).serverStatus,
+                serverStatus: (action as ISetServerStatusAction).serverStatus,
             });
 
-        case types.setID:
+        case types.setIDAction:
             return Object.assign({}, state, {
-                id: (action as ISetID).id,
+                id: (action as ISetIDAction).id,
             });
 
-        case types.setHostID:
+        case types.setHostIDAction:
             return Object.assign({}, state, {
-                hostID: (action as ISetHostID).hostID,
+                hostID: (action as ISetHostIDAction).hostID,
             });
 
         default:
@@ -158,9 +158,9 @@ const settingsState = (state: State.ISettingsState = initialSettingsState, actio
     const types = ActionType.settingsAction;
 
     switch (action.type) {
-        case types.setSignalHost:
+        case types.setSignalHostAction:
             return Object.assign({}, state, {
-                signalHost: (action as ISetSignalHost).signalHost,
+                signalHost: (action as ISetSignalHostAction).signalHost,
             });
 
         default:

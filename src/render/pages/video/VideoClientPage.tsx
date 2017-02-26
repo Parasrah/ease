@@ -2,7 +2,7 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { watchServerStatus, setVideoReady, storeOfferData } from "../../redux/Actions";
+import { watchServerStatusAction, setVideoReadyAction, storeOfferDataAction } from "../../redux/Actions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
 
 interface IClientInputProps extends IVideoInputProps {
@@ -15,7 +15,7 @@ interface IClientStoreProps extends IVideoStoreProps {
 }
 
 interface IClientDispatchProps extends IVideoDispatchProps {
-    readonly storeOfferData: storeOfferData;
+    readonly storeOfferData: storeOfferDataAction;
 }
 
 type IClientProps = IClientInputProps & IClientStoreProps & IClientDispatchProps;
@@ -103,9 +103,9 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     public static mapDispatchToProps = (dispatch): IClientDispatchProps => {
         return {
-            watchServerStatus: (socket) => dispatch(watchServerStatus(socket)),
-            setVideoReady: (videoReady) => dispatch(setVideoReady(videoReady)),
-            storeOfferData: (signalData) => dispatch(storeOfferData(signalData)),
+            watchServerStatus: (socket) => dispatch(watchServerStatusAction(socket)),
+            setVideoReady: (videoReady) => dispatch(setVideoReadyAction(videoReady)),
+            storeOfferData: (signalData) => dispatch(storeOfferDataAction(signalData)),
         };
     }
 }
