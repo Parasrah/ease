@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 
-import { Action, ActionType, AppAction, WindowAction, VideoAction, PeerAction, SettingsAction, IChangePageAction, IResizePageAction, IFullscreenAction, IAddSignalDataAction, IClearSignalDataAction, ICreatePeerAction, IPlayPauseAction, IStoreOfferAction, ISetIDAction, ISetServerStatusAction, ISetVideoReadyAction, ISetSignalHostAction, ISetHostIDAction } from "./Actions";
+import { Action, ActionType, AppAction, WindowAction, VideoAction, PeerAction, SettingsAction, IChangePageAction, IResizePageAction, IFullscreenAction, IAddSignalDataAction, IClearSignalDataAction, ISetPeerSignalStatusAction, ICreatePeerAction, IPlayPauseAction, IStoreOfferAction, ISetIDAction, ISetServerStatusAction, ISetVideoReadyAction, ISetSignalHostAction, ISetHostIDAction } from "./Actions";
 import { SIGNAL_HOST } from "../../constants/Constants";
 import { addSignalData } from "./ReduxUtils";
 import * as State from "./State";
@@ -125,7 +125,16 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action<Pe
 
         case types.clearSignalDataAction:
             return Object.assign({}, state, {
-                hostPeers: state.hostPeers.map((peer) => (peer.clientID === (action as IClearSignalDataAction).id) ? [] : peer),
+                hostPeers: state.hostPeers.map((peer) => {
+                    if (peer.clientID === (action as IClearSignalDataAction).id) {
+                        Object.assign(peer, {
+                            hostSignalData: [],
+                        });
+                    }
+                    else {
+                        return peer;
+                    }
+                }),
             });
 
         case types.setServerStatusAction:
@@ -141,6 +150,17 @@ const peerState = (state: State.IPeerState = initialPeerState, action: Action<Pe
         case types.setHostIDAction:
             return Object.assign({}, state, {
                 hostID: (action as ISetHostIDAction).hostID,
+            });
+
+        case types.setPeerSignalStatusAction:
+            return Object.assign({}, state, {
+                hostPeers: state.hostPeers.map((peer) => {
+                    if (peer.clientID === (action as ISetPeerSignalStatusAction).clientID) {
+                        return Object.assign(peer, {
+                            signalStatus: (action as ISetPeerSignalStatusAction).status,
+                        });
+                    }
+                }),
             });
 
         default:

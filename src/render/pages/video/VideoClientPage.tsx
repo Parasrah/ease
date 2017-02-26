@@ -2,7 +2,7 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { watchServerStatusAction, setVideoReadyAction, storeOfferDataAction } from "../../redux/Actions";
+import { watchServerStatusAction, setVideoReadyAction, storeOfferDataAction, setPeerSignalStatusAction } from "../../redux/Actions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
 
 interface IClientInputProps extends IVideoInputProps {
@@ -51,8 +51,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         }
     }
 
-    private dealWithResponse = (message) => {
-        const responseMessage: IResponseMessage = JSON.parse(message);
+    private dealWithResponse = (responseMessage: IResponseMessage) => {
         if (responseMessage.clientID === this.props.id) {
             this.peer.signal(responseMessage.signalData);
         }
@@ -75,7 +74,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     }
 
     private sendOffer = (offerMessage: IOfferMessage) => {
-        this.socket.emit("offer", JSON.stringify(offerMessage));
+        this.socket.emit("offer", offerMessage);
     }
 
     /********************* React Lifecycle ***********************/
@@ -103,9 +102,10 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     public static mapDispatchToProps = (dispatch): IClientDispatchProps => {
         return {
-            watchServerStatus: (socket) => dispatch(watchServerStatusAction(socket)),
-            setVideoReady: (videoReady) => dispatch(setVideoReadyAction(videoReady)),
+            watchServerStatusDispatch: (socket) => dispatch(watchServerStatusAction(socket)),
+            setVideoReadyDispatch: (videoReady) => dispatch(setVideoReadyAction(videoReady)),
             storeOfferData: (signalData) => dispatch(storeOfferDataAction(signalData)),
+            setPeerSignalStatusDispatch: (clientID, status) => dispatch(setPeerSignalStatusAction(clientID, status)),
         };
     }
 }

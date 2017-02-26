@@ -29,6 +29,7 @@ export const ActionType = {
         setServerStatusAction: "SET_SERVER_STATUS",
         addClientSignalDataAction: "ADD_CLIENT_SIGNAL_DATA",
         addHostSignalDataAction: "ADD_HOST_SIGNAL_DATA",
+        setPeerSignalStatusAction: "SET_PEER_SIGNAL_STATUS",
         setIDAction: "SET_ID",
         setHostIDAction: "SET_HOST_ID",
         clearSignalDataAction: "CLEAR_SIGNAL_DATA",
@@ -92,7 +93,7 @@ export interface ISetVideoReadyAction extends ICheck {
 
 /**************************** Peer ***************************/
 
-export type PeerAction = ICreatePeerAction | ISetServerStatusAction | ISetIDAction | IAddSignalDataAction | ISetHostIDAction;
+export type PeerAction = ICreatePeerAction | ISetServerStatusAction | ISetIDAction | IAddSignalDataAction | ISetHostIDAction | IStoreOfferAction | IClearSignalDataAction | ISetPeerSignalStatusAction;
 
 export interface ICreatePeerAction extends ICheck {
     clientID: string;
@@ -122,6 +123,11 @@ export interface IStoreOfferAction {
 
 export interface IClearSignalDataAction extends ICheck {
     id: string;
+}
+
+export interface ISetPeerSignalStatusAction extends ICheck {
+    clientID: string;
+    status: boolean;
 }
 
 /************************** Settings *************************/
@@ -248,7 +254,7 @@ export const storeOfferDataAction = (signalData: SignalData): Action<IStoreOffer
 
 export type storeOfferDataAction = (signalData: SignalData) => Action<IStoreOfferAction>;
 
-export const clearSignalDataAction = (id: string): Action<IClearSignalDataAction> => {
+export const clearSignalDataAction: clearSignalDataAction = (id) => {
     return {
         type: ActionType.peerAction.clearSignalDataAction,
         id,
@@ -256,6 +262,16 @@ export const clearSignalDataAction = (id: string): Action<IClearSignalDataAction
 };
 
 export type clearSignalDataAction = (id: string) => Action<IClearSignalDataAction>;
+
+export const setPeerSignalStatusAction: setPeerSignalStatusAction = (clientID, status) => {
+    return {
+        type: ActionType.peerAction.setPeerSignalStatusAction,
+        clientID,
+        status,
+    };
+};
+
+export type setPeerSignalStatusAction = (clientID: string, status: boolean) => Action<ISetPeerSignalStatusAction>;
 
 const setServerStatusAction = (serverStatus: boolean): Action<ISetServerStatusAction> => {
     return {

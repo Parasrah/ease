@@ -2,9 +2,10 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { watchServerStatusAction, setVideoReadyAction, createPeerAction, addClientSignalDataAction, clearSignalDataAction, addHostSignalDataAction } from "../../redux/Actions";
+import { watchServerStatusAction, setVideoReadyAction, createPeerAction, addClientSignalDataAction, clearSignalDataAction, addHostSignalDataAction, setPeerSignalStatusAction } from "../../redux/Actions";
 import { IPeer } from "../../redux/Definitions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
+import { shouldUpdate } from "../../utils/ComponentUtils";
 
 interface IInitMessage {
     id: string;
@@ -19,10 +20,10 @@ interface IHostStoreProps extends IVideoStoreProps {
 }
 
 interface IHostDispatchProps extends IVideoDispatchProps {
-    readonly createPeer?: createPeerAction;
-    readonly addClientSignalData?: addClientSignalDataAction;
-    readonly addHostSignalData?: addHostSignalDataAction;
-    readonly clearSignalData?: clearSignalDataAction;
+    readonly createPeerDispatch?: createPeerAction;
+    readonly addClientSignalDataDispatch?: addClientSignalDataAction;
+    readonly addHostSignalDataDispatch?: addHostSignalDataAction;
+    readonly clearSignalDataDispatch?: clearSignalDataAction;
 }
 
 type IHostProps = IHostInputProps & IHostStoreProps & IHostDispatchProps;
@@ -48,38 +49,39 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             id: this.props.id,
         };
         console.log("Emitting to 'discover': " + JSON.stringify(initMessage));
-        this.socket.emit("discover", JSON.stringify(initMessage));
+        this.socket.emit("discover", initMessage);
     }
 
-    private dealWithOffer = (message: string) => {
-        const offer: IOfferMessage = JSON.parse(message);
-        console.log("Offer:\n" + JSON.stringify(offer.signalData));
-        let storePeerExists = false;
+    private dealWithOffer = (offer: IOfferMessage) => {
+        console.log("Offer:\n" + JSON.stringify(offer));
         let storePeer: IPeer = null;
         this.props.hostPeers.forEach((peer) => {
             if (peer.clientID === offer.clientID) {
-                storePeerExists = true;
                 storePeer = peer;
                 if (!this.props.videoReady || !this.props.serverStatus) {
-                    this.props.addClientSignalData(offer.clientID, offer.signalData);
+                    this.props.addClientSignalDataDispatch(offer.clientID, offer.signalData);
                 }
             }
         });
 
-        if (!storePeerExists) {
-            this.props.createPeer(
-                offer.clientID,
-                (this.props.videoReady && this.props.serverStatus) ? [] : offer.signalData,
-            );
-        }
-
+        // Deal with peer creation
         if (!this.peers[offer.clientID] && this.props.videoReady && this.props.serverStatus) {
-            this.peers[offer.clientID] = this.createPeer(offer.clientID, storePeer.clientSignalData.concat(offer.signalData));
-            this.props.clearSignalData(offer.clientID);
+            this.peers[offer.clientID] = this.createPeer(offer.clientID, (storePeer) ? storePeer.clientSignalData.concat(offer.signalData) : offer.signalData);
+            this.props.clearSignalDataDispatch(offer.clientID);
         }
 
         else if (this.peers[offer.clientID] && this.props.videoReady && this.props.serverStatus) {
-            this.peers[offer.clientID].signal(offer.signalData[0]);
+            this.peers[offer.clientID].signal(offer.signalData);
+        }
+
+        // Create store peer if necessary
+        if (!storePeer) {
+            if (this.props.serverStatus && this.props.videoReady) {
+                this.props.createPeerDispatch(offer.clientID);
+            }
+            else {
+                this.props.createPeerDispatch(offer.clientID, offer.signalData);
+            }
         }
     }
 
@@ -92,6 +94,14 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
         peer.on("signal", (signalData: SimplePeer.SignalData) => {
             this.tryToRespond(clientID, signalData);
+        });
+
+        peer.on("connect", () => {
+            this.props.setPeerSignalStatusDispatch(clientID, true);
+        });
+
+        peer.on("close", () => {
+            this.props.setPeerSignalStatusDispatch(clientID, false);
         });
 
         for (const data of offerData) {
@@ -107,7 +117,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         }
         else {
             // Put into the store
-            this.props.addHostSignalData(clientID, signalData);
+            this.props.addHostSignalDataDispatch(clientID, signalData);
         }
     }
 
@@ -133,23 +143,28 @@ export class VideoHostPage extends VideoPage<IHostProps> {
                     for (const data of storePeer.clientSignalData) {
                         this.peers[storePeer.clientID].signal(data); // TODO investigate this
                     }
-                    nextProps.clearSignalData(storePeer.clientID);
+                    nextProps.clearSignalDataDispatch(storePeer.clientID);
                 }
             }
             else if (storePeer.clientSignalData.length > 0 && this.props.videoReady) {
                 this.peers[storePeer.clientID] = this.createPeer(storePeer.clientID, storePeer.clientSignalData);
-                nextProps.clearSignalData(storePeer.clientID);
+                nextProps.clearSignalDataDispatch(storePeer.clientID);
             }
         });
 
         // See if host signal data can be used (waiting on server)
-        if (this.props.serverStatus) {
+        if (nextProps.serverStatus) {
             nextProps.hostPeers.forEach((storePeer) => {
                 for (const data of storePeer.hostSignalData) {
                     this.respond(storePeer.clientID, data);
                 }
             });
         }
+    }
+
+    protected shouldComponentUpdate(nextProps: IHostProps, nextState) {
+        // Do not re-render if the only change was peer stuff
+        return shouldUpdate(this.props, nextProps, "hostPeers", "peerStatus", "serverStatus");
     }
 
     protected componentDidMount() {
@@ -161,7 +176,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             if (this.initialPlay) {
                 video.pause();
                 this.stream = (video as any).captureStream();
-                this.props.setVideoReady(true);
+                this.props.setVideoReadyDispatch(true);
                 this.initialPlay = false;
             }
         };
@@ -181,12 +196,13 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     public static mapDispatchToProps = (dispatch): IHostDispatchProps => {
         return {
-            watchServerStatus: (socket) => dispatch(watchServerStatusAction(socket)),
-            setVideoReady: (videoReady) => dispatch(setVideoReadyAction(videoReady)),
-            createPeer: (id, ...signalData) => dispatch(createPeerAction(id, signalData)),
-            addClientSignalData: (clientID, signalData) => dispatch(addClientSignalDataAction(clientID, signalData)),
-            addHostSignalData: (clientID, signalData) => dispatch(addHostSignalDataAction(clientID, signalData)),
-            clearSignalData: (id) => dispatch(clearSignalDataAction(id)),
+            watchServerStatusDispatch: (socket) => dispatch(watchServerStatusAction(socket)),
+            setVideoReadyDispatch: (videoReady) => dispatch(setVideoReadyAction(videoReady)),
+            createPeerDispatch: (id, ...signalData) => dispatch(createPeerAction(id, ...signalData)),
+            addClientSignalDataDispatch: (clientID, signalData) => dispatch(addClientSignalDataAction(clientID, signalData)),
+            addHostSignalDataDispatch: (clientID, signalData) => dispatch(addHostSignalDataAction(clientID, signalData)),
+            clearSignalDataDispatch: (id) => dispatch(clearSignalDataAction(id)),
+            setPeerSignalStatusDispatch: (clientID, status) => dispatch(setPeerSignalStatusAction(clientID, status)),
         };
     }
 }
