@@ -1,27 +1,43 @@
 @import "main.less";
 
 body {
+    .startPage { 
+        .logo {
+            height: 70%;
+            width: 100%;
+            display: flex;
+            position: fixed;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 100px;
+            text-align: center;
+        }
+    }
+    .options {
+        #indie-flower;
+        font-size: 12px;
+        width: 100%;
+        height: 100%;
+            display: flex;
+            position: fixed;
+            align-items: center;
+            justify-content: center;
+                    margin-top: 50px;
+    }
     .join {
         text-align: center;
-
-        input {
-            #inconsolata;
-
-            text-align: center;
-            background-color: @background-color;
-            font-size:18px;
-            padding:10px 10px 10px 5px;
-            width:200px;
-            border:none;
-            border-bottom:1px solid @accent-color;
-        }
-
-        input:focus { 
-            outline:none;
-        }
+        float: left;
+        padding: 0px 100px;
 
     }
 
+    .start {
+
+        text-align: center;
+        float: right;
+        padding: 0px 100px;
+    }
     .break {
         text-align: center;
         margin-top: 30px;

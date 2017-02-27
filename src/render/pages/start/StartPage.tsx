@@ -86,33 +86,25 @@ class StartPage extends React.Component<IStartProps, {}> {
 
     public render(): JSX.Element {
         return (
-            <div className="session">
-                <div className="join">
-                    <h1>Join a Session</h1>
-                    <input
-                        type="text"
-                        name="id"
-                        placeholder="Host ID"
-                        onKeyPress={this.onIdFieldKeyPress}
-                        ref={this.setIdInput}
-                    />
+            <div className="startPage">
+                <div className="logo">
+                    ease
+                </div>
+                <div className="options">
+                <div className="start">
                     <button
                         type="button"
-                        className="pure-button pure-button-primary join-button"
                         onClick={this.onIdButtonClick}
-                    >Join
+                    >START a SESSION
                     </button>
                 </div>
-                <div className="break pure-g">
-                    <div className="pure-u-10-24 break-item line left" />
-                    <div className="pure-u-1-6 break-item center">
-                        <span className="or">Or...</span>
-                    </div>
-                    <div className="pure-u-10-24 break-item line right" />
+                <div className="join">
+                    <button
+                        type="button"
+                        onClick={this.onIdButtonClick}
+                    >JOIN a SESSION
+                    </button>
                 </div>
-                <div className="host">
-                    <h1>Start a Session</h1>
-                    <UploadBox onClick={this.onUploadClick} />
                 </div>
             </div>
         );

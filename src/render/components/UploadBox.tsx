@@ -8,7 +8,11 @@ export const UploadBox = (props: IUploadBoxProps) => {
 
     return (
         <div className="upload-box">
-            <span className="upload-here"><button className="pure-button pure-button-primary upload-click" onClick={props.onClick}>Click Here</button> or drag to upload</span>
+            <span className="upload-here">
+            	Drop file to upload or click below! <br />
+            	<button onClick={props.onClick}>
+            		Upload
+            		</button></span>
         </div>
     );
 };
