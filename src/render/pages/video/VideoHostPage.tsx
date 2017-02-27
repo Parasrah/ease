@@ -93,7 +93,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             initiator: false,
             stream: this.stream,
             trickle: true,
-            constraints: {
+            answerConstraints: {
                 offerToReceiveVideo: false,
                 offerToReceiveAudio: false,
             },

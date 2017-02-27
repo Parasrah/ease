@@ -40,7 +40,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         this.peer = new SimplePeer({
             initiator: true,
             trickle: true,
-            constraints: {
+            offerConstraints: {
                 offerToReceiveVideo: true,
                 offerToReceiveAudio: true,
             },
