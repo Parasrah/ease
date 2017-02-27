@@ -40,7 +40,13 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         this.peer = new SimplePeer({
             initiator: true,
             trickle: true,
+            constraints: {
+                offerToReceiveVideo: true,
+                offerToReceiveAudio: true,
+            },
         });
+
+        (this.peer as any)._debug = console.log;
 
         this.props.watchPeerStatusDispatch(this.peer);
 
@@ -74,7 +80,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     private stream = (stream: MediaStream) => {
         const video = this.getVideo();
-        video.src = window.URL.createObjectURL(stream);
+        video.srcObject = stream;
         video.play();
     }
 

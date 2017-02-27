@@ -93,7 +93,13 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             initiator: false,
             stream: this.stream,
             trickle: true,
+            constraints: {
+                offerToReceiveVideo: false,
+                offerToReceiveAudio: false,
+            },
         });
+
+        (peer as any)._debug = console.log;
 
         peer.on("signal", (signalData: SimplePeer.SignalData) => {
             this.tryToRespond(clientID, signalData);
