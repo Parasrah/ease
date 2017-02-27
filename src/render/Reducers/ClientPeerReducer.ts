@@ -1,6 +1,6 @@
 import { IClientPeerState } from "../redux/State";
 import { Action, ActionType } from "../Actions/Action";
-import { ClientPeerAction, IClearOfferDataAction, ISetHostIDAction, IStoreOfferAction } from "../Actions/ClientPeerActions";
+import { ClientPeerAction, IClearOfferDataAction, ISetHostIDAction, IStoreOfferAction, ISetPeerStatusAction } from "../Actions/ClientPeerActions";
 
 const initialClientPeerState: IClientPeerState = {
     peerStatus: false,
@@ -25,6 +25,11 @@ const clientPeerState = (state: IClientPeerState = initialClientPeerState, actio
         case types.storeOfferDataAction:
             return Object.assign({}, state, {
                 offerData: state.offerData.concat((action as IStoreOfferAction).signalData),
+            });
+
+        case types.setPeerStatusAction:
+            return Object.assign({}, state, {
+                peerStatus: (action as ISetPeerStatusAction).peerStatus,
             });
 
         default:

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import IState from "../../redux/State";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
-import { storeOfferDataAction, clearOfferDataAction } from "../../Actions/ClientPeerActions";
+import { storeOfferDataAction, clearOfferDataAction, watchPeerStatusAction } from "../../Actions/ClientPeerActions";
 import { setVideoReadyAction } from "../../Actions/VideoActions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage } from "./VideoPage";
 
@@ -14,11 +14,13 @@ interface IClientInputProps extends IVideoInputProps {
 interface IClientStoreProps extends IVideoStoreProps {
     readonly hostID: string;
     readonly offerData: SimplePeer.SignalData[];
+    readonly peerStatus: boolean;
 }
 
 interface IClientDispatchProps extends IVideoDispatchProps {
     readonly storeOfferDataDispatch: storeOfferDataAction;
     readonly clearOfferDataDispatch: clearOfferDataAction;
+    readonly watchPeerStatusDispatch: watchPeerStatusAction;
 }
 
 type IClientProps = IClientInputProps & IClientStoreProps & IClientDispatchProps;
@@ -40,9 +42,16 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             trickle: true,
         });
 
+        this.props.watchPeerStatusDispatch(this.peer);
+
         this.peer.on("signal", this.dealWithSignal);
 
         this.socket.on("response", this.dealWithResponse);
+
+        this.peer.on("stream", (stream) => {
+            console.log("Streaming");
+            this.stream(stream);
+        });
     }
 
     private dealWithSignal = (signalData: SimplePeer.SignalData) => {
@@ -65,7 +74,8 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     private stream = (stream: MediaStream) => {
         const video = this.getVideo();
-        video.srcObject = stream;
+        video.src = window.URL.createObjectURL(stream);
+        video.play();
     }
 
     private formOffer = (data: SimplePeer.SignalData): IOfferMessage => {
@@ -86,8 +96,8 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         if (nextProps.serverStatus && nextProps.offerData.length > 0) {
             for (const signalData of nextProps.offerData) {
                 this.sendOffer(this.formOffer(signalData));
-                this.props.clearOfferDataDispatch();
             }
+            this.props.clearOfferDataDispatch();
         }
     }
 
@@ -101,6 +111,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             videoReady: state.videoState.videoReady,
             offerData: state.clientPeerState.offerData,
             serverStatus: state.commonPeerState.serverStatus,
+            peerStatus: state.clientPeerState.peerStatus,
         });
     }
 
@@ -110,6 +121,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             setVideoReadyDispatch: (videoReady) => dispatch(setVideoReadyAction(videoReady)),
             storeOfferDataDispatch: (signalData) => dispatch(storeOfferDataAction(signalData)),
             clearOfferDataDispatch: () => dispatch(clearOfferDataAction()),
+            watchPeerStatusDispatch: (peer) => dispatch(watchPeerStatusAction(peer)),
         };
     }
 }

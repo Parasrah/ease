@@ -33,6 +33,7 @@ export const ActionType = {
         storeOfferDataAction: "STORE_OFFER_DATA",
         clearOfferDataAction: "CLEAR_OFFER_DATA_ACTION",
         setHostIDAction: "SET_HOST_ID",
+        setPeerStatusAction: "SET_PEER_STATUS_ACTION",
     },
     settingsAction: {
         setSignalHostAction: "SET_SIGNAL_HOST",

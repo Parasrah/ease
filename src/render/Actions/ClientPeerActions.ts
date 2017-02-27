@@ -1,11 +1,11 @@
 import { Action, ActionType, ICheck } from "./Action";
-import { SignalData } from "simple-peer";
+import { SignalData, Instance } from "simple-peer";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
 /*************************************************************/
 
-export type ClientPeerAction = ISetHostIDAction | IStoreOfferAction | IClearOfferDataAction;
+export type ClientPeerAction = ISetHostIDAction | IStoreOfferAction | IClearOfferDataAction | ISetPeerStatusAction;
 
 export interface ISetHostIDAction extends ICheck {
     readonly hostID: string;
@@ -17,6 +17,10 @@ export interface IStoreOfferAction {
 
 export interface IClearOfferDataAction extends ICheck {
 
+}
+
+export interface ISetPeerStatusAction extends ICheck {
+    peerStatus: boolean;
 }
 
 /*************************************************************/
@@ -48,3 +52,26 @@ export const clearOfferDataAction: clearOfferDataAction = () => {
 };
 
 export type clearOfferDataAction = () => Action<IClearOfferDataAction>;
+
+export const setPeerStatusAction: setPeerStatusAction = (peerStatus) => {
+    return {
+        type: ActionType.clientPeerAction.setPeerStatusAction,
+        peerStatus,
+    };
+};
+
+export type setPeerStatusAction = (peerStatus: boolean) => Action<ISetPeerStatusAction>;
+
+export const watchPeerStatusAction = (peer: Instance) => {
+    return (dispatch) => {
+        peer.on("connect", () => {
+            dispatch(setPeerStatusAction(true));
+        });
+
+        peer.on("close", () => {
+            dispatch(setPeerStatusAction(false));
+        });
+    };
+};
+
+export type watchPeerStatusAction = (peer: Instance) => void;
