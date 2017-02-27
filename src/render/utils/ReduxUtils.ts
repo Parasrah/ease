@@ -1,8 +1,8 @@
-import { IPeerState } from "./State";
-import { IAddSignalDataAction } from "./Actions";
+import { IHostPeerState } from "../redux/State";
+import { IAddSignalDataAction } from "../Actions/HostPeerActions";
 import { DataType } from "./Definitions";
 
-export const addSignalData = (state: IPeerState, action: IAddSignalDataAction, type: DataType): IPeerState => {
+export const addSignalData = (state: IHostPeerState, action: IAddSignalDataAction, type: DataType): IHostPeerState => {
     let combinedSignalData = null;
 
     return Object.assign({}, state, {

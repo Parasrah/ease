@@ -2,7 +2,9 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { watchServerStatusAction, setVideoReadyAction, storeOfferDataAction, setPeerSignalStatusAction, clearOfferDataAction } from "../../redux/Actions";
+import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
+import { storeOfferDataAction, clearOfferDataAction } from "../../Actions/ClientPeerActions";
+import { setVideoReadyAction } from "../../Actions/VideoActions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage } from "./VideoPage";
 
 interface IClientInputProps extends IVideoInputProps {
@@ -93,12 +95,12 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     public static mapStateToProps = (state: IState, ownProps: IClientInputProps): IClientStoreProps & IClientInputProps => {
         return Object.assign({}, ownProps, {
-            id: state.peerState.id,
-            hostID: state.peerState.hostID,
+            id: state.commonPeerState.id,
+            hostID: state.clientPeerState.hostID,
             signalHost: state.settingsState.signalHost,
             videoReady: state.videoState.videoReady,
-            offerData: state.peerState.offerData,
-            serverStatus: state.peerState.serverStatus,
+            offerData: state.clientPeerState.offerData,
+            serverStatus: state.commonPeerState.serverStatus,
         });
     }
 
@@ -107,7 +109,6 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             watchServerStatusDispatch: (socket) => dispatch(watchServerStatusAction(socket)),
             setVideoReadyDispatch: (videoReady) => dispatch(setVideoReadyAction(videoReady)),
             storeOfferDataDispatch: (signalData) => dispatch(storeOfferDataAction(signalData)),
-            setPeerSignalStatusDispatch: (clientID, status) => dispatch(setPeerSignalStatusAction(clientID, status)),
             clearOfferDataDispatch: () => dispatch(clearOfferDataAction()),
         };
     }

@@ -2,8 +2,10 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import { watchServerStatusAction, setVideoReadyAction, createPeerAction, addClientSignalDataAction, clearSignalDataAction, addHostSignalDataAction, setPeerSignalStatusAction } from "../../redux/Actions";
-import { IPeer } from "../../redux/Definitions";
+import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
+import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, setPeerStatusAction, createPeerAction } from "../../Actions/HostPeerActions";
+import { setVideoReadyAction } from "../../Actions/VideoActions";
+import { IPeer } from "../../utils/Definitions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
 import { shouldUpdate } from "../../utils/ComponentUtils";
 
@@ -24,6 +26,7 @@ interface IHostDispatchProps extends IVideoDispatchProps {
     readonly addClientSignalDataDispatch: addClientSignalDataAction;
     readonly addHostSignalDataDispatch: addHostSignalDataAction;
     readonly clearSignalDataDispatch: clearSignalDataAction;
+    readonly setPeerStatusDispatch: setPeerStatusAction;
 }
 
 type IHostProps = IHostInputProps & IHostStoreProps & IHostDispatchProps;
@@ -97,11 +100,11 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         });
 
         peer.on("connect", () => {
-            this.props.setPeerSignalStatusDispatch(clientID, true);
+            this.props.setPeerStatusDispatch(clientID, true);
         });
 
         peer.on("close", () => {
-            this.props.setPeerSignalStatusDispatch(clientID, false);
+            this.props.setPeerStatusDispatch(clientID, false);
         });
 
         for (const data of offerData) {
@@ -186,11 +189,11 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     public static mapStateToProps = (state: IState, ownProps: IHostInputProps): IHostStoreProps & IHostInputProps => {
         return Object.assign({}, ownProps, {
-            id: state.peerState.id,
+            id: state.commonPeerState.id,
             signalHost: state.settingsState.signalHost,
-            serverStatus: state.peerState.serverStatus,
+            serverStatus: state.commonPeerState.serverStatus,
             videoReady: state.videoState.videoReady,
-            hostPeers: state.peerState.hostPeers,
+            hostPeers: state.hostPeerState.hostPeers,
         });
     }
 
@@ -202,7 +205,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             addClientSignalDataDispatch: (clientID, signalData) => dispatch(addClientSignalDataAction(clientID, signalData)),
             addHostSignalDataDispatch: (clientID, signalData) => dispatch(addHostSignalDataAction(clientID, signalData)),
             clearSignalDataDispatch: (id) => dispatch(clearSignalDataAction(id)),
-            setPeerSignalStatusDispatch: (clientID, status) => dispatch(setPeerSignalStatusAction(clientID, status)),
+            setPeerStatusDispatch: (clientID, status) => dispatch(setPeerStatusAction(clientID, status)),
         };
     }
 }

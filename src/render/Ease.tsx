@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 
 import * as Constants from "../constants/Constants";
 import StartPageContainer from "./pages/start/StartPage";
-import { changePageAction, setIDAction } from "./redux/Actions";
-import { Page } from "./redux/Definitions";
+import { Page } from "./utils/Definitions";
 import VideoClientPageContainer from "./pages/video/VideoClientPage";
 import VideoHostPageContainer from "./pages/video/VideoHostPage";
 import { VideoPage } from "./pages/video/VideoPage";
 import { IState, IAppState } from "./redux/State";
+import { changePageAction } from "./Actions/AppActions";
+import { setIDAction } from "./Actions/CommonPeerActions";
 
 interface IEaseStoreProps {
     id: string;
@@ -120,7 +121,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     public static mapStateToProps = (state: IState): IEaseStoreProps => {
         return Object.assign({}, {
-            id: state.peerState.id,
+            id: state.commonPeerState.id,
             page: state.appState.page,
         });
     }

@@ -3,13 +3,13 @@ import { createStore, applyMiddleware } from "redux";
 import * as createLogger from "redux-logger";
 import IState from "./State";
 
-import appReducer from "./Reducers";
+import easeReducer from "../Reducers/Reducer";
 
 const loggerMiddleware = createLogger();
 
 const configureStore = (preloadedState?: IState) => {
     return createStore(
-        appReducer,
+        easeReducer,
         preloadedState,
         applyMiddleware(
             thunkMiddleware,

@@ -4,8 +4,10 @@ import { ipcRenderer } from "electron";
 import { connect } from "react-redux";
 
 import { IState } from "../../redux/State";
-import { changePageAction, setHostIDAction } from "../../redux/Actions";
-import { Page } from "../../redux/Definitions";
+import { changePageAction } from "../../Actions/AppActions";
+import { setIDAction } from "../../Actions/CommonPeerActions";
+import { setHostIDAction } from "../../Actions/ClientPeerActions";
+import { Page } from "../../utils/Definitions";
 import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../constants/Channels";
 import { UploadCommand } from "../../../constants/Commands";
 import { UploadBox } from "../../components/UploadBox";
@@ -120,7 +122,7 @@ class StartPage extends React.Component<IStartProps, {}> {
 
     public static mapStateToProps = (state: IState, ownProps: IStartInputProps): IStartStoreProps & IStartInputProps => {
         return Object.assign({}, ownProps, {
-            id: state.peerState.id,
+            id: state.commonPeerState.id,
             page: state.appState.page,
         });
     }

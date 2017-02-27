@@ -20,7 +20,7 @@ export enum WebrtcStatus {
 }
 
 export interface IPeer {
-    signalStatus: boolean;
+    peerStatus: boolean;
     clientID: string;
     clientSignalData: SignalData[];
     hostSignalData: SignalData[];

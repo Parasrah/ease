@@ -1,12 +1,14 @@
 import { SignalData } from "simple-peer";
 
-import * as Def from "./Definitions";
+import * as Def from "../utils/Definitions";
 
 export interface IState {
     readonly appState: IAppState;
     readonly windowState: IWindowState;
     readonly videoState: IVideoState;
-    readonly peerState: IPeerState;
+    readonly commonPeerState: ICommonPeerState;
+    readonly clientPeerState: IClientPeerState;
+    readonly hostPeerState: IHostPeerState;
     readonly settingsState: ISettingsState;
 }
 
@@ -30,12 +32,19 @@ export interface IVideoState {
     volume: null;
 }
 
-export interface IPeerState {
+export interface ICommonPeerState {
     id: string;
-    hostID: string;
     serverStatus: boolean;
-    hostPeers: Def.IPeer[]; // Host only
+}
+
+export interface IHostPeerState {
+    hostPeers: Def.IPeer[];
+}
+
+export interface IClientPeerState {
+    hostID: string;
     offerData: SignalData[];
+    peerStatus: boolean;
 }
 
 export interface ISettingsState {
