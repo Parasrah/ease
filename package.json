@@ -13,7 +13,7 @@
     "watch": "concurrently --kill-others \"npm run watch:wp\" \"npm run watch:ts\" \"npm run watch:less\"",
     "watch:wp": "webpack -w",
     "watch:ts": "tsc -w",
-    "watch:less": "less-watch-compiler src/style src/style",
+    "watch:less": "less-watch-compiler src/render/style src/render/style",
     "test": "npm run test:main && npm run test:render",
     "test:main": "electron-mocha --recursive dist/test/main",
     "test:render": "electron-mocha --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
