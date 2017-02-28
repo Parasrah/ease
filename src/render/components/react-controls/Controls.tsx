@@ -18,7 +18,6 @@ export interface IControlsState {
 }
 
 export class Controls extends React.Component<IControlsProps, IControlsState> {
-    private playbackSlider: HTMLInputElement;
 
     constructor(props) {
         super(props);
@@ -40,12 +39,13 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
 
     private onPlaybackChange: React.EventHandler<React.FormEvent<Slider>> = (event) => {
         this.setState({
-            time: this.playbackSlider.valueAsNumber,
+            time: (event.target as any).valueAsNumber,
         });
     }
 
-    private setPlaybackSlider = (element) => {
-        this.playbackSlider = element;
+    protected shouldComponentUpdate(nextProps: IControlsProps, nextState: IControlsState) {
+        // TODO only update if changes other than time
+        return true;
     }
 
     public render() {
@@ -60,7 +60,6 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                     max={100}
                     value={this.state.time}
                     onChange={this.onPlaybackChange}
-                    ref={this.setPlaybackSlider}
                 />
                 <Cell col={1}>
                     <IconButton name={(this.state.play ? "play_arrow" : "pause")} onClick={this.onPlayPauseClick} />
@@ -77,12 +76,8 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                 <Cell col={1}>
                     <IconButton name="fullscreen" />
                 </Cell>
-                <Cell col={1}>
-
-                </Cell>
-                <Cell col={1}>
-
-                </Cell>
+                <Cell col={1}/>
+                <Cell col={1}/>
             </Grid>
         );
     }
