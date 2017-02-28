@@ -1,7 +1,5 @@
 import * as React from "react";
-import { IconButton, Slider, Grid, Cell, Icon } from "react-mdl";
-
-import ControlEvent from "./ControlEvent";
+import { IconButton, Slider } from "react-mdl";
 
 export interface IControlsProps {
     show?: boolean;

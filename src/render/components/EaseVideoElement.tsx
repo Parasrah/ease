@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Controls } from "./react-controls/Controls";
+import { Controls } from "./Controls";
 
 interface IVideoElementProps {
     videoSource: string;
