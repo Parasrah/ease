@@ -1,4 +1,19 @@
-.react-controls-root {
-  display: true;
-  z-index: 999;
+.react-video-wrapper {
+  position: relative;
+}
+.react-video-wrapper .react-controls-root {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  overflow: none;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.react-video-wrapper .react-controls-root button {
+  color: white;
+}
+.react-video-wrapper .react-controls-root > .mdl-slider__container {
+  position: absolute;
+  top: 5;
+  width: 100%;
 }

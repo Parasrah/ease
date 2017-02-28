@@ -4,7 +4,7 @@ import { AppAction, IChangePageAction } from "../Actions/AppActions";
 import { Page } from "../utils/Definitions";
 
 const initialAppState: IAppState = {
-    page: Page.START,
+    page: Page.VIDEO_HOST,
     error: [],
 };
 
