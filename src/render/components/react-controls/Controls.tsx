@@ -4,16 +4,22 @@ import { IconButton, Slider, Grid, Cell, Icon } from "react-mdl";
 import ControlEvent from "./ControlEvent";
 
 export interface IControlsProps {
-    show: boolean;
+    show?: boolean;
+    min?: number;
+    max?: number;
 
-    onPlayButton?: any;
-    onPauseButton?: any;
-    onSeek?: any;
-    onVolume?: any;
+    onPlayPauseButton?: Function;
+    onPauseButton?: Function;
+    onVolumeButton?: Function;
+    onCastButton?: Function;
+    onFullScreenButton?: Function;
+    onSeek?: (time: number) => void;
+    onVolumeSlider?: (volume: number) => void;
 }
 
 export interface IControlsState {
     play: boolean;
+    mute: boolean;
     time: number;
 }
 
@@ -24,6 +30,7 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
         this.state = {
             play: true,
             time: 0,
+            mute: false,
         };
     }
 
@@ -31,54 +38,73 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
         this.setState({
             play: !this.state.play,
         });
+        if (this.props.onPlayPauseButton) {
+            this.props.onPlayPauseButton();
+        }
     }
 
     private onVolumeChange: React.EventHandler<React.FormEvent<Slider>> = (event) => {
-        const test = "";
+        const volume = (event.target as any).valueAsNumber;
+        if (this.props.onVolumeSlider) {
+            this.props.onVolumeSlider(volume);
+        }
     }
 
     private onPlaybackChange: React.EventHandler<React.FormEvent<Slider>> = (event) => {
+        const currTime = (event.target as any).valueAsNumber;
         this.setState({
-            time: (event.target as any).valueAsNumber,
+            time: currTime,
         });
+        if (this.props.onSeek) {
+            this.props.onSeek(currTime);
+        }
     }
 
-    protected shouldComponentUpdate(nextProps: IControlsProps, nextState: IControlsState) {
-        // TODO only update if changes other than time
-        return true;
+    private onVolumeButtonClick = () => {
+        this.setState({
+            mute: !this.state.mute,
+        });
+        if (this.props.onVolumeButton) {
+            this.props.onVolumeButton();
+        }
+    }
+
+    private onCastButtonClick = () => {
+        if (this.props.onCastButton) {
+            this.props.onCastButton();
+        }
+    }
+
+    private onFullscreenButtonClick = () => {
+        if (this.props.onFullScreenButton) {
+            this.props.onFullScreenButton();
+        }
     }
 
     public render() {
         return (
-            <Grid
-                className={"react-controls react-controls-root mdl-grid " + ((this.props.show) ? "react-controls-show" : "react-controls-hide")}
-                noSpacing={true}
+            <div
+                className={"react-controls react-controls-root " + ((this.props.show) ? "react-controls-show" : "react-controls-hide")}
             >
                 <Slider
                     className="playback-slider"
-                    min={0}
-                    max={100}
+                    min={(this.props.min) ? this.props.min : 0}
+                    max={(this.props.max) ? this.props.max : 100}
                     value={this.state.time}
                     onChange={this.onPlaybackChange}
                 />
-                <Cell col={1}>
-                    <IconButton name={(this.state.play ? "play_arrow" : "pause")} onClick={this.onPlayPauseClick} />
-                </Cell>
-                <Cell col={1}>
-                    <IconButton className="volume-button" name="volume_up" />
-                </Cell>
-                <Cell col={2}>
-                    <Slider min={0} max={100} onChange={this.onVolumeChange} />
-                </Cell>
-                <Cell col={1}>
-                    <IconButton name="cast" />
-                </Cell>
-                <Cell col={1}>
-                    <IconButton name="fullscreen" />
-                </Cell>
-                <Cell col={1}/>
-                <Cell col={1}/>
-            </Grid>
+                <div className="control-bar">
+                    <div className="bar-left">
+                        <IconButton className="play-button" name={(this.state.play ? "play_arrow" : "pause")} onClick={this.onPlayPauseClick} />
+                        <IconButton className="volume-button" name={(this.state.mute) ? "volume_mute" : "volume_up"} onClick={this.onVolumeButtonClick} />
+                        <Slider className="volume-slider" min={0} max={100} onChange={this.onVolumeChange} />
+                    </div>
+                    <div className="bar-right">
+                        <IconButton className="cast-button" name="cast" onClick={this.onCastButtonClick} />
+                        <IconButton className="fullscreen-button" name="fullscreen" onClick={this.onFullscreenButtonClick} />
+                    </div>
+                </div>
+            </div>
         );
     }
 }

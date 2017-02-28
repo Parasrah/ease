@@ -20,7 +20,7 @@ export const EaseVideoElement = (props: IVideoElementProps): JSX.Element => {
                 height="100%"
                 autoPlay
             />
-            <Controls show={true} />
+            <Controls show={true} max={300} />
         </div>
     );
 };

@@ -14,12 +14,39 @@
   position: relative;
   top: 3px;
 }
-.react-video-wrapper .react-controls-root .mdl-cell .mdl-slider__container {
-  top: 10px;
+.react-video-wrapper .react-controls-root .control-bar .bar-left {
+  height: 100%;
+  position: absolute;
+  left: 0px;
+  width: 70%;
+  overflow: hidden;
+}
+.react-video-wrapper .react-controls-root .control-bar .bar-right {
+  height: 100%;
+  position: absolute;
+  right: 0px;
+}
+.react-video-wrapper .react-controls-root .control-bar .mdl-slider__container {
+  display: inline-flex;
+  top: 7px;
+}
+.react-video-wrapper .react-controls-root .control-bar button {
+  display: inline-block;
+}
+.react-video-wrapper .react-controls-root .control-bar .volume-button {
+  position: relative;
+  left: 12px;
+}
+.react-video-wrapper .react-controls-root .control-bar .play-button {
+  left: 3px;
+  margin-left: 1%;
+}
+.react-video-wrapper .react-controls-root .control-bar .fullscreen-button {
+  margin: 0 10px;
 }
 .react-video-wrapper .react-controls-root > .mdl-slider__container {
   position: absolute;
   top: -8px;
-  width: calc(100% + 40px);
+  width: calc(100% + 50px);
   left: -27px;
 }
