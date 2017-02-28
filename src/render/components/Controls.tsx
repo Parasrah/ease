@@ -7,7 +7,6 @@ export interface IControlsProps {
     max?: number;
 
     onPlayPauseButton?: Function;
-    onPauseButton?: Function;
     onVolumeButton?: Function;
     onCastButton?: Function;
     onFullScreenButton?: Function;
