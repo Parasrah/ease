@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Controls } from "./react-controls/Controls";
 
 interface IVideoElementProps {
     videoSource: string;
@@ -16,8 +17,9 @@ export const EaseVideoElement = (props: IVideoElementProps): JSX.Element => {
             type="video/mp4"
             width="100%"
             height="100%"
-            controls
             autoPlay
-        />
+        >
+            <Controls show={true} />
+        </video>
     );
 };
