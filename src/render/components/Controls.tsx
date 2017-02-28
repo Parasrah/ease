@@ -32,6 +32,8 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
         };
     }
 
+    /********************* Callbacks *************************/
+
     private onPlayPauseClick: React.EventHandler<React.MouseEvent<HTMLElement>> = (event) => {
         this.setState({
             play: !this.state.play,
@@ -78,6 +80,8 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
             this.props.onFullScreenButton();
         }
     }
+
+    /********************* React Lifecycle ***********************/
 
     public render() {
         return (
