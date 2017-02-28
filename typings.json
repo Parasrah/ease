@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "react-addons-test-utils": "registry:dt/react-addons-test-utils#0.14.0+20170123203653",
+    "react-mdl": "registry:dt/react-mdl#1.7.0+20170123203653",
     "react-redux": "registry:dt/react-redux#4.4.0+20170123203653",
     "redux-logger": "registry:dt/redux-logger#2.6.0+20170125003538",
     "simple-peer": "registry:dt/simple-peer#6.1.0+20170117210358"
