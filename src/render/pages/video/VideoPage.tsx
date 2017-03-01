@@ -4,8 +4,8 @@ import * as SocketIO from "socket.io-client";
 
 import * as Exception from "../../../common/Exceptions";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
-import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
-import { EaseVideoElement } from "../../components/EaseVideoElement";
+import { setVideoReadyAction, setPlayStatusAction, setFullscreenAction } from "../../Actions/VideoActions";
+import { VideoElement } from "../../components/VideoElement";
 
 export interface IOfferMessage {
     hostID: string;
@@ -28,6 +28,7 @@ export interface IVideoStoreProps {
     readonly signalHost: string;
     readonly videoReady: boolean;
     readonly serverStatus: boolean;
+    readonly fullscreen: boolean;
 }
 
 export interface IVideoDispatchProps {
@@ -45,8 +46,8 @@ export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchPr
 export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, IVideoState> {
     protected socket: SocketIOClient.Socket;
     protected max: number;
-
-    private videoElement: HTMLVideoElement;
+    protected video: HTMLVideoElement;
+    protected videoWrapper: HTMLDivElement;
 
     constructor(props) {
         super(props);
@@ -61,18 +62,26 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     /************************ Methods ************************/
 
-    public getVideo = (): HTMLVideoElement => {
-        return this.videoElement;
-    }
-
     protected setTime = (time: number) => {
         this.setState({
             time,
         });
     }
 
+    private onFullscreenButton = () => {
+        if (document.webkitIsFullScreen) {
+            document.webkitExitFullscreen();
+        } else {
+            this.videoWrapper.webkitRequestFullscreen();
+        }
+    }
+
     private setVideo = (video: HTMLVideoElement) => {
-        this.videoElement = video;
+        this.video = video;
+    }
+
+    private setVideoWrapper = (videoWrapper: HTMLDivElement) => {
+        this.videoWrapper = videoWrapper;
     }
 
     /******************** Abstract Methods *******************/
@@ -80,11 +89,21 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     protected abstract onPlayPauseButton: () => void;
     protected abstract onVolumeButton: () => void;
     protected abstract onCastButton: () => void;
-    protected abstract onFullscreenButton: () => void;
     protected abstract onSeek: (time: number) => void;
     protected abstract onVolumeChange: (volume: number) => void;
 
     /********************* React Lifecycle *******************/
+
+    protected componentWillReceiveProps(nextProps: IVideoProps) {
+        if (this.props.fullscreen && !nextProps.fullscreen) {
+            document.webkitExitFullscreen();
+        }
+        else if (!this.props.fullscreen && nextProps.fullscreen) {
+            if (this.videoWrapper) {
+                this.videoWrapper.webkitRequestFullscreen();
+            }
+        }
+    }
 
     protected componentDidMount() {
         console.log("video mounted");
@@ -94,10 +113,11 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         return (
             <div className="video">
                 <b> ID: </b> {this.props.id}
-                <EaseVideoElement
+                <VideoElement
                     poster={this.props.poster}
                     videoSource={this.props.videoSource}
                     setVideo={this.setVideo}
+                    setVideoWrapper={this.setVideoWrapper}
                     onPlayPauseButton={this.onPlayPauseButton}
                     onVolumeButton={this.onVolumeButton}
                     onCastButton={this.onCastButton}

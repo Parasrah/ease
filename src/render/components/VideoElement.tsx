@@ -6,7 +6,9 @@ interface IVideoElementProps {
     poster: string;
     max: number;
     time: number;
+
     setVideo: (video: HTMLVideoElement) => void;
+    setVideoWrapper: (videoWrapper: HTMLDivElement) => void;
 
     onPlayPauseButton: () => void;
     onVolumeButton: () => void;
@@ -16,10 +18,13 @@ interface IVideoElementProps {
     onVolumeChange: (volume: number) => void;
 }
 
-export const EaseVideoElement = (props: IVideoElementProps): JSX.Element => {
+export const VideoElement = (props: IVideoElementProps): JSX.Element => {
 
     return (
-        <div className="react-video-wrapper">
+        <div
+            className="react-video-wrapper"
+            ref={props.setVideoWrapper}
+        >
             <video
                 src={props.videoSource}
                 ref={props.setVideo}

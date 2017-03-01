@@ -140,7 +140,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     private setupVideo = (video: HTMLVideoElement) => {
         video.ontimeupdate = () => {
-            this.setTime(this.getVideo().currentTime);
+            this.setTime(this.video.currentTime);
             console.log("Time: " + this.state.time);
         };
 
@@ -163,8 +163,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     /********************* Video Listeners ***********************/
 
     protected onPlayPauseButton = () => {
-        const video = this.getVideo();
-        video.paused ? video.play() : video.pause();
+        this.video.paused ? this.video.play() : this.video.pause();
     }
 
     protected onVolumeButton = () => {
@@ -175,13 +174,8 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         // TODO
     }
 
-    protected onFullscreenButton = () => {
-        // TODO
-    }
-
     protected onSeek = (time: number) => {
-        const video = this.getVideo();
-        video.currentTime = time;
+        this.video.currentTime = time;
     }
 
     protected onVolumeChange = (volume: number) => {
@@ -191,6 +185,8 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     /********************* React Lifecycle ***********************/
 
     protected componentWillReceiveProps(nextProps: IHostProps) {
+        super.componentWillReceiveProps(nextProps);
+
         if (!this.props.serverStatus && nextProps.serverStatus) {
             this.discover();
         }
@@ -229,7 +225,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     protected componentDidMount() {
         super.componentDidMount();
 
-        this.setupVideo(this.getVideo());
+        this.setupVideo(this.video);
     }
 
     /*********************** Redux *******************************/
@@ -241,6 +237,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             serverStatus: state.commonPeerState.serverStatus,
             videoReady: state.videoState.videoReady,
             hostPeers: state.hostPeerState.hostPeers,
+            fullscreen: state.videoState.fullscreen,
         });
     }
 
