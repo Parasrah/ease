@@ -12,6 +12,7 @@ import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../constants/Channels";
 import { UploadCommand } from "../../../constants/Commands";
 import { UploadBox } from "../../components/UploadBox";
 
+
 interface IStartInputProps {
     filepathCallback: (file: string) => void;
 }
@@ -26,6 +27,13 @@ interface IStartDispatchProps {
 }
 
 type IStartProps = IStartInputProps & IStartStoreProps & IStartDispatchProps;
+
+const Icon = (props) => (
+  <svg viewBox='0 0 16 16' className={`icon icon-${props.icon}`} width="50px" height="50px">
+    <use fill="red" xlinkHref={`../images/iconsSheet.svg#icon-${props.icon}`} />
+  </svg>
+);
+
 
 class StartPage extends React.Component<IStartProps, {}> {
     private idInput: HTMLInputElement;
@@ -86,35 +94,7 @@ class StartPage extends React.Component<IStartProps, {}> {
 
     public render(): JSX.Element {
         return (
-            <div className="session">
-                <div className="join">
-                    <h1>Join a Session</h1>
-                    <input
-                        type="text"
-                        name="id"
-                        placeholder="Host ID"
-                        onKeyPress={this.onIdFieldKeyPress}
-                        ref={this.setIdInput}
-                    />
-                    <button
-                        type="button"
-                        className="pure-button pure-button-primary join-button"
-                        onClick={this.onIdButtonClick}
-                    >Join
-                    </button>
-                </div>
-                <div className="break pure-g">
-                    <div className="pure-u-10-24 break-item line left" />
-                    <div className="pure-u-1-6 break-item center">
-                        <span className="or">Or...</span>
-                    </div>
-                    <div className="pure-u-10-24 break-item line right" />
-                </div>
-                <div className="host">
-                    <h1>Start a Session</h1>
-                    <UploadBox onClick={this.onUploadClick} />
-                </div>
-            </div>
+            <Icon icon='cross' />
         );
     }
 
