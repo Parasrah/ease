@@ -1,4 +1,4 @@
-# Ease
+# Ease [![Build Status](https://travis-ci.org/Right2Drive/ease.svg?branch=master.png)](https://travis-ci.org/Right2Drive/ease.svg?branch=master)
 
 ## Project Description
 

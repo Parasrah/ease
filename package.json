@@ -2,7 +2,7 @@
   "name": "ease",
   "version": "0.1.0",
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
-  "main": "dist/src/App.js",
+  "main": "dist/src/main/App.js",
   "scripts": {
     "start": "electron .",
     "clean": "rimraf dist/*",
@@ -13,16 +13,16 @@
     "watch": "concurrently --kill-others \"npm run watch:wp\" \"npm run watch:ts\" \"npm run watch:less\"",
     "watch:wp": "webpack -w",
     "watch:ts": "tsc -w",
-    "watch:less": "less-watch-compiler src/style src/style",
+    "watch:less": "less-watch-compiler src/render/style src/render/style",
     "test": "npm run test:main && npm run test:render",
     "test:main": "electron-mocha --recursive dist/test/main",
     "test:render": "electron-mocha --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
     "test:debug-render": "electron-mocha -u tdd --debug --interactive --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
     "lint": "npm run lint:src && npm run lint:test",
-    "lint:src": "tslint ./src/**/*.ts?",
-    "lint:src-fix": "tslint ./src/**/*.ts? --fix",
-    "lint:test": "tslint ./test/**/*.ts?",
-    "lint:test-fix": "tslint ./test/**/*.ts? --fix"
+    "lint:src": "tslint ./src/**/*.ts*",
+    "lint:src-fix": "tslint ./src/**/*.ts* --fix",
+    "lint:test": "tslint ./test/**/*.ts*",
+    "lint:test-fix": "tslint ./test/**/*.ts* --fix"
   },
   "repository": {
     "type": "git",
@@ -69,8 +69,11 @@
     "purecss": "^0.6.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "simple-peer": "^6.2.1",
-    "socket.io": "^1.7.2",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.8.1",
+    "redux-thunk": "^2.2.0",
+    "simple-peer": "^6.4.3",
     "socket.io-client": "^1.7.2"
   }
 }
