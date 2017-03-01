@@ -73,14 +73,12 @@
     "react-dom": "^15.4.2",
     "react-mdl": "^1.9.0",
     "react-redux": "^5.0.2",
-    "react-svg-use": "^2.1.0",
     "redux": "^3.6.0",
     "redux-logger": "^2.8.1",
     "redux-thunk": "^2.2.0",
     "simple-peer": "^6.4.3",
     "socket.io-client": "^1.7.2",
     "spritesh": "^1.2.0",
-    "svg4everybody": "^2.1.5",
     "svgxuse": "^1.2.2"
   }
 }
