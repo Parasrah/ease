@@ -96,6 +96,32 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         this.socket.emit("offer", offerMessage);
     }
 
+    /********************* Video Listeners ***********************/
+
+    protected onPlayPauseButton = () => {
+        // TODO
+    }
+
+    protected onVolumeButton = () => {
+        // TODO
+    }
+
+    protected onCastButton = () => {
+        // TODO
+    }
+
+    protected onFullscreenButton = () => {
+        // TODO
+    }
+
+    protected onSeek = (time: number) => {
+        // TODO
+    }
+
+    protected onVolumeChange = (volume: number) => {
+        // TODO
+    }
+
     /********************* React Lifecycle ***********************/
 
     protected componentWillReceiveProps(nextProps: IClientProps) {

@@ -4,7 +4,16 @@ import { Controls } from "./Controls";
 interface IVideoElementProps {
     videoSource: string;
     poster: string;
+    max: number;
+    time: number;
     setVideo: (video: HTMLVideoElement) => void;
+
+    onPlayPauseButton: () => void;
+    onVolumeButton: () => void;
+    onCastButton: () => void;
+    onFullscreenButton: () => void;
+    onSeek: (time: number) => void;
+    onVolumeChange: (volume: number) => void;
 }
 
 export const EaseVideoElement = (props: IVideoElementProps): JSX.Element => {
@@ -20,7 +29,17 @@ export const EaseVideoElement = (props: IVideoElementProps): JSX.Element => {
                 height="100%"
                 autoPlay
             />
-            <Controls show={true} max={300} />
+            <Controls
+                show={true}
+                max={props.max}
+                onPlayPauseButton={props.onPlayPauseButton}
+                onVolumeButton={props.onVolumeButton}
+                onCastButton={props.onCastButton}
+                onFullscreenButton={props.onFullscreenButton}
+                onSeek={props.onSeek}
+                onVolumeChange={props.onVolumeChange}
+                time={props.time}
+            />
         </div>
     );
 };

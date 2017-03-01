@@ -39,6 +39,8 @@ export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchPr
 
 export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, {}> {
     protected socket: SocketIOClient.Socket;
+    protected max: number;
+    protected time: number;
 
     private videoElement: HTMLMediaElement;
 
@@ -49,7 +51,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.props.watchServerStatusDispatch(this.socket);
     }
 
-    /********************* Methods ***********************/
+    /************************ Methods ************************/
 
     public getVideo = (): HTMLMediaElement => {
         return this.videoElement;
@@ -59,7 +61,16 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.videoElement = video;
     }
 
-    /********************* React Lifecycle ***********************/
+    /******************** Abstract Methods *******************/
+
+    protected abstract onPlayPauseButton: () => void;
+    protected abstract onVolumeButton: () => void;
+    protected abstract onCastButton: () => void;
+    protected abstract onFullscreenButton: () => void;
+    protected abstract onSeek: (time: number) => void;
+    protected abstract onVolumeChange: (volume: number) => void;
+
+    /********************* React Lifecycle *******************/
 
     protected componentDidMount() {
         console.log("video mounted");
@@ -69,7 +80,19 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         return (
             <div className="video">
                 <b> ID: </b> {this.props.id}
-                <EaseVideoElement poster={this.props.poster} videoSource={this.props.videoSource} setVideo={this.setVideo} />
+                <EaseVideoElement
+                    poster={this.props.poster}
+                    videoSource={this.props.videoSource}
+                    setVideo={this.setVideo}
+                    onPlayPauseButton={this.onPlayPauseButton}
+                    onVolumeButton={this.onVolumeButton}
+                    onCastButton={this.onCastButton}
+                    onFullscreenButton={this.onFullscreenButton}
+                    onSeek={this.onSeek}
+                    onVolumeChange={this.onVolumeChange}
+                    max={this.max}
+                    time={this.time}
+                />
             </div>
         );
     }

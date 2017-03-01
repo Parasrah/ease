@@ -45,7 +45,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         this.initialPlay = true;
     }
 
-    /********************* Methods ***********************/
+    /************************ Methods ****************************/
 
     public discover = () => {
         const initMessage: IInitMessage = {
@@ -138,6 +138,34 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         this.socket.emit("respond", responseMessage);
     }
 
+    /********************* Video Listeners ***********************/
+
+    protected onPlayPauseButton = () => {
+        const video = this.getVideo();
+        video.paused ? video.play() : video.pause();
+    }
+
+    protected onVolumeButton = () => {
+        // TODO toggle mute
+    }
+
+    protected onCastButton = () => {
+        // TODO
+    }
+
+    protected onFullscreenButton = () => {
+        // TODO
+    }
+
+    protected onSeek = (time: number) => {
+        const video = this.getVideo();
+        video.currentTime = time;
+    }
+
+    protected onVolumeChange = (volume: number) => {
+        // TODO change volume
+    }
+
     /********************* React Lifecycle ***********************/
 
     protected componentWillReceiveProps(nextProps: IHostProps) {
@@ -184,6 +212,10 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         video.onplay = () => {
             if (this.initialPlay) {
                 video.pause();
+                video.ontimeupdate = (event) => {
+                    this.time = video.currentTime;
+                };
+                this.max = video.duration;
                 this.stream = (video as any).captureStream();
                 this.props.setVideoReadyDispatch(true);
                 this.initialPlay = false;
@@ -191,7 +223,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         };
     }
 
-    /*********************** Redux ***************************/
+    /*********************** Redux *******************************/
 
     public static mapStateToProps = (state: IState, ownProps: IHostInputProps): IHostStoreProps & IHostInputProps => {
         return Object.assign({}, ownProps, {

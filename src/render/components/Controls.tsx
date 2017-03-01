@@ -5,14 +5,14 @@ export interface IControlsProps {
     show?: boolean;
     min?: number;
     max?: number;
+    time: number;
 
     onPlayPauseButton?: Function;
-    onPauseButton?: Function;
     onVolumeButton?: Function;
     onCastButton?: Function;
-    onFullScreenButton?: Function;
+    onFullscreenButton?: Function;
     onSeek?: (time: number) => void;
-    onVolumeSlider?: (volume: number) => void;
+    onVolumeChange?: (volume: number) => void;
 }
 
 export interface IControlsState {
@@ -45,8 +45,8 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
 
     private onVolumeChange: React.EventHandler<React.FormEvent<Slider>> = (event) => {
         const volume = (event.target as any).valueAsNumber;
-        if (this.props.onVolumeSlider) {
-            this.props.onVolumeSlider(volume);
+        if (this.props.onVolumeChange) {
+            this.props.onVolumeChange(volume);
         }
     }
 
@@ -76,12 +76,20 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
     }
 
     private onFullscreenButtonClick = () => {
-        if (this.props.onFullScreenButton) {
-            this.props.onFullScreenButton();
+        if (this.props.onFullscreenButton) {
+            this.props.onFullscreenButton();
         }
     }
 
     /********************* React Lifecycle ***********************/
+
+    protected componentWillReceiveProps(nextProps) {
+        if (this.state.time !== nextProps.time) {
+            this.setState({
+                time: nextProps.time,
+            });
+        }
+    }
 
     public render() {
         return (
