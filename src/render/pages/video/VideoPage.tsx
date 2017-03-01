@@ -6,6 +6,7 @@ import * as Exception from "../../../common/Exceptions";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { setVideoReadyAction, setPlayStatusAction, setFullscreenAction } from "../../Actions/VideoActions";
 import { VideoElement } from "../../components/VideoElement";
+import { shouldUpdate } from "../../utils/ComponentUtils";
 
 export interface IOfferMessage {
     hostID: string;
@@ -39,6 +40,7 @@ export interface IVideoDispatchProps {
 
 export interface IVideoState {
     time: number;
+    volume: number;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
@@ -54,6 +56,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
         this.state = {
             time: 0,
+            volume: 1,
         };
 
         this.socket = SocketIO.connect(this.props.signalHost);
@@ -65,6 +68,12 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     protected setTime = (time: number) => {
         this.setState({
             time,
+        });
+    }
+
+    protected setVolume = (volume: number) => {
+        this.setState({
+            volume,
         });
     }
 
@@ -90,23 +99,15 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     protected abstract onVolumeButton: () => void;
     protected abstract onCastButton: () => void;
     protected abstract onSeek: (time: number) => void;
-    protected abstract onVolumeChange: (volume: number) => void;
 
     /********************* React Lifecycle *******************/
 
-    protected componentWillReceiveProps(nextProps: IVideoProps) {
-        if (this.props.fullscreen && !nextProps.fullscreen) {
-            document.webkitExitFullscreen();
-        }
-        else if (!this.props.fullscreen && nextProps.fullscreen) {
-            if (this.videoWrapper) {
-                this.videoWrapper.webkitRequestFullscreen();
-            }
-        }
-    }
-
     protected componentDidMount() {
         console.log("video mounted");
+    }
+
+    protected componentWillUpdate(nextProps: IVideoProps, nextState: IVideoState) {
+        this.video.volume = nextState.volume;
     }
 
     public render(): JSX.Element {
@@ -123,9 +124,10 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
                     onCastButton={this.onCastButton}
                     onFullscreenButton={this.onFullscreenButton}
                     onSeek={this.onSeek}
-                    onVolumeChange={this.onVolumeChange}
+                    onVolumeChange={this.setVolume}
                     max={this.max}
                     time={this.state.time}
+                    volume={this.state.volume}
                 />
             </div>
         );

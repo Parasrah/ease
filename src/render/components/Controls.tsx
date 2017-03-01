@@ -6,6 +6,7 @@ export interface IControlsProps {
     min?: number;
     max?: number;
     time: number;
+    volume: number;
 
     onPlayPauseButton?: Function;
     onVolumeButton?: Function;
@@ -107,7 +108,13 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                     <div className="bar-left">
                         <IconButton className="play-button" name={(this.state.play ? "play_arrow" : "pause")} onClick={this.onPlayPauseClick} />
                         <IconButton className="volume-button" name={(this.state.mute) ? "volume_mute" : "volume_up"} onClick={this.onVolumeButtonClick} />
-                        <Slider className="volume-slider" min={0} max={100} onChange={this.onVolumeChange} />
+                        <Slider
+                            className="volume-slider"
+                            value={this.props.volume ? this.props.volume : 1}
+                            min={0}
+                            max={1}
+                            onChange={this.onVolumeChange}
+                        />
                     </div>
                     <div className="bar-right">
                         <IconButton className="cast-button" name="cast" onClick={this.onCastButtonClick} />

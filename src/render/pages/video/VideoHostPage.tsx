@@ -141,7 +141,6 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     private setupVideo = (video: HTMLVideoElement) => {
         video.ontimeupdate = () => {
             this.setTime(this.video.currentTime);
-            console.log("Time: " + this.state.time);
         };
 
         video.onpause = () => {
@@ -185,7 +184,6 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     /********************* React Lifecycle ***********************/
 
     protected componentWillReceiveProps(nextProps: IHostProps) {
-        super.componentWillReceiveProps(nextProps);
 
         if (!this.props.serverStatus && nextProps.serverStatus) {
             this.discover();

@@ -6,6 +6,7 @@ interface IVideoElementProps {
     poster: string;
     max: number;
     time: number;
+    volume: number;
 
     setVideo: (video: HTMLVideoElement) => void;
     setVideoWrapper: (videoWrapper: HTMLDivElement) => void;
@@ -44,6 +45,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
                 onSeek={props.onSeek}
                 onVolumeChange={props.onVolumeChange}
                 time={props.time}
+                volume={props.volume}
             />
         </div>
     );
