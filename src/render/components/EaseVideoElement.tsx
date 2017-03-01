@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Controls } from "./Controls";
 
 interface IVideoElementProps {
     videoSource: string;
@@ -9,15 +10,17 @@ interface IVideoElementProps {
 export const EaseVideoElement = (props: IVideoElementProps): JSX.Element => {
 
     return (
-        <video
-            src={props.videoSource}
-            ref={props.setVideo}
-            poster={props.poster}
-            type="video/mp4"
-            width="100%"
-            height="100%"
-            controls
-            autoPlay
-        />
+        <div className="react-video-wrapper">
+            <video
+                src={props.videoSource}
+                ref={props.setVideo}
+                poster={props.poster}
+                type="video/mp4"
+                width="100%"
+                height="100%"
+                autoPlay
+            />
+            <Controls show={true} max={300} />
+        </div>
     );
 };

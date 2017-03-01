@@ -1,1 +1,48 @@
-@font-face{font-family:'Indie Flower';font-style:cursive;src:url('font/IndieFlower.ttf')}@font-face{font-family:'Inconsolata';font-style:normal;src:url('font/Inconsolata-Regular.ttf')}#center{width:50%;margin:0 auto}#indie-flower{font-family:'Indie Flower',cursive}#inconsolata{font-family:'Inconsolata',regular}body{font-family:'Indie Flower',cursive;background-color:#303030}body>input [type='number']{-moz-appearance:textfield}body>input[type="number"]::-webkit-outer-spin-button,body input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}body html,body button,body input,body select,body textarea,body .pure-g [class*="pure-u"]{font-family:'Indie Flower',cursive}
+@font-face {
+  font-family: 'Indie Flower';
+  font-style: cursive;
+  src: url('font/IndieFlower.ttf');
+}
+@font-face {
+  font-family: 'Inconsolata';
+  font-style: normal;
+  src: url('font/Inconsolata-Regular.ttf');
+}
+/* Color theme */
+/* TODO find name */
+#center {
+  width: 50%;
+  margin: 0 auto;
+}
+#indie-flower {
+  font-family: 'Indie Flower', cursive;
+}
+#inconsolata {
+  font-family: 'Inconsolata', regular;
+}
+body {
+  font-family: 'Indie Flower', cursive;
+  background-color: #303030;
+  /*
+    When setting the primary font stack, apply it to the Pure grid units along
+    with `html`, `button`, `input`, `select`, and `textarea`. Pure Grids use
+    specific font stacks to ensure the greatest OS/browser compatibility.
+    */
+}
+body > input [type='number'] {
+  -moz-appearance: textfield;
+}
+body > input[type="number"]::-webkit-outer-spin-button,
+body input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+body html,
+body button,
+body input,
+body select,
+body textarea,
+body .pure-g [class*="pure-u"] {
+  /* Set your content font stack here: */
+  font-family: 'Indie Flower', cursive;
+}

@@ -1,0 +1,66 @@
+.react-video-wrapper {
+    position: relative;
+
+    .react-controls-root {
+        position: absolute;
+        bottom: 0;
+
+        width: 100%;
+        height: 37px;
+        overflow: none;
+        background-color: rgba(0, 0, 0, 0.5);
+
+        button {
+            color: white;
+            position: relative;
+            top: 3px;
+        }
+
+        .control-bar {
+
+            .bar-left {
+                height: 100%;
+                position: absolute;
+                left: 0px;
+                width: 70%;
+                overflow: hidden;
+            }
+
+            .bar-right {
+                height: 100%;
+                position: absolute;
+                right: 0px;
+            }
+
+            .mdl-slider__container {
+                display: inline-flex;
+                top: 7px;
+            }
+
+            button {
+                display: inline-block;
+            }
+
+            .volume-button {
+                position: relative;
+                left: 12px;
+            }
+
+            .play-button {
+                left: 3px;
+                margin-left: 1%;
+            }
+
+            .fullscreen-button {
+                margin: 0 10px;
+            }
+        }
+
+        > .mdl-slider__container {
+            position: absolute;
+            top: -8px;
+            width: ~"calc(100% + 50px)";
+            left: -27px;
+        }
+    }
+}
