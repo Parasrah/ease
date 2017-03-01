@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import IState from "../../redux/State";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, setPeerStatusAction, createPeerAction } from "../../Actions/HostPeerActions";
-import { setVideoReadyAction } from "../../Actions/VideoActions";
+import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
 import { IPeer } from "../../utils/Definitions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
 import { shouldUpdate } from "../../utils/ComponentUtils";
@@ -138,6 +138,28 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         this.socket.emit("respond", responseMessage);
     }
 
+    private setupVideo = (video: HTMLVideoElement) => {
+        video.ontimeupdate = () => {
+            this.setTime(this.getVideo().currentTime);
+            console.log("Time: " + this.state.time);
+        };
+
+        video.onpause = () => {
+            this.props.setPlayStatusDispatch(false);
+        };
+
+        video.onplay = () => {
+            if (this.initialPlay) {
+                video.pause();
+                this.max = video.duration;
+                this.stream = (video as any).captureStream();
+                this.props.setVideoReadyDispatch(true);
+                this.initialPlay = false;
+            }
+            this.props.setPlayStatusDispatch(true);
+        };
+    }
+
     /********************* Video Listeners ***********************/
 
     protected onPlayPauseButton = () => {
@@ -207,20 +229,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     protected componentDidMount() {
         super.componentDidMount();
 
-        // Initialize peer from video stream (must be called before VideoPage setup)
-        const video: HTMLMediaElement = this.getVideo();
-        video.onplay = () => {
-            if (this.initialPlay) {
-                video.pause();
-                video.ontimeupdate = (event) => {
-                    this.time = video.currentTime;
-                };
-                this.max = video.duration;
-                this.stream = (video as any).captureStream();
-                this.props.setVideoReadyDispatch(true);
-                this.initialPlay = false;
-            }
-        };
+        this.setupVideo(this.getVideo());
     }
 
     /*********************** Redux *******************************/
@@ -244,6 +253,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             addHostSignalDataDispatch: (clientID, signalData) => dispatch(addHostSignalDataAction(clientID, signalData)),
             clearSignalDataDispatch: (id) => dispatch(clearSignalDataAction(id)),
             setPeerStatusDispatch: (clientID, status) => dispatch(setPeerStatusAction(clientID, status)),
+            setPlayStatusDispatch: (play) => dispatch(setPlayStatusAction(play)),
         };
     }
 }

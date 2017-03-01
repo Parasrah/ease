@@ -23,14 +23,14 @@ export interface ISetVideoReadyAction extends ICheck {
 /*************************************************************/
 
 // TODO split this into two separate actions
-export const playPauseAction = (play: boolean): Action<IPlayPauseAction> => {
+export const setPlayStatusAction = (play: boolean): Action<IPlayPauseAction> => {
     return {
-        type: ActionType.videoAction.playPauseAction,
+        type: ActionType.videoAction.setPlayStatusAction,
         play,
     };
 };
 
-export type playPauseAction = (play: boolean) => Action<IPlayPauseAction>;
+export type setPlayStatusAction = (play: boolean) => Action<IPlayPauseAction>;
 
 export const setFullscreenAction = (fullscreen: boolean): Action<IFullscreenAction> => {
     return {

@@ -13,7 +13,7 @@ export const ActionType = {
         resizePageAction: "RESIZE_PAGE",
     },
     videoAction: {
-        playPauseAction: "PLAY_PAUSE",
+        setPlayStatusAction: "PLAY_PAUSE",
         jumpToTimeAction: "JUMP_TO_TIME",
         fullscreenAction: "FULLSCREEN",
         setVideoReadyAction: "SET_VIDEO_STATUS",

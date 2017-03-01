@@ -4,7 +4,7 @@ import * as SocketIO from "socket.io-client";
 
 import * as Exception from "../../../common/Exceptions";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
-import { setVideoReadyAction } from "../../Actions/VideoActions";
+import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
 import { EaseVideoElement } from "../../components/EaseVideoElement";
 
 export interface IOfferMessage {
@@ -33,19 +33,27 @@ export interface IVideoStoreProps {
 export interface IVideoDispatchProps {
     readonly watchServerStatusDispatch: watchServerStatusAction;
     readonly setVideoReadyDispatch: setVideoReadyAction;
+    readonly setPlayStatusDispatch: setPlayStatusAction;
+}
+
+export interface IVideoState {
+    time: number;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
 
-export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, {}> {
+export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, IVideoState> {
     protected socket: SocketIOClient.Socket;
     protected max: number;
-    protected time: number;
 
-    private videoElement: HTMLMediaElement;
+    private videoElement: HTMLVideoElement;
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            time: 0,
+        };
 
         this.socket = SocketIO.connect(this.props.signalHost);
         this.props.watchServerStatusDispatch(this.socket);
@@ -53,8 +61,14 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     /************************ Methods ************************/
 
-    public getVideo = (): HTMLMediaElement => {
+    public getVideo = (): HTMLVideoElement => {
         return this.videoElement;
+    }
+
+    protected setTime = (time: number) => {
+        this.setState({
+            time,
+        });
     }
 
     private setVideo = (video: HTMLVideoElement) => {
@@ -91,7 +105,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
                     onSeek={this.onSeek}
                     onVolumeChange={this.onVolumeChange}
                     max={this.max}
-                    time={this.time}
+                    time={this.state.time}
                 />
             </div>
         );

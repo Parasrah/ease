@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import IState from "../../redux/State";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { storeOfferDataAction, clearOfferDataAction, watchPeerStatusAction } from "../../Actions/ClientPeerActions";
-import { setVideoReadyAction } from "../../Actions/VideoActions";
+import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage } from "./VideoPage";
 
 interface IClientInputProps extends IVideoInputProps {
@@ -154,6 +154,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             storeOfferDataDispatch: (signalData) => dispatch(storeOfferDataAction(signalData)),
             clearOfferDataDispatch: () => dispatch(clearOfferDataAction()),
             watchPeerStatusDispatch: (peer) => dispatch(watchPeerStatusAction(peer)),
+            setPlayStatusDispatch: (play) => dispatch(setPlayStatusAction(play)),
         };
     }
 }
