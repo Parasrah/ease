@@ -1,3 +1,7 @@
+#control-fix {
+  margin: 0;
+  width: 100%;
+}
 .react-video-wrapper {
   position: relative;
 }
@@ -47,6 +51,13 @@
 .react-video-wrapper .react-controls-root > .mdl-slider__container {
   position: absolute;
   top: -8px;
-  width: calc(100% + 50px);
-  left: -27px;
+  width: 100%;
+}
+.react-video-wrapper .react-controls-root > .mdl-slider__container > .mdl-slider__background-flex {
+  margin: 0;
+  width: 100%;
+}
+.react-video-wrapper .react-controls-root > .mdl-slider__container > input {
+  margin: 0;
+  width: 100%;
 }
