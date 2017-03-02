@@ -56,7 +56,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
         this.state = {
             time: 0,
-            volume: 1,
+            volume: 100,
         };
 
         this.socket = SocketIO.connect(this.props.signalHost);
@@ -107,7 +107,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     }
 
     protected componentWillUpdate(nextProps: IVideoProps, nextState: IVideoState) {
-        this.video.volume = nextState.volume;
+        this.video.volume = (nextState.volume / 100);
     }
 
     public render(): JSX.Element {

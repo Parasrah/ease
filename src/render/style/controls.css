@@ -34,6 +34,9 @@
   display: inline-flex;
   top: 7px;
 }
+.react-video-wrapper .react-controls-root .control-bar .mdl-slider__container .mdl-slider__background-upper {
+  background-color: rgba(255, 255, 255, 0.03);
+}
 .react-video-wrapper .react-controls-root .control-bar button {
   display: inline-block;
 }

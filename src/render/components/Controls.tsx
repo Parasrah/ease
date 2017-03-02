@@ -110,9 +110,9 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                         <IconButton className="volume-button" name={(this.state.mute) ? "volume_mute" : "volume_up"} onClick={this.onVolumeButtonClick} />
                         <Slider
                             className="volume-slider"
-                            value={this.props.volume ? this.props.volume : 1}
+                            value={(this.props.volume !== undefined) ? this.props.volume : 100}
                             min={0}
-                            max={1}
+                            max={100}
                             onChange={this.onVolumeChange}
                         />
                     </div>
