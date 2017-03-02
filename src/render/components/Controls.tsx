@@ -5,17 +5,19 @@ export interface IControlsProps {
     show?: boolean;
     min?: number;
     max?: number;
+    time: number;
+    volume: number;
+    play: boolean;
 
     onPlayPauseButton?: Function;
     onVolumeButton?: Function;
     onCastButton?: Function;
-    onFullScreenButton?: Function;
+    onFullscreenButton?: Function;
     onSeek?: (time: number) => void;
-    onVolumeSlider?: (volume: number) => void;
+    onVolumeChange?: (volume: number) => void;
 }
 
 export interface IControlsState {
-    play: boolean;
     mute: boolean;
     time: number;
 }
@@ -25,7 +27,6 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
     constructor(props) {
         super(props);
         this.state = {
-            play: true,
             time: 0,
             mute: false,
         };
@@ -34,9 +35,6 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
     /********************* Callbacks *************************/
 
     private onPlayPauseClick: React.EventHandler<React.MouseEvent<HTMLElement>> = (event) => {
-        this.setState({
-            play: !this.state.play,
-        });
         if (this.props.onPlayPauseButton) {
             this.props.onPlayPauseButton();
         }
@@ -44,8 +42,8 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
 
     private onVolumeChange: React.EventHandler<React.FormEvent<Slider>> = (event) => {
         const volume = (event.target as any).valueAsNumber;
-        if (this.props.onVolumeSlider) {
-            this.props.onVolumeSlider(volume);
+        if (this.props.onVolumeChange) {
+            this.props.onVolumeChange(volume);
         }
     }
 
@@ -75,12 +73,20 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
     }
 
     private onFullscreenButtonClick = () => {
-        if (this.props.onFullScreenButton) {
-            this.props.onFullScreenButton();
+        if (this.props.onFullscreenButton) {
+            this.props.onFullscreenButton();
         }
     }
 
     /********************* React Lifecycle ***********************/
+
+    protected componentWillReceiveProps(nextProps) {
+        if (this.state.time !== nextProps.time) {
+            this.setState({
+                time: nextProps.time,
+            });
+        }
+    }
 
     public render() {
         return (
@@ -96,9 +102,15 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                 />
                 <div className="control-bar">
                     <div className="bar-left">
-                        <IconButton className="play-button" name={(this.state.play ? "play_arrow" : "pause")} onClick={this.onPlayPauseClick} />
+                        <IconButton className="play-button" name={(!this.props.play ? "play_arrow" : "pause")} onClick={this.onPlayPauseClick} />
                         <IconButton className="volume-button" name={(this.state.mute) ? "volume_mute" : "volume_up"} onClick={this.onVolumeButtonClick} />
-                        <Slider className="volume-slider" min={0} max={100} onChange={this.onVolumeChange} />
+                        <Slider
+                            className="volume-slider"
+                            value={(this.props.volume !== undefined) ? this.props.volume : 100}
+                            min={0}
+                            max={100}
+                            onChange={this.onVolumeChange}
+                        />
                     </div>
                     <div className="bar-right">
                         <IconButton className="cast-button" name="cast" onClick={this.onCastButtonClick} />

@@ -21,7 +21,7 @@ const videoState = (state: IVideoState = initialVideoState, action: Action<Video
                 fullscreen: (action as IFullscreenAction).fullscreen,
             });
 
-        case types.playPauseAction:
+        case types.setPlayStatusAction:
             return Object.assign({}, state, {
                 play: (action as IPlayPauseAction).play,
             });

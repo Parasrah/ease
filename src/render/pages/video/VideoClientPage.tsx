@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import IState from "../../redux/State";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { storeOfferDataAction, clearOfferDataAction, watchPeerStatusAction } from "../../Actions/ClientPeerActions";
-import { setVideoReadyAction } from "../../Actions/VideoActions";
+import { setVideoReadyAction, setPlayStatusAction, setFullscreenAction } from "../../Actions/VideoActions";
 import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage } from "./VideoPage";
 
 interface IClientInputProps extends IVideoInputProps {
@@ -79,9 +79,8 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     }
 
     private stream = (stream: MediaStream) => {
-        const video = this.getVideo();
-        video.srcObject = stream;
-        video.play();
+        this.video.srcObject = stream;
+        this.video.play();
     }
 
     private formOffer = (data: SimplePeer.SignalData): IOfferMessage => {
@@ -94,6 +93,20 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     private sendOffer = (offerMessage: IOfferMessage) => {
         this.socket.emit("offer", offerMessage);
+    }
+
+    /********************* Video Listeners ***********************/
+
+    protected onPlayPauseButton = () => {
+        // TODO
+    }
+
+    protected onCastButton = () => {
+        // TODO
+    }
+
+    protected onSeek = (time: number) => {
+        // TODO
     }
 
     /********************* React Lifecycle ***********************/
@@ -118,6 +131,8 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             offerData: state.clientPeerState.offerData,
             serverStatus: state.commonPeerState.serverStatus,
             peerStatus: state.clientPeerState.peerStatus,
+            fullscreen: state.videoState.fullscreen,
+            play: state.videoState.play,
         });
     }
 
@@ -128,6 +143,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             storeOfferDataDispatch: (signalData) => dispatch(storeOfferDataAction(signalData)),
             clearOfferDataDispatch: () => dispatch(clearOfferDataAction()),
             watchPeerStatusDispatch: (peer) => dispatch(watchPeerStatusAction(peer)),
+            setPlayStatusDispatch: (play) => dispatch(setPlayStatusAction(play)),
         };
     }
 }

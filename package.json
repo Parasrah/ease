@@ -4,6 +4,7 @@
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
   "main": "dist/src/main/App.js",
   "scripts": {
+    "setup": "npm install && npm prune && typings install && npm run rebuild",
     "start": "electron .",
     "clean": "rimraf dist/*",
     "rebuild": "npm run clean && npm run build",
@@ -60,7 +61,7 @@
     "source-map-loader": "^0.1.6",
     "tslint": "^4.4.2",
     "tslint-react": "^2.3.0",
-    "typescript": "^2.1.6",
+    "typescript": "^2.2.1",
     "typings": "^2.1.0",
     "webpack": "^2.2.1"
   },

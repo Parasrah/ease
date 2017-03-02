@@ -1,14 +1,12 @@
 # Ease [![Build Status](https://travis-ci.org/Right2Drive/ease.svg?branch=master.png)](https://travis-ci.org/Right2Drive/ease.svg?branch=master)
 
-## Project Description
+Ease is a desktop application with the goal of making it a little bit easier watch movies with the people that matter to you, regardless of the distance. 
 
-### Non-technical
+The project is still in development and yet beta, but we want to let you share your local media content, in sync. All the audio and video sharing is completely peer-to-peer, ensuring your content stays private and safe, and we only use a small signaling server to help you discover other users.
 
-Ease is a desktop application build using Electron and Typescript. The goal is to make it a little bit easier to spend time with the people that matter to you, regardless of the distance. 
+What does this mean for you? If you click pause, it pauses for everyone. If you seek, it seeks for everyone. All the content is completely synced, allowing for a more personal experience (and avoiding the 3... 2... 1... Play!).
 
-The project is still in development and yet to release 0.1 Beta, but the goal is watch local video content in sync with peers. Ease uses a simple signaling server to connect you to your loved ones, but after that it's completely peer-to-peer! 
-
-What does this mean for you? If you have any video files on your computer, you will be able to watch them with your friends and loved ones with synced controls! All viewers will be able to pause, play and seek the video and both of you will still see the same thing
+If you are looking for a similar experience for remote content (youtube etc), we suggest looking at Gaze or Rabb.it, both are great products!
 
 ### Technical
 
@@ -16,13 +14,13 @@ For the more technical minded out there, Ease is using an experimental chromium 
 
 ### Future
 
-In the future we would like to build a web front-end and some mobile applications for the viewers. After all, only the host should be constrained to using Electron! 
+In the future we aspire to building a web client, or perhaps some mobile apps, for the peers (the host will unfortunately be constrained to electron). If you want to see more features, please open an issue with the `Feature Request` tag, and we will be happy to take a look =D
 
 ## Getting Started Developing
 
 ### Clone 
 
-- Start by cloning the directory from my repo, or your forked repo (in my case this is `https://github.com/Right2Drive/ease`)
+- Start by cloning the directory from the repo (`https://github.com/Right2Drive/ease`), or your forked repo
 
   - `git clone https://github.com/Right2Drive/ease`
 
@@ -32,23 +30,17 @@ In the future we would like to build a web front-end and some mobile application
 
 ### Setup 
 
-- Ensure you have NodeJS installed (you can get this [here](https://nodejs.org/)
+- Ensure you have NodeJS installed (you can get this [here](https://nodejs.org/))
 
-- Install dependencies:
+- Run the setup script:
 
-  - `npm install`
-  
-  - `typings install`
-  
-- Create production folder: 
-
-  - `mkdir dist`
+  - `npm run setup`
   
 ### Building
 
 - We have created an npm script to build Typescript and Webpack, simply run:
 
-  - `npm run build`
+  - `npm run build` or `npm run rebuild` to rebuild
 
 - Ease also uses LESS CSS. We would recommend finding a plugin for your IDE/editor, but there is also a file watcher setup to help you out:
 

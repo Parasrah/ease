@@ -11,6 +11,7 @@ import { VideoPage } from "./pages/video/VideoPage";
 import { IState, IAppState } from "./redux/State";
 import { changePageAction } from "./Actions/AppActions";
 import { setIDAction } from "./Actions/CommonPeerActions";
+import { setFullscreenAction } from "./Actions/VideoActions";
 
 interface IEaseStoreProps {
     id: string;
@@ -18,8 +19,9 @@ interface IEaseStoreProps {
 }
 
 interface IEaseDispatchProps {
-    changePage: (page: Page) => void;
-    setID: (id: string) => void;
+    changePageDispatch: changePageAction;
+    setIDDispatch: setIDAction;
+    setFullscreenDispatch: setFullscreenAction;
 }
 
 export type IEaseProps = IEaseStoreProps & IEaseDispatchProps;
@@ -35,19 +37,27 @@ export class Ease extends React.Component<IEaseProps, {}> {
         super(props);
         this.videoPath = null;
         this.hostID = null;
-        this.props.setID(Guid.raw());
+        this.props.setIDDispatch(Guid.raw());
+
+        this.watchFullscreen();
     }
 
     /*********************** Methods *************************/
 
     public startVideo = (filepath: string) => {
         this.videoPath = filepath;
-        this.props.changePage(Page.VIDEO_HOST);
+        this.props.changePageDispatch(Page.VIDEO_HOST);
     }
 
     public connectHost = (id: string) => {
         this.hostID = id;
-        this.props.changePage(Page.VIDEO_CLIENT);
+        this.props.changePageDispatch(Page.VIDEO_CLIENT);
+    }
+
+    private watchFullscreen = () => {
+        document.onwebkitfullscreenchange = () => {
+            this.props.setFullscreenDispatch(document.webkitIsFullScreen);
+        };
     }
 
     private changePageSize = () => {
@@ -128,8 +138,9 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     public static mapDispatchToProps = (dispatch): IEaseDispatchProps => {
         return {
-            changePage: (page) => dispatch(changePageAction(page)),
-            setID: (id) => dispatch(setIDAction(id)),
+            changePageDispatch: (page) => dispatch(changePageAction(page)),
+            setIDDispatch: (id) => dispatch(setIDAction(id)),
+            setFullscreenDispatch: (fullscreen) => dispatch(setFullscreenAction(fullscreen)),
         };
     }
 }

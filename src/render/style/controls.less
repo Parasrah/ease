@@ -1,3 +1,8 @@
+#control-fix {
+    margin: 0;
+    width: 100%;
+}
+
 .react-video-wrapper {
     position: relative;
 
@@ -35,6 +40,10 @@
             .mdl-slider__container {
                 display: inline-flex;
                 top: 7px;
+
+                .mdl-slider__background-upper {
+                    background-color: rgba(255, 255, 255, 0.03);
+                }
             }
 
             button {
@@ -59,8 +68,15 @@
         > .mdl-slider__container {
             position: absolute;
             top: -8px;
-            width: ~"calc(100% + 50px)";
-            left: -27px;
+            width: 100%;
+
+            > .mdl-slider__background-flex {
+                #control-fix;
+            }
+
+            > input {
+                #control-fix;
+            }
         }
     }
 }
