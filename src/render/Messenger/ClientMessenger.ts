@@ -10,7 +10,7 @@ class ClientMessenger {
 
     public sendPlayPauseMessage() {
         const message: IControlMessage = {
-            type: MessageType.PLAY,
+            type: MessageType.PLAY_PAUSE,
         };
         this.sendMessage(message);
     }

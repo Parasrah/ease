@@ -1,5 +1,5 @@
 export const MessageType = {
-    PLAY: "play-pause",
+    PLAY_PAUSE: "play-pause",
     SEEK: "seek",
 };
 

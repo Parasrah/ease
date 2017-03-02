@@ -2,6 +2,8 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
+import HostMessenger from "../../Messenger/HostMessenger";
+import { MessageType } from "../../Messages/ControlMessage";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, setPeerStatusAction, createPeerAction } from "../../Actions/HostPeerActions";
 import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
@@ -35,10 +37,12 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     private peers: SimplePeer.Instance[];
     private stream: any;
     private initialPlay: boolean;
+    private hostMessenger: HostMessenger;
 
     constructor(props) {
         super(props);
 
+        this.hostMessenger = new HostMessenger();
         this.peers = [];
         this.stream = null;
         this.socket.on("offer", this.dealWithOffer);
@@ -99,7 +103,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             },
         });
 
-        (peer as any)._debug = console.log;
+        this.hostMessenger.registerPeer(peer);
 
         peer.on("signal", (signalData: SimplePeer.SignalData) => {
             this.tryToRespond(clientID, signalData);
@@ -159,6 +163,12 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         };
     }
 
+    private setupMessenger = () => {
+        this.hostMessenger.on(MessageType.PLAY_PAUSE, () => {
+            // TODO
+        });
+    }
+
     /********************* Video Listeners ***********************/
 
     protected onPlayPauseButton = () => {
@@ -216,6 +226,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         super.componentDidMount();
 
         this.setupVideo(this.video);
+        this.setupMessenger();
     }
 
     /*********************** Redux *******************************/
