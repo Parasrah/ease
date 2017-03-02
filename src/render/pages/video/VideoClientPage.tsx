@@ -101,19 +101,11 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         // TODO
     }
 
-    protected onVolumeButton = () => {
-        // TODO
-    }
-
     protected onCastButton = () => {
         // TODO
     }
 
     protected onSeek = (time: number) => {
-        // TODO
-    }
-
-    protected onVolumeChange = (volume: number) => {
         // TODO
     }
 
@@ -140,6 +132,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             serverStatus: state.commonPeerState.serverStatus,
             peerStatus: state.clientPeerState.peerStatus,
             fullscreen: state.videoState.fullscreen,
+            play: state.videoState.play,
         });
     }
 

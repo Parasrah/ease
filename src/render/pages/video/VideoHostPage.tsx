@@ -165,20 +165,12 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         this.video.paused ? this.video.play() : this.video.pause();
     }
 
-    protected onVolumeButton = () => {
-        // TODO toggle mute
-    }
-
     protected onCastButton = () => {
         // TODO
     }
 
     protected onSeek = (time: number) => {
         this.video.currentTime = time;
-    }
-
-    protected onVolumeChange = (volume: number) => {
-        // TODO change volume
     }
 
     /********************* React Lifecycle ***********************/
@@ -236,6 +228,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             videoReady: state.videoState.videoReady,
             hostPeers: state.hostPeerState.hostPeers,
             fullscreen: state.videoState.fullscreen,
+            play: state.videoState.play,
         });
     }
 

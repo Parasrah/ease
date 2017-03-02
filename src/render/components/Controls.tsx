@@ -7,6 +7,7 @@ export interface IControlsProps {
     max?: number;
     time: number;
     volume: number;
+    play: boolean;
 
     onPlayPauseButton?: Function;
     onVolumeButton?: Function;
@@ -17,7 +18,6 @@ export interface IControlsProps {
 }
 
 export interface IControlsState {
-    play: boolean;
     mute: boolean;
     time: number;
 }
@@ -27,7 +27,6 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
     constructor(props) {
         super(props);
         this.state = {
-            play: true,
             time: 0,
             mute: false,
         };
@@ -36,9 +35,6 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
     /********************* Callbacks *************************/
 
     private onPlayPauseClick: React.EventHandler<React.MouseEvent<HTMLElement>> = (event) => {
-        this.setState({
-            play: !this.state.play,
-        });
         if (this.props.onPlayPauseButton) {
             this.props.onPlayPauseButton();
         }
@@ -106,7 +102,7 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                 />
                 <div className="control-bar">
                     <div className="bar-left">
-                        <IconButton className="play-button" name={(this.state.play ? "play_arrow" : "pause")} onClick={this.onPlayPauseClick} />
+                        <IconButton className="play-button" name={(!this.props.play ? "play_arrow" : "pause")} onClick={this.onPlayPauseClick} />
                         <IconButton className="volume-button" name={(this.state.mute) ? "volume_mute" : "volume_up"} onClick={this.onVolumeButtonClick} />
                         <Slider
                             className="volume-slider"

@@ -30,6 +30,7 @@ export interface IVideoStoreProps {
     readonly videoReady: boolean;
     readonly serverStatus: boolean;
     readonly fullscreen: boolean;
+    readonly play: boolean;
 }
 
 export interface IVideoDispatchProps {
@@ -41,6 +42,7 @@ export interface IVideoDispatchProps {
 export interface IVideoState {
     time: number;
     volume: number;
+    muted: boolean;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
@@ -57,6 +59,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.state = {
             time: 0,
             volume: 100,
+            muted: false,
         };
 
         this.socket = SocketIO.connect(this.props.signalHost);
@@ -93,10 +96,15 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.videoWrapper = videoWrapper;
     }
 
+    private onVolumeButton = () => {
+        this.setState({
+            muted: !this.state.muted,
+        });
+    }
+
     /******************** Abstract Methods *******************/
 
     protected abstract onPlayPauseButton: () => void;
-    protected abstract onVolumeButton: () => void;
     protected abstract onCastButton: () => void;
     protected abstract onSeek: (time: number) => void;
 
@@ -107,7 +115,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     }
 
     protected componentWillUpdate(nextProps: IVideoProps, nextState: IVideoState) {
-        this.video.volume = (nextState.volume / 100);
+        this.video.volume = nextState.muted ? 0 : (nextState.volume / 100);
     }
 
     public render(): JSX.Element {
@@ -128,6 +136,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
                     max={this.max}
                     time={this.state.time}
                     volume={this.state.volume}
+                    play={this.props.play}
                 />
             </div>
         );
