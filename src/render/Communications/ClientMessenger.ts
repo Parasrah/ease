@@ -1,5 +1,5 @@
 import { Instance } from "simple-peer";
-import { MessageType, IControlMessage, ISeekMessage } from "../Messages/ControlMessage";
+import { ClientMessageType, IControlMessage, ISeekMessage } from "../Messages/ControlMessage";
 
 class ClientMessenger {
     private peer: Instance;
@@ -10,14 +10,14 @@ class ClientMessenger {
 
     public sendPlayPauseMessage() {
         const message: IControlMessage = {
-            type: MessageType.PLAY_PAUSE,
+            type: ClientMessageType.PLAY_PAUSE,
         };
         this.sendMessage(message);
     }
 
     public sendSeekMessage(time) {
         const message: ISeekMessage = {
-            type: MessageType.SEEK,
+            type: ClientMessageType.SEEK,
             time,
         };
         this.sendMessage(message);

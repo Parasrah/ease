@@ -2,8 +2,9 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
-import HostMessenger from "../../Messenger/HostMessenger";
-import { MessageType, ISeekMessage } from "../../Messages/ControlMessage";
+import HostReceiver from "../../Communications/HostReceiver";
+import HostMessenger from "../../Communications/HostMessenger";
+import { ClientMessageType, ISeekMessage } from "../../Messages/ControlMessage";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, setPeerStatusAction, createPeerAction } from "../../Actions/HostPeerActions";
 import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
@@ -37,12 +38,14 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     private peers: SimplePeer.Instance[];
     private stream: any;
     private initialPlay: boolean;
+    private hostReceiver: HostReceiver;
     private hostMessenger: HostMessenger;
 
     constructor(props) {
         super(props);
 
         this.hostMessenger = new HostMessenger();
+        this.hostReceiver = new HostReceiver();
         this.peers = [];
         this.stream = null;
         this.socket.on("offer", this.dealWithOffer);
@@ -55,12 +58,10 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         const initMessage: IInitMessage = {
             id: this.props.id,
         };
-        console.log("Emitting to 'discover': " + JSON.stringify(initMessage));
         this.socket.emit("discover", initMessage);
     }
 
     private dealWithOffer = (offer: IOfferMessage) => {
-        console.log("Offer:\n" + JSON.stringify(offer));
         let storePeer: IPeer = null;
         this.props.hostPeers.forEach((peer) => {
             if (peer.clientID === offer.clientID) {
@@ -103,6 +104,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             },
         });
 
+        this.hostReceiver.registerPeer(peer);
         this.hostMessenger.registerPeer(peer);
 
         peer.on("signal", (signalData: SimplePeer.SignalData) => {
@@ -143,8 +145,17 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     }
 
     private setupVideo = (video: HTMLVideoElement) => {
+
+        video.ondurationchange = () => {
+            this.setState({
+                duration: video.duration,
+            });
+            this.hostMessenger.publishDuration(video.duration);
+        };
+
         video.ontimeupdate = () => {
             this.setTime(this.video.currentTime);
+            this.hostMessenger.publishTime(this.video.currentTime);
         };
 
         video.onpause = () => {
@@ -154,7 +165,6 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         video.onplay = () => {
             if (this.initialPlay) {
                 video.pause();
-                this.max = video.duration;
                 this.stream = (video as any).captureStream();
                 this.props.setVideoReadyDispatch(true);
                 this.setupMessenger();
@@ -165,12 +175,12 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     }
 
     private setupMessenger = () => {
-        this.hostMessenger.on(MessageType.PLAY_PAUSE, () => {
+        this.hostReceiver.on(ClientMessageType.PLAY_PAUSE, () => {
             this.toggleVideo();
         });
 
-        this.hostMessenger.on(MessageType.SEEK, (message: ISeekMessage) => {
-            this.setTime(message.time);
+        this.hostReceiver.on(ClientMessageType.SEEK, (message: ISeekMessage) => {
+            this.video.currentTime = message.time;
         });
     }
 

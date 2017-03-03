@@ -43,13 +43,13 @@ export interface IVideoState {
     time: number;
     volume: number;
     muted: boolean;
+    duration: number;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
 
 export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, IVideoState> {
     protected socket: SocketIOClient.Socket;
-    protected max: number;
     protected video: HTMLVideoElement;
     protected videoWrapper: HTMLDivElement;
 
@@ -60,6 +60,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             time: 0,
             volume: 100,
             muted: false,
+            duration: 100,
         };
 
         this.socket = SocketIO.connect(this.props.signalHost);
@@ -111,7 +112,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     /********************* React Lifecycle *******************/
 
     protected componentDidMount() {
-        console.log("video mounted");
+        // empty
     }
 
     protected componentWillUpdate(nextProps: IVideoProps, nextState: IVideoState) {
@@ -133,7 +134,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
                     onFullscreenButton={this.onFullscreenButton}
                     onSeek={this.onSeek}
                     onVolumeChange={this.setVolume}
-                    max={this.max}
+                    duration={this.state.duration}
                     time={this.state.time}
                     volume={this.state.volume}
                     play={this.props.play}
