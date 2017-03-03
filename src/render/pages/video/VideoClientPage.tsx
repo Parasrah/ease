@@ -79,7 +79,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
         this.receiver.on(HostMessageType.PLAY, (message: IPlayMessage) => {
             this.props.setPlayStatusDispatch(message.play);
-        })
+        });
     }
 
     private dealWithSignal = (signalData: SimplePeer.SignalData) => {

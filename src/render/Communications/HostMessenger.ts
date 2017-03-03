@@ -88,7 +88,7 @@ class HostMessenger {
         return {
             type: HostMessageType.PLAY,
             play,
-        }
+        };
     }
 }
 
