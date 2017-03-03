@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import IState from "../../redux/State";
 import HostMessenger from "../../Messenger/HostMessenger";
-import { MessageType } from "../../Messages/ControlMessage";
+import { MessageType, ISeekMessage } from "../../Messages/ControlMessage";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, setPeerStatusAction, createPeerAction } from "../../Actions/HostPeerActions";
 import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
@@ -157,6 +157,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
                 this.max = video.duration;
                 this.stream = (video as any).captureStream();
                 this.props.setVideoReadyDispatch(true);
+                this.setupMessenger();
                 this.initialPlay = false;
             }
             this.props.setPlayStatusDispatch(true);
@@ -165,14 +166,22 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     private setupMessenger = () => {
         this.hostMessenger.on(MessageType.PLAY_PAUSE, () => {
-            // TODO
+            this.toggleVideo();
         });
+
+        this.hostMessenger.on(MessageType.SEEK, (message: ISeekMessage) => {
+            this.setTime(message.time);
+        });
+    }
+
+    private toggleVideo = () => {
+        this.video.paused ? this.video.play() : this.video.pause();
     }
 
     /********************* Video Listeners ***********************/
 
     protected onPlayPauseButton = () => {
-        this.video.paused ? this.video.play() : this.video.pause();
+        this.toggleVideo();
     }
 
     protected onCastButton = () => {
@@ -226,7 +235,6 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         super.componentDidMount();
 
         this.setupVideo(this.video);
-        this.setupMessenger();
     }
 
     /*********************** Redux *******************************/

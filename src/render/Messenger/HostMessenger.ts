@@ -12,6 +12,7 @@ class HostMessenger {
 
     constructor() {
         this.peers = [];
+        this.subs = [];
         for (const event of Object.keys(MessageType)) {
             this.subs.push({
                 event,
