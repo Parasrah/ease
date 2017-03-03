@@ -2,11 +2,14 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
+import HostReceiver from "../../Communications/HostReceiver";
+import HostMessenger from "../../Communications/HostMessenger";
+import { ClientMessageType, ISeekMessage } from "../../Messages/ControlMessage";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, setPeerStatusAction, createPeerAction } from "../../Actions/HostPeerActions";
 import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
 import { IPeer } from "../../utils/Definitions";
-import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
+import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, IVideoState, VideoPage  } from "./VideoPage";
 import { shouldUpdate } from "../../utils/ComponentUtils";
 
 interface IInitMessage {
@@ -35,10 +38,14 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     private peers: SimplePeer.Instance[];
     private stream: any;
     private initialPlay: boolean;
+    private hostReceiver: HostReceiver;
+    private hostMessenger: HostMessenger;
 
     constructor(props) {
         super(props);
 
+        this.hostMessenger = new HostMessenger();
+        this.hostReceiver = new HostReceiver();
         this.peers = [];
         this.stream = null;
         this.socket.on("offer", this.dealWithOffer);
@@ -51,12 +58,10 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         const initMessage: IInitMessage = {
             id: this.props.id,
         };
-        console.log("Emitting to 'discover': " + JSON.stringify(initMessage));
         this.socket.emit("discover", initMessage);
     }
 
     private dealWithOffer = (offer: IOfferMessage) => {
-        console.log("Offer:\n" + JSON.stringify(offer));
         let storePeer: IPeer = null;
         this.props.hostPeers.forEach((peer) => {
             if (peer.clientID === offer.clientID) {
@@ -99,7 +104,8 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             },
         });
 
-        (peer as any)._debug = console.log;
+        this.hostReceiver.registerPeer(peer);
+        this.hostMessenger.registerPeer(peer);
 
         peer.on("signal", (signalData: SimplePeer.SignalData) => {
             this.tryToRespond(clientID, signalData);
@@ -139,6 +145,13 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     }
 
     private setupVideo = (video: HTMLVideoElement) => {
+
+        video.ondurationchange = () => {
+            this.setState({
+                duration: video.duration,
+            });
+        };
+
         video.ontimeupdate = () => {
             this.setTime(this.video.currentTime);
         };
@@ -150,19 +163,33 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         video.onplay = () => {
             if (this.initialPlay) {
                 video.pause();
-                this.max = video.duration;
                 this.stream = (video as any).captureStream();
                 this.props.setVideoReadyDispatch(true);
+                this.setupMessenger();
                 this.initialPlay = false;
             }
             this.props.setPlayStatusDispatch(true);
         };
     }
 
+    private setupMessenger = () => {
+        this.hostReceiver.on(ClientMessageType.PLAY_PAUSE, () => {
+            this.toggleVideo();
+        });
+
+        this.hostReceiver.on(ClientMessageType.SEEK, (message: ISeekMessage) => {
+            this.video.currentTime = message.time;
+        });
+    }
+
+    private toggleVideo = () => {
+        this.video.paused ? this.video.play() : this.video.pause();
+    }
+
     /********************* Video Listeners ***********************/
 
     protected onPlayPauseButton = () => {
-        this.video.paused ? this.video.play() : this.video.pause();
+        this.toggleVideo();
     }
 
     protected onCastButton = () => {
@@ -210,6 +237,20 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     protected shouldComponentUpdate(nextProps: IHostProps, nextState) {
         // Do not re-render if the only change was peer stuff
         return shouldUpdate(this.props, nextProps, "hostPeers", "peerStatus", "serverStatus");
+    }
+
+    protected componentWillUpdate(nextProps: IHostProps, nextState: IVideoState) {
+        if (this.state.time !== nextState.time) {
+            this.hostMessenger.publishTime(nextState.time);
+        }
+
+        if (this.state.duration !== nextState.duration) {
+            this.hostMessenger.publishDuration(nextState.duration);
+        }
+
+        if (this.props.play !== nextProps.play) {
+            this.hostMessenger.publishPlay(nextProps.play);
+        }
     }
 
     protected componentDidMount() {

@@ -2,6 +2,9 @@ import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
 
 import IState from "../../redux/State";
+import ClientMessenger from "../../Communications/ClientMessenger";
+import ClientReceiver from "../../Communications/ClientReceiver";
+import { HostMessageType, IDurationMessage, ITimeMessage, IPlayMessage } from "../../Messages/ControlMessage";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { storeOfferDataAction, clearOfferDataAction, watchPeerStatusAction } from "../../Actions/ClientPeerActions";
 import { setVideoReadyAction, setPlayStatusAction, setFullscreenAction } from "../../Actions/VideoActions";
@@ -27,6 +30,8 @@ type IClientProps = IClientInputProps & IClientStoreProps & IClientDispatchProps
 
 export class VideoClientPage extends VideoPage<IClientProps> {
     private peer: SimplePeer.Instance;
+    private messenger: ClientMessenger;
+    private receiver: ClientReceiver;
 
     constructor(props) {
         super(props);
@@ -46,7 +51,9 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             },
         });
 
-        (this.peer as any)._debug = console.log;
+        this.messenger = new ClientMessenger(this.peer);
+        this.receiver = new ClientReceiver(this.peer);
+        this.setupReceiver();
 
         this.props.watchPeerStatusDispatch(this.peer);
 
@@ -55,8 +62,23 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         this.socket.on("response", this.dealWithResponse);
 
         this.peer.on("stream", (stream) => {
-            console.log("Streaming");
             this.stream(stream);
+        });
+    }
+
+    private setupReceiver = () => {
+        this.receiver.on(HostMessageType.DURATION, (message: IDurationMessage) => {
+            this.setState({
+                duration: message.duration,
+            });
+        });
+
+        this.receiver.on(HostMessageType.TIME, (message: ITimeMessage) => {
+            this.setTime(message.time);
+        });
+
+        this.receiver.on(HostMessageType.PLAY, (message: IPlayMessage) => {
+            this.props.setPlayStatusDispatch(message.play);
         });
     }
 
@@ -98,7 +120,9 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     /********************* Video Listeners ***********************/
 
     protected onPlayPauseButton = () => {
-        // TODO
+        if (this.props.peerStatus) {
+            this.messenger.sendPlayPauseMessage();
+        }
     }
 
     protected onCastButton = () => {
@@ -106,7 +130,9 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     }
 
     protected onSeek = (time: number) => {
-        // TODO
+        if (this.props.peerStatus) {
+            this.messenger.sendSeekMessage(time);
+        }
     }
 
     /********************* React Lifecycle ***********************/

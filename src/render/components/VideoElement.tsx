@@ -4,7 +4,7 @@ import { Controls } from "./Controls";
 interface IVideoElementProps {
     videoSource: string;
     poster: string;
-    max: number;
+    duration: number;
     time: number;
     volume: number;
     play: boolean;
@@ -38,7 +38,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
             />
             <Controls
                 show={true}
-                max={props.max}
+                duration={props.duration}
                 onPlayPauseButton={props.onPlayPauseButton}
                 onVolumeButton={props.onVolumeButton}
                 onCastButton={props.onCastButton}

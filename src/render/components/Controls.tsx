@@ -5,7 +5,7 @@ import "../style/controls.less";
 export interface IControlsProps {
     show?: boolean;
     min?: number;
-    max?: number;
+    duration?: number;
     time: number;
     volume: number;
     play: boolean;
@@ -97,7 +97,7 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                 <Slider
                     className="playback-slider"
                     min={(this.props.min) ? this.props.min : 0}
-                    max={(this.props.max) ? this.props.max : 100}
+                    max={(this.props.duration) ? this.props.duration : 100}
                     value={this.state.time}
                     onChange={this.onPlaybackChange}
                 />
