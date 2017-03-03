@@ -1,6 +1,6 @@
 import { Instance } from "simple-peer";
 
-import { HostMessageType, IDurationMessage, IControlMessage, ITimeMessage } from "../Messages/ControlMessage";
+import { HostMessageType, IDurationMessage, IControlMessage, ITimeMessage, IPlayMessage } from "../Messages/ControlMessage";
 
 interface IConnection {
     peer: Instance;
@@ -50,6 +50,10 @@ class HostMessenger {
         this.publishToConnected(this.createDurationMessage());
     }
 
+    public publishPlay(play: boolean) {
+        this.publishToConnected(this.createPlayMessage(play));
+    }
+
     public publishTime(time: number) {
         this.publishToConnected(this.createTimeMessage(time));
     }
@@ -78,6 +82,13 @@ class HostMessenger {
             type: HostMessageType.DURATION,
             duration: this.maxTime,
         };
+    }
+
+    private createPlayMessage(play: boolean): IPlayMessage {
+        return {
+            type: HostMessageType.PLAY,
+            play,
+        }
     }
 }
 

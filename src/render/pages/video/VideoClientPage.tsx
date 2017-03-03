@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import IState from "../../redux/State";
 import ClientMessenger from "../../Communications/ClientMessenger";
 import ClientReceiver from "../../Communications/ClientReceiver";
-import { HostMessageType, IDurationMessage, ITimeMessage } from "../../Messages/ControlMessage";
+import { HostMessageType, IDurationMessage, ITimeMessage, IPlayMessage } from "../../Messages/ControlMessage";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { storeOfferDataAction, clearOfferDataAction, watchPeerStatusAction } from "../../Actions/ClientPeerActions";
 import { setVideoReadyAction, setPlayStatusAction, setFullscreenAction } from "../../Actions/VideoActions";
@@ -76,6 +76,10 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         this.receiver.on(HostMessageType.TIME, (message: ITimeMessage) => {
             this.setTime(message.time);
         });
+
+        this.receiver.on(HostMessageType.PLAY, (message: IPlayMessage) => {
+            this.props.setPlayStatusDispatch(message.play);
+        })
     }
 
     private dealWithSignal = (signalData: SimplePeer.SignalData) => {

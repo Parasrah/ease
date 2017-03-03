@@ -9,7 +9,7 @@ import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, setPeerStatusAction, createPeerAction } from "../../Actions/HostPeerActions";
 import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
 import { IPeer } from "../../utils/Definitions";
-import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage  } from "./VideoPage";
+import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, IVideoState, VideoPage  } from "./VideoPage";
 import { shouldUpdate } from "../../utils/ComponentUtils";
 
 interface IInitMessage {
@@ -150,12 +150,10 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             this.setState({
                 duration: video.duration,
             });
-            this.hostMessenger.publishDuration(video.duration);
         };
 
         video.ontimeupdate = () => {
             this.setTime(this.video.currentTime);
-            this.hostMessenger.publishTime(this.video.currentTime);
         };
 
         video.onpause = () => {
@@ -239,6 +237,20 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     protected shouldComponentUpdate(nextProps: IHostProps, nextState) {
         // Do not re-render if the only change was peer stuff
         return shouldUpdate(this.props, nextProps, "hostPeers", "peerStatus", "serverStatus");
+    }
+
+    protected componentWillUpdate(nextProps: IHostProps, nextState: IVideoState) {
+        if (this.state.time !== nextState.time) {
+            this.hostMessenger.publishTime(nextState.time);
+        }
+
+        if (this.state.duration !== nextState.duration) {
+            this.hostMessenger.publishDuration(nextState.duration);
+        }
+
+        if (this.props.play !== nextProps.play) {
+            this.hostMessenger.publishPlay(nextProps.play);
+        }
     }
 
     protected componentDidMount() {

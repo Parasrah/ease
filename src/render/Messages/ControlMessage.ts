@@ -6,6 +6,7 @@ export const ClientMessageType = {
 export const HostMessageType = {
     DURATION: "duration",
     TIME: "time",
+    PLAY: "play",
 };
 
 export interface IControlMessage {
@@ -22,4 +23,8 @@ export interface IDurationMessage extends IControlMessage {
 
 export interface ITimeMessage extends IControlMessage {
     readonly time: number;
+}
+
+export interface IPlayMessage extends IControlMessage {
+    readonly play: boolean;
 }
