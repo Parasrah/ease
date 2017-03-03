@@ -119,7 +119,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     /********************* Video Listeners ***********************/
 
-    protected onPlayPauseButton = () => {
+    protected togglePlay = () => {
         if (this.props.peerStatus) {
             this.messenger.sendPlayPauseMessage();
         }
@@ -129,7 +129,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         // TODO
     }
 
-    protected onSeek = (time: number) => {
+    protected seek = (time: number) => {
         if (this.props.peerStatus) {
             this.messenger.sendSeekMessage(time);
         }
