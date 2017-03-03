@@ -3,6 +3,7 @@ import * as React from "react";
 import { ipcRenderer } from "electron";
 import { connect } from "react-redux";
 
+import "../../style/start.less";
 import { IState } from "../../redux/State";
 import { changePageAction } from "../../Actions/AppActions";
 import { setIDAction } from "../../Actions/CommonPeerActions";

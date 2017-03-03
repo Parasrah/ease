@@ -30,7 +30,7 @@ In the future we aspire to building a web client, or perhaps some mobile apps, f
 
 ### Setup 
 
-- Ensure you have NodeJS installed (you can get this [here](https://nodejs.org/)
+- Ensure you have NodeJS installed (you can get this [here](https://nodejs.org/))
 
 - Run the setup script:
 

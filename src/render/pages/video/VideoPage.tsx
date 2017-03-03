@@ -2,6 +2,7 @@ import * as React from "react";
 import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
+import "../../style/video.less";
 import * as Exception from "../../../common/Exceptions";
 import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
 import { setVideoReadyAction, setPlayStatusAction, setFullscreenAction } from "../../Actions/VideoActions";

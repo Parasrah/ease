@@ -1,5 +1,6 @@
 import * as React from "react";
 import { IconButton, Slider } from "react-mdl";
+import "../style/controls.less";
 
 export interface IControlsProps {
     show?: boolean;
