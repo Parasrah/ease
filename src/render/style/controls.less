@@ -3,8 +3,23 @@
     width: 100%;
 }
 
+#ease(@type, @duration: 0.5s) {
+    transition: visibility @duration linear, opacity @duration ease-out;
+    -webkit-transition: visibility @duration linear, opacity @duration ease-out;
+}
+
 .react-video-wrapper {
     position: relative;
+
+    .react-controls-hide {
+        visibility: hidden;
+        opacity: 0;
+        #ease(ease-out);
+    }
+
+    .react-controls-show {
+        #ease(ease-in, 0.1s);
+    }
 
     .react-controls-root {
         position: absolute;
@@ -12,9 +27,10 @@
 
         width: 100%;
         height: 37px;
-        overflow: none;
         background-color: rgba(0, 0, 0, 0.5);
 
+        
+        
         button {
             color: white;
             position: relative;

@@ -45,14 +45,18 @@ export interface IVideoState {
     volume: number;
     muted: boolean;
     duration: number;
+    show: boolean;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
 
 export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, IVideoState> {
+    private readonly SHOW_CONTROLS_TIME = 5000;
+
     protected socket: SocketIOClient.Socket;
     protected video: HTMLVideoElement;
     protected videoWrapper: HTMLDivElement;
+    protected timer: number;
 
     constructor(props) {
         super(props);
@@ -62,6 +66,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             volume: 100,
             muted: false,
             duration: 100,
+            show: true,
         };
 
         this.socket = SocketIO.connect(this.props.signalHost);
@@ -104,6 +109,26 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         });
     }
 
+    private onMouseMove = () => {
+        this.showControls();
+        if (this.timer) {
+            window.clearTimeout(this.timer);
+        }
+        this.timer = window.setTimeout(this.hideControls, this.SHOW_CONTROLS_TIME);
+    }
+
+    private showControls = () => {
+        this.setState({
+            show: true,
+        });
+    }
+
+    private hideControls = () => {
+        this.setState({
+            show: false,
+        });
+    }
+
     /******************** Abstract Methods *******************/
 
     protected abstract onPlayPauseButton: () => void;
@@ -139,6 +164,8 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
                     time={this.state.time}
                     volume={this.state.volume}
                     play={this.props.play}
+                    show={this.state.show}
+                    onMouseMove={this.onMouseMove}
                 />
             </div>
         );

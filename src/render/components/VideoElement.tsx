@@ -8,6 +8,7 @@ interface IVideoElementProps {
     time: number;
     volume: number;
     play: boolean;
+    show: boolean;
 
     setVideo: (video: HTMLVideoElement) => void;
     setVideoWrapper: (videoWrapper: HTMLDivElement) => void;
@@ -18,6 +19,7 @@ interface IVideoElementProps {
     onFullscreenButton: () => void;
     onSeek: (time: number) => void;
     onVolumeChange: (volume: number) => void;
+    onMouseMove: () => void;
 }
 
 export const VideoElement = (props: IVideoElementProps): JSX.Element => {
@@ -26,6 +28,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
         <div
             className="react-video-wrapper"
             ref={props.setVideoWrapper}
+            onMouseMove={props.onMouseMove}
         >
             <video
                 src={props.videoSource}
@@ -37,7 +40,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
                 autoPlay
             />
             <Controls
-                show={true}
+                show={props.show}
                 duration={props.duration}
                 onPlayPauseButton={props.onPlayPauseButton}
                 onVolumeButton={props.onVolumeButton}

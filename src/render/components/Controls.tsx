@@ -92,7 +92,7 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
     public render() {
         return (
             <div
-                className={"react-controls react-controls-root " + ((this.props.show) ? "react-controls-show" : "react-controls-hide")}
+                className={"react-controls react-controls-root " + ((this.props.show || !this.props.play) ? "react-controls-show" : "react-controls-hide")}
             >
                 <Slider
                     className="playback-slider"
