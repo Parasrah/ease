@@ -1,4 +1,4 @@
-# Ease [![Build Status](https://travis-ci.org/Right2Drive/ease.svg?branch=master.png)](https://travis-ci.org/Right2Drive/ease.svg?branch=master)
+# Ease [![Build Status](https://travis-ci.org/Right2Drive/ease.svg?branch=master)](https://travis-ci.org/Right2Drive/ease.svg?branch=master)
 
 Ease is a desktop application with the goal of making it a little bit easier watch movies with the people that matter to you, regardless of the distance. 
 
