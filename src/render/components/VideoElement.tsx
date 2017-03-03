@@ -28,6 +28,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
         <div
             className="react-video-wrapper"
             ref={props.setVideoWrapper}
+            onMouseMove={props.onMouseMove}
         >
             <video
                 src={props.videoSource}
@@ -37,7 +38,6 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
                 width="100%"
                 height="100%"
                 autoPlay
-                onMouseMove={props.onMouseMove}
             />
             <Controls
                 show={props.show}
