@@ -76,18 +76,32 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     /************************ Methods ************************/
 
     protected setTime = (time: number) => {
+        let check = time;
+        if (check > this.state.duration) {
+            check = this.state.duration;
+        }
+        else if (check < 0) {
+            check = 0;
+        }
         this.setState({
-            time,
+            time: check,
         });
     }
 
     protected setVolume = (volume: number) => {
+        let check = volume;
+        if (check > 100) {
+            check = 100;
+        }
+        else if (check < 0) {
+            check = 0;
+        }
         this.setState({
-            volume,
+            volume: check,
         });
     }
 
-    private onFullscreenButton = () => {
+    private toggleFullscreen = () => {
         if (document.webkitIsFullScreen) {
             document.webkitExitFullscreen();
         } else {
@@ -103,7 +117,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.videoWrapper = videoWrapper;
     }
 
-    private onVolumeButton = () => {
+    private toggleVolume = () => {
         this.setState({
             muted: !this.state.muted,
         });
@@ -115,6 +129,11 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             window.clearTimeout(this.timer);
         }
         this.timer = window.setTimeout(this.hideControls, this.SHOW_CONTROLS_TIME);
+    }
+
+    private onVideoWheel = (event: React.WheelEvent<HTMLVideoElement>) => {
+        const newVolume = this.state.volume + ((event.deltaY > 0) ? -5 : 5);
+        this.setVolume(newVolume);
     }
 
     private showControls = () => {
@@ -129,16 +148,42 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         });
     }
 
+    private setupVideoShortcuts = () => {
+        window.addEventListener("keydown", (event: KeyboardEvent) => {
+            switch (event.keyCode) {
+                case 32: // space
+                    this.togglePlay();
+                    break;
+
+                case 122: // F11
+                    event.preventDefault();
+                    this.toggleFullscreen();
+                    break;
+
+                case 37:
+                    event.preventDefault();
+                    this.seek(this.state.time - 10);
+                    break;
+
+                case 39:
+                    this.seek(this.state.time + 10);
+                    break;
+
+                default:
+            }
+        });
+    }
+
     /******************** Abstract Methods *******************/
 
-    protected abstract onPlayPauseButton: () => void;
+    protected abstract togglePlay: () => void;
     protected abstract onCastButton: () => void;
-    protected abstract onSeek: (time: number) => void;
+    protected abstract seek: (time: number) => void;
 
     /********************* React Lifecycle *******************/
 
     protected componentDidMount() {
-        // empty
+        this.setupVideoShortcuts();
     }
 
     protected componentWillUpdate(nextProps: IVideoProps, nextState: IVideoState) {
@@ -154,11 +199,11 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
                     videoSource={this.props.videoSource}
                     setVideo={this.setVideo}
                     setVideoWrapper={this.setVideoWrapper}
-                    onPlayPauseButton={this.onPlayPauseButton}
-                    onVolumeButton={this.onVolumeButton}
+                    onPlayPauseButton={this.togglePlay}
+                    onVolumeButton={this.toggleVolume}
                     onCastButton={this.onCastButton}
-                    onFullscreenButton={this.onFullscreenButton}
-                    onSeek={this.onSeek}
+                    onFullscreenButton={this.toggleFullscreen}
+                    onSeek={this.seek}
                     onVolumeChange={this.setVolume}
                     duration={this.state.duration}
                     time={this.state.time}
@@ -166,6 +211,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
                     play={this.props.play}
                     show={this.state.show}
                     onMouseMove={this.onMouseMove}
+                    onVideoWheel={this.onVideoWheel}
                 />
             </div>
         );

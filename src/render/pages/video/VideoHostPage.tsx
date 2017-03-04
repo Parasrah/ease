@@ -146,21 +146,21 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     private setupVideo = (video: HTMLVideoElement) => {
 
-        video.ondurationchange = () => {
+        video.addEventListener("durationchange", () => {
             this.setState({
                 duration: video.duration,
             });
-        };
+        });
 
-        video.ontimeupdate = () => {
+        video.addEventListener("timeupdate", () => {
             this.setTime(this.video.currentTime);
-        };
+        });
 
-        video.onpause = () => {
+        video.addEventListener("pause", () => {
             this.props.setPlayStatusDispatch(false);
-        };
+        });
 
-        video.onplay = () => {
+        video.addEventListener("play", () => {
             if (this.initialPlay) {
                 video.pause();
                 this.stream = (video as any).captureStream();
@@ -169,7 +169,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
                 this.initialPlay = false;
             }
             this.props.setPlayStatusDispatch(true);
-        };
+        });
     }
 
     private setupMessenger = () => {
@@ -188,7 +188,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     /********************* Video Listeners ***********************/
 
-    protected onPlayPauseButton = () => {
+    protected togglePlay = () => {
         this.toggleVideo();
     }
 
@@ -196,7 +196,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         // TODO
     }
 
-    protected onSeek = (time: number) => {
+    protected seek = (time: number) => {
         this.video.currentTime = time;
     }
 
@@ -240,6 +240,8 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     }
 
     protected componentWillUpdate(nextProps: IHostProps, nextState: IVideoState) {
+        super.componentWillUpdate(nextProps, nextState);
+
         if (this.state.time !== nextState.time) {
             this.hostMessenger.publishTime(nextState.time);
         }

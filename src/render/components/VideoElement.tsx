@@ -13,6 +13,7 @@ interface IVideoElementProps {
     setVideo: (video: HTMLVideoElement) => void;
     setVideoWrapper: (videoWrapper: HTMLDivElement) => void;
 
+    onVideoWheel: React.EventHandler<React.WheelEvent<HTMLVideoElement>>;
     onPlayPauseButton: () => void;
     onVolumeButton: () => void;
     onCastButton: () => void;
@@ -38,6 +39,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
                 width="100%"
                 height="100%"
                 autoPlay
+                onWheel={props.onVideoWheel}
             />
             <Controls
                 show={props.show}
