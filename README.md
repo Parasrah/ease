@@ -2,9 +2,9 @@
 
 Ease is a desktop application with the goal of making it a little bit easier watch movies with the people that matter to you, regardless of the distance. 
 
-The project is still in development, and still awaiting a beta release, but we want to let you share your local media content. In sync! All the audio and video sharing is completely peer-to-peer, ensuring your content stays private and safe, and we only use a small signaling server to help you discover other users.
+Ease lets you broadcast your own local content to your friends and loved ones, completely in sync! All the audio and video sharing is peer-to-peer, ensuring your content stays private and safe, and we only use a small signaling server to help you discover other users.
 
-What does this mean for you? If you click pause, it pauses for everyone. If you seek, it seeks for everyone. All the content is completely synced, allowing for a more personal experience (and avoiding the 3... 2... 1... Play!).
+In sync... what does this really mean for you? Well, if you click pause, it pauses for everyone. If you seek, it seeks for everyone. Best of all, everyone watching can do these things too! All the content is completely synced, allowing for a more personal experience (and avoiding the good old "3... 2... 1... Play!").
 
 If you are looking for a similar experience for remote content (youtube etc), we suggest looking at Gaze or Rabb.it, both are great products!
 
