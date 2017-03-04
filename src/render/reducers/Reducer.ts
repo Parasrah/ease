@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
 
 import appState from "./AppReducer";
-import windowState from "./WindowReducer";
-import videoState from "./VideoReducer";
+import clientPeerState from "./ClientPeerReducer";
 import commonPeerState from "./CommonPeerReducer";
 import hostPeerState from "./HostPeerReducer";
-import clientPeerState from "./ClientPeerReducer";
 import settingsState from "./SettingsReducer";
+import videoState from "./VideoReducer";
+import windowState from "./WindowReducer";
 
 const easeReducer = combineReducers({
     appState,

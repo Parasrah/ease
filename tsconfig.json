@@ -10,7 +10,8 @@
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "./dist/",
-    "jsx": "react"
+    "jsx": "react",
+    "noUnusedLocals": true
   },
   "include": [
     "./src/**/*",

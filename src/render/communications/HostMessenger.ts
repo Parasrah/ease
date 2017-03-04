@@ -1,6 +1,6 @@
 import { Instance } from "simple-peer";
 
-import { HostMessageType, IDurationMessage, IControlMessage, ITimeMessage, IPlayMessage } from "../Messages/ControlMessage";
+import { HostMessageType, IControlMessage, IDurationMessage, IPlayMessage, ITimeMessage } from "../messages/ControlMessage";
 
 interface IConnection {
     peer: Instance;

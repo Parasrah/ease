@@ -1,5 +1,5 @@
 import { Instance } from "simple-peer";
-import { ClientMessageType, IControlMessage, ISeekMessage } from "../Messages/ControlMessage";
+import { ClientMessageType, IControlMessage, ISeekMessage } from "../messages/ControlMessage";
 
 class ClientMessenger {
     private peer: Instance;
@@ -23,7 +23,7 @@ class ClientMessenger {
         this.sendMessage(message);
     }
 
-    private sendMessage(message: Object) {
+    private sendMessage(message: object) {
         this.peer.send(JSON.stringify(message));
     }
 }

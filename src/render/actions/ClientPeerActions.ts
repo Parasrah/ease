@@ -1,5 +1,5 @@
+import { Instance, SignalData } from "simple-peer";
 import { Action, ActionType, ICheck } from "./Action";
-import { SignalData, Instance } from "simple-peer";
 
 /*************************************************************/
 /********************* Action Definitions ********************/

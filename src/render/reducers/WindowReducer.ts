@@ -1,6 +1,6 @@
+import { Action, ActionType } from "../actions/Action";
+import { IResizePageAction, WindowAction } from "../actions/WindowActions";
 import { IWindowState } from "../redux/State";
-import { Action, ActionType } from "../Actions/Action";
-import { WindowAction, IResizePageAction } from "../Actions/WindowActions";
 
 const initialWindowState: IWindowState = {
     height: 600,

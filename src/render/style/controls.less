@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'SupermercadoOne-Regular';
+    font-style: cursive;
+    src: url('./font/SupermercadoOne-Regular.ttf');
+}
+
 #control-fix {
     margin: 0;
     width: 100%;
@@ -11,16 +17,6 @@
 .react-video-wrapper {
     position: relative;
 
-    .react-controls-hide {
-        visibility: hidden;
-        opacity: 0;
-        #ease(ease-out);
-    }
-
-    .react-controls-show {
-        #ease(ease-in, 0.1s);
-    }
-
     .react-controls-root {
         position: absolute;
         bottom: 0;
@@ -29,7 +25,15 @@
         height: 37px;
         background-color: rgba(0, 0, 0, 0.5);
 
-        
+        &.react-controls-hide {
+            visibility: hidden;
+            opacity: 0;
+            #ease(ease-out);
+        }
+
+        &.react-controls-show {
+            #ease(ease-in, 0.1s);
+        }
         
         button {
             color: white;
@@ -53,6 +57,7 @@
                 right: 0px;
             }
 
+            // Volume slider
             .mdl-slider__container {
                 display: inline-flex;
                 top: 7px;
@@ -62,8 +67,16 @@
                 }
             }
 
-            button {
+            button,
+            span {
                 display: inline-block;
+            }
+
+            .time {
+                position: relative;
+                top: 5px;
+                color: rgba(255, 255, 255, 0.7);
+                font-family: 'SupermercadoOne-Regular', cursive;
             }
 
             .volume-button {
@@ -85,6 +98,7 @@
             }
         }
 
+        // Playback bar
         > .mdl-slider__container {
             position: absolute;
             top: -8px;

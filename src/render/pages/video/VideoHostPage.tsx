@@ -1,16 +1,16 @@
-import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
+import * as SimplePeer from "simple-peer";
 
+import { watchServerStatusAction } from "../../actions/CommonPeerActions";
+import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, createPeerAction, setPeerStatusAction } from "../../actions/HostPeerActions";
+import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
+import HostMessenger from "../../communications/HostMessenger";
+import HostReceiver from "../../communications/HostReceiver";
+import { ClientMessageType, ISeekMessage } from "../../messages/ControlMessage";
 import IState from "../../redux/State";
-import HostReceiver from "../../Communications/HostReceiver";
-import HostMessenger from "../../Communications/HostMessenger";
-import { ClientMessageType, ISeekMessage } from "../../Messages/ControlMessage";
-import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
-import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, setPeerStatusAction, createPeerAction } from "../../Actions/HostPeerActions";
-import { setVideoReadyAction, setPlayStatusAction } from "../../Actions/VideoActions";
-import { IPeer } from "../../utils/Definitions";
-import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, IVideoState, VideoPage  } from "./VideoPage";
 import { shouldUpdate } from "../../utils/ComponentUtils";
+import { IPeer } from "../../utils/Definitions";
+import { IOfferMessage, IResponseMessage, IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage  } from "./VideoPage";
 
 interface IInitMessage {
     id: string;

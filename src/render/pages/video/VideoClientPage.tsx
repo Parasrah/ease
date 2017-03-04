@@ -1,14 +1,14 @@
-import * as SimplePeer from "simple-peer";
 import { connect } from "react-redux";
+import * as SimplePeer from "simple-peer";
 
+import { clearOfferDataAction, storeOfferDataAction, watchPeerStatusAction } from "../../actions/ClientPeerActions";
+import { watchServerStatusAction } from "../../actions/CommonPeerActions";
+import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
+import ClientMessenger from "../../communications/ClientMessenger";
+import ClientReceiver from "../../communications/ClientReceiver";
+import { HostMessageType, IDurationMessage, IPlayMessage, ITimeMessage } from "../../messages/ControlMessage";
 import IState from "../../redux/State";
-import ClientMessenger from "../../Communications/ClientMessenger";
-import ClientReceiver from "../../Communications/ClientReceiver";
-import { HostMessageType, IDurationMessage, ITimeMessage, IPlayMessage } from "../../Messages/ControlMessage";
-import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
-import { storeOfferDataAction, clearOfferDataAction, watchPeerStatusAction } from "../../Actions/ClientPeerActions";
-import { setVideoReadyAction, setPlayStatusAction, setFullscreenAction } from "../../Actions/VideoActions";
-import { IOfferMessage, IResponseMessage, IVideoInputProps, IVideoStoreProps, IVideoDispatchProps, VideoPage } from "./VideoPage";
+import { IOfferMessage, IResponseMessage, IVideoDispatchProps, IVideoInputProps, IVideoStoreProps, VideoPage } from "./VideoPage";
 
 interface IClientInputProps extends IVideoInputProps {
 

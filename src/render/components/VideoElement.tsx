@@ -10,24 +10,25 @@ interface IVideoElementProps {
     play: boolean;
     show: boolean;
 
-    setVideo: (video: HTMLVideoElement) => void;
-    setVideoWrapper: (videoWrapper: HTMLDivElement) => void;
+    setVideo(video: HTMLVideoElement): void;
+    setVideoWrapper(videoWrapper: HTMLDivElement): void;
 
     onVideoWheel: React.EventHandler<React.WheelEvent<HTMLVideoElement>>;
-    onPlayPauseButton: () => void;
-    onVolumeButton: () => void;
-    onCastButton: () => void;
-    onFullscreenButton: () => void;
-    onSeek: (time: number) => void;
-    onVolumeChange: (volume: number) => void;
-    onMouseMove: () => void;
+    onPlayPauseButton(): void;
+    onVolumeButton(): void;
+    onCastButton(): void;
+    onFullscreenButton(): void;
+    onSeek(time: number): void;
+    onVolumeChange(volume: number): void;
+    onMouseMove(): void;
+    onVideoClick(): void;
 }
 
 export const VideoElement = (props: IVideoElementProps): JSX.Element => {
 
     return (
         <div
-            className="react-video-wrapper"
+            className={"react-video-wrapper " + (props.show ? "show-cursor" : "hide-cursor")}
             ref={props.setVideoWrapper}
             onMouseMove={props.onMouseMove}
         >
@@ -40,6 +41,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
                 height="100%"
                 autoPlay
                 onWheel={props.onVideoWheel}
+                onClick={props.onVideoClick}
             />
             <Controls
                 show={props.show}

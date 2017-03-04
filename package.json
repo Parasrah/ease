@@ -20,10 +20,11 @@
     "test:render": "electron-mocha --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
     "test:debug-render": "electron-mocha -u tdd --debug --interactive --recursive --renderer dist/test/render --require-main dist/test/support/experimental-features.js",
     "lint": "npm run lint:src && npm run lint:test",
-    "lint:src": "tslint ./src/**/*.ts*",
-    "lint:src-fix": "tslint ./src/**/*.ts* --fix",
-    "lint:test": "tslint ./test/**/*.ts*",
-    "lint:test-fix": "tslint ./test/**/*.ts* --fix"
+    "lint:fix": "npm run lint:src-fix && npm run lint:test-fix",
+    "lint:src": "tslint 'src/**/*.ts?(x)' --project ./tslint.json",
+    "lint:src-fix": "tslint 'src/**/*.ts?(x)' --fix --project ./tslint.json",
+    "lint:test": "tslint 'test/**/*.ts?(x)' --project ./tslint.json",
+    "lint:test-fix": "tslint 'test/**/*.ts?(x)' --fix --project ./tslint.json"
   },
   "repository": {
     "type": "git",
@@ -63,7 +64,7 @@
     "sinon-spy-react": "^2.0.1",
     "source-map-loader": "^0.1.6",
     "style-loader": "^0.13.2",
-    "tslint": "^4.4.2",
+    "tslint": "^4.5.1",
     "tslint-react": "^2.3.0",
     "typescript": "^2.2.1",
     "typings": "^2.1.0",

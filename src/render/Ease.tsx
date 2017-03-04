@@ -2,16 +2,14 @@ import * as Guid from "guid";
 import * as React from "react";
 import { connect } from "react-redux";
 
-import * as Constants from "../constants/Constants";
+import { changePageAction } from "./actions/AppActions";
+import { setIDAction } from "./actions/CommonPeerActions";
+import { setFullscreenAction } from "./actions/VideoActions";
 import StartPageContainer from "./pages/start/StartPage";
-import { Page } from "./utils/Definitions";
 import VideoClientPageContainer from "./pages/video/VideoClientPage";
 import VideoHostPageContainer from "./pages/video/VideoHostPage";
-import { VideoPage } from "./pages/video/VideoPage";
-import { IState, IAppState } from "./redux/State";
-import { changePageAction } from "./Actions/AppActions";
-import { setIDAction } from "./Actions/CommonPeerActions";
-import { setFullscreenAction } from "./Actions/VideoActions";
+import { IState } from "./redux/State";
+import { Page } from "./utils/Definitions";
 
 interface IEaseStoreProps {
     id: string;
@@ -58,26 +56,6 @@ export class Ease extends React.Component<IEaseProps, {}> {
         document.onwebkitfullscreenchange = () => {
             this.props.setFullscreenDispatch(document.webkitIsFullScreen);
         };
-    }
-
-    private changePageSize = () => {
-        "TODO";
-    }
-
-    private watchPageSize = () => {
-        "TODO";
-    }
-
-    /**
-     * Return the dimensions of the page
-     *
-     * return {
-     *      height: number,
-     *      width: number
-     * }
-     */
-    private getDimensions = () => {
-        "TODO";
     }
 
     private mapPage(page: Page) {

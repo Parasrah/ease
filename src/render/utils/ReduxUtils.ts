@@ -1,5 +1,5 @@
+import { IAddSignalDataAction } from "../actions/HostPeerActions";
 import { IHostPeerState } from "../redux/State";
-import { IAddSignalDataAction } from "../Actions/HostPeerActions";
 import { DataType } from "./Definitions";
 
 export const addSignalData = (state: IHostPeerState, action: IAddSignalDataAction, type: DataType): IHostPeerState => {
@@ -24,6 +24,7 @@ export const addSignalData = (state: IHostPeerState, action: IAddSignalDataActio
                     default:
                         throw Error("No such enum");
                 }
+
                 return Object.assign(peer, combinedSignalData);
             }
             else {

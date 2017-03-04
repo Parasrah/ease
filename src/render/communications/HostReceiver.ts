@@ -1,5 +1,5 @@
 import { Instance } from "simple-peer";
-import { ClientMessageType, HostMessageType, IControlMessage, ISeekMessage, IDurationMessage } from "../Messages/ControlMessage";
+import { ClientMessageType, IControlMessage } from "../messages/ControlMessage";
 import { AbstractReceiver } from "./AbstractReceiver";
 
 class HostReceiver extends AbstractReceiver {
