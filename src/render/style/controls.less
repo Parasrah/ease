@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'SupermercadoOne-Regular';
+    font-style: cursive;
+    src: url('./font/SupermercadoOne-Regular.ttf');
+}
+
 #control-fix {
     margin: 0;
     width: 100%;
@@ -51,6 +57,7 @@
                 right: 0px;
             }
 
+            // Volume slider
             .mdl-slider__container {
                 display: inline-flex;
                 top: 7px;
@@ -60,8 +67,16 @@
                 }
             }
 
-            button {
+            button,
+            span {
                 display: inline-block;
+            }
+
+            .time {
+                position: relative;
+                top: 5px;
+                color: rgba(255, 255, 255, 0.7);
+                font-family: 'SupermercadoOne-Regular', cursive;
             }
 
             .volume-button {
@@ -83,6 +98,7 @@
             }
         }
 
+        // Playback bar
         > .mdl-slider__container {
             position: absolute;
             top: -8px;

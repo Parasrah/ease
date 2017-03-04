@@ -24,6 +24,7 @@ export interface IControlsState {
 }
 
 export class Controls extends React.Component<IControlsProps, IControlsState> {
+    private formattedTime;
 
     constructor(props) {
         super(props);
@@ -31,6 +32,16 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
             time: 0,
             mute: false,
         };
+
+        this.formattedTime = this.secondsToHms(this.state.time);
+    }
+
+    private secondsToHms(d: number): string {
+        const h = Math.floor(d / 3600);
+        const m = Math.floor(d % 3600 / 60);
+        const s = Math.floor(d % 3600 % 60);
+
+        return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
     }
 
     /********************* Callbacks *************************/
@@ -81,8 +92,9 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
 
     /********************* React Lifecycle ***********************/
 
-    protected componentWillReceiveProps(nextProps) {
+    protected componentWillReceiveProps(nextProps: IControlsProps) {
         if (this.state.time !== nextProps.time) {
+            this.formattedTime = this.secondsToHms(nextProps.time);
             this.setState({
                 time: nextProps.time,
             });
@@ -112,6 +124,9 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                             max={100}
                             onChange={this.onVolumeChange}
                         />
+                        <span className="time">
+                            {this.formattedTime}
+                        </span>
                     </div>
                     <div className="bar-right">
                         <IconButton className="cast-button" name="cast" onClick={this.onCastButtonClick} />
