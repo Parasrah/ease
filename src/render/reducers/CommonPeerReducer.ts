@@ -1,6 +1,6 @@
-import { ICommonPeerState } from "../redux/State";
 import { Action, ActionType } from "../actions/Action";
 import { CommonPeerAction, ISetIDAction, ISetServerStatusAction } from "../actions/CommonPeerActions";
+import { ICommonPeerState } from "../redux/State";
 
 const initialCommonPeerState: ICommonPeerState = {
     serverStatus: false,

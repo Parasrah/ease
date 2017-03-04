@@ -2,7 +2,7 @@ import { IControlMessage } from "../messages/ControlMessage";
 
 export interface ISubscription {
     event: string;
-    listeners: Function[];
+    listeners: Array<(message: IControlMessage) => void>;
 }
 
 export abstract class AbstractReceiver {
@@ -12,7 +12,7 @@ export abstract class AbstractReceiver {
         this.subs = [];
     }
 
-    public on = (event: string, fn: Function) => {
+    public on<T extends IControlMessage>(event: string, fn: (message?: T) => void) {
         for (const sub of this.subs) {
             if (sub.event === event) {
                 sub.listeners.push(fn);

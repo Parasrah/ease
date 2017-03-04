@@ -4,7 +4,7 @@
  * Written from a template found here [http://blog.dmbcllc.com/typescript-and-electron-the-right-way/]
  */
 
-import { BrowserWindow, ipcMain } from "electron";
+import { BrowserWindow } from "electron";
 import * as Constants from "../constants/Constants";
 import { ListenerUtils } from "./utils/ListenerUtils";
 

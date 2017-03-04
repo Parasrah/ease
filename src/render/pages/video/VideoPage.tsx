@@ -2,11 +2,10 @@ import * as React from "react";
 import * as SimplePeer from "simple-peer";
 import * as SocketIO from "socket.io-client";
 
-import "../../style/video.less";
-import * as Exception from "../../../common/Exceptions";
 import { watchServerStatusAction } from "../../actions/CommonPeerActions";
-import { setVideoReadyAction, setPlayStatusAction } from "../../actions/VideoActions";
+import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
 import { VideoElement } from "../../components/VideoElement";
+import "../../style/video.less";
 
 export interface IOfferMessage {
     hostID: string;
@@ -211,6 +210,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
                     show={this.state.show}
                     onMouseMove={this.onMouseMove}
                     onVideoWheel={this.onVideoWheel}
+                    onVideoClick={this.togglePlay}
                 />
             </div>
         );

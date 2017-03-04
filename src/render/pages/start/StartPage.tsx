@@ -1,19 +1,19 @@
+import { ipcRenderer } from "electron";
 import * as Guid from "guid";
 import * as React from "react";
-import { ipcRenderer } from "electron";
 import { connect } from "react-redux";
 
-import "../../style/start.less";
-import { IState } from "../../redux/State";
-import { changePageAction } from "../../actions/AppActions";
-import { setHostIDAction } from "../../actions/ClientPeerActions";
-import { Page } from "../../utils/Definitions";
 import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../constants/Channels";
 import { UploadCommand } from "../../../constants/Commands";
+import { changePageAction } from "../../actions/AppActions";
+import { setHostIDAction } from "../../actions/ClientPeerActions";
 import { UploadBox } from "../../components/UploadBox";
+import { IState } from "../../redux/State";
+import "../../style/start.less";
+import { Page } from "../../utils/Definitions";
 
 interface IStartInputProps {
-    filepathCallback: (file: string) => void;
+    filepathCallback(file: string): void;
 }
 
 interface IStartStoreProps {
@@ -21,8 +21,8 @@ interface IStartStoreProps {
 }
 
 interface IStartDispatchProps {
-    setHostID?: (id: string) => void;
-    changePage?: (page: Page) => void;
+    setHostID?(id: string): void;
+    changePage?(page: Page): void;
 }
 
 type IStartProps = IStartInputProps & IStartStoreProps & IStartDispatchProps;
@@ -62,10 +62,6 @@ class StartPage extends React.Component<IStartProps, {}> {
 
     private onUploadClick = () => {
         ipcRenderer.send(UPLOAD_REQUEST, UploadCommand.CLICK);
-    }
-
-    private onUploadDrag = (payload: string) => {
-        this.props.filepathCallback(payload);
     }
 
     private onIdButtonClick = () => {

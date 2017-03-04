@@ -23,7 +23,7 @@ class ClientMessenger {
         this.sendMessage(message);
     }
 
-    private sendMessage(message: Object) {
+    private sendMessage(message: object) {
         this.peer.send(JSON.stringify(message));
     }
 }

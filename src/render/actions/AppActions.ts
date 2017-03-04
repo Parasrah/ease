@@ -1,5 +1,5 @@
-import { Action, ActionType, ICheck } from "./Action";
 import { Page } from "../utils/Definitions";
+import { Action, ActionType, ICheck } from "./Action";
 
 /*************************************************************/
 /********************* Action Definitions ********************/

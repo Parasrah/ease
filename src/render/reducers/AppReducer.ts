@@ -1,6 +1,6 @@
-import { IAppState } from "../redux/State";
 import { Action, ActionType } from "../actions/Action";
 import { AppAction, IChangePageAction } from "../actions/AppActions";
+import { IAppState } from "../redux/State";
 import { Page } from "../utils/Definitions";
 
 const initialAppState: IAppState = {

@@ -10,12 +10,12 @@ export interface IControlsProps {
     volume: number;
     play: boolean;
 
-    onPlayPauseButton?: Function;
-    onVolumeButton?: Function;
-    onCastButton?: Function;
-    onFullscreenButton?: Function;
-    onSeek?: (time: number) => void;
-    onVolumeChange?: (volume: number) => void;
+    onPlayPauseButton?(): void;
+    onVolumeButton?(): void;
+    onCastButton?(): void;
+    onFullscreenButton?(): void;
+    onSeek?(time: number): void;
+    onVolumeChange?(volume: number): void;
 }
 
 export interface IControlsState {

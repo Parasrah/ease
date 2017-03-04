@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 
-import configureStore from "./redux/Store";
 import EaseContainer from "./Ease";
+import configureStore from "./redux/Store";
 
 const store = configureStore();
 

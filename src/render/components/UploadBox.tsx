@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export interface IUploadBoxProps {
-    onClick: () => void;
+    onClick(): void;
 }
 
 export const UploadBox = (props: IUploadBoxProps) => {
