@@ -1,5 +1,6 @@
 import { SignalData } from "simple-peer";
-import { Action, ActionType, ICheck } from "./Action";
+import { ToAction, ActionType } from "./Action";
+import { Action } from "redux";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
@@ -7,21 +8,21 @@ import { Action, ActionType, ICheck } from "./Action";
 
 export type HostPeerAction = ICreatePeerAction | IAddSignalDataAction | IClearSignalDataAction | ISetPeerStatusAction;
 
-export interface ICreatePeerAction extends ICheck {
+export interface ICreatePeerAction extends Action {
     clientID: string;
     signalData?: SignalData[];
 }
 
-export interface IAddSignalDataAction extends ICheck {
+export interface IAddSignalDataAction extends Action {
     signalData: SignalData;
     clientID: string;
 }
 
-export interface IClearSignalDataAction extends ICheck {
+export interface IClearSignalDataAction extends Action {
     id: string;
 }
 
-export interface ISetPeerStatusAction extends ICheck {
+export interface ISetPeerStatusAction extends Action {
     clientID: string;
     status: boolean;
 }
@@ -30,7 +31,7 @@ export interface ISetPeerStatusAction extends ICheck {
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const createPeerAction = (clientID: string, ...signalData: SignalData[]): Action<ICreatePeerAction> => {
+export const createPeerAction = (clientID: string, ...signalData: SignalData[]): ToAction<ICreatePeerAction> => {
     return {
         type: ActionType.hostPeerAction.createPeerAction,
         clientID,
@@ -38,9 +39,9 @@ export const createPeerAction = (clientID: string, ...signalData: SignalData[]):
     };
 };
 
-export type createPeerAction = (clientID: string, ...signalData: SignalData[]) => Action<ICreatePeerAction>;
+export type createPeerAction = (clientID: string, ...signalData: SignalData[]) => ToAction<ICreatePeerAction>;
 
-export const addClientSignalDataAction = (clientID: string, signalData: SignalData): Action<IAddSignalDataAction> => {
+export const addClientSignalDataAction = (clientID: string, signalData: SignalData): ToAction<IAddSignalDataAction> => {
     return {
         type: ActionType.hostPeerAction.addClientSignalDataAction,
         signalData,
@@ -48,9 +49,9 @@ export const addClientSignalDataAction = (clientID: string, signalData: SignalDa
     };
 };
 
-export type addClientSignalDataAction = (clientID: string, signalData: SignalData) => Action<IAddSignalDataAction>;
+export type addClientSignalDataAction = (clientID: string, signalData: SignalData) => ToAction<IAddSignalDataAction>;
 
-export const addHostSignalDataAction = (clientID: string, signalData: SignalData): Action<IAddSignalDataAction> => {
+export const addHostSignalDataAction = (clientID: string, signalData: SignalData): ToAction<IAddSignalDataAction> => {
     return {
         type: ActionType.hostPeerAction.addHostSignalDataAction,
         signalData,
@@ -58,7 +59,7 @@ export const addHostSignalDataAction = (clientID: string, signalData: SignalData
     };
 };
 
-export type addHostSignalDataAction = (clientID: string, signalData: SignalData) => Action<IAddSignalDataAction>;
+export type addHostSignalDataAction = (clientID: string, signalData: SignalData) => ToAction<IAddSignalDataAction>;
 
 export const clearSignalDataAction: clearSignalDataAction = (id) => {
     return {
@@ -67,7 +68,7 @@ export const clearSignalDataAction: clearSignalDataAction = (id) => {
     };
 };
 
-export type clearSignalDataAction = (id: string) => Action<IClearSignalDataAction>;
+export type clearSignalDataAction = (id: string) => ToAction<IClearSignalDataAction>;
 
 export const setPeerStatusAction: setPeerStatusAction = (clientID, status) => {
     return {
@@ -77,4 +78,4 @@ export const setPeerStatusAction: setPeerStatusAction = (clientID, status) => {
     };
 };
 
-export type setPeerStatusAction = (clientID: string, status: boolean) => Action<ISetPeerStatusAction>;
+export type setPeerStatusAction = (clientID: string, status: boolean) => ToAction<ISetPeerStatusAction>;

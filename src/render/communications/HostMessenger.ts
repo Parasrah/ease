@@ -7,7 +7,7 @@ interface IConnection {
     connected: boolean;
 }
 
-class HostMessenger {
+export class HostMessenger {
     private maxTime: number;
     private connections: IConnection[];
 
@@ -91,5 +91,3 @@ class HostMessenger {
         };
     }
 }
-
-export default HostMessenger;

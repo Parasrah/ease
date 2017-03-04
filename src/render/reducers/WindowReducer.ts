@@ -1,4 +1,4 @@
-import { Action, ActionType } from "../actions/Action";
+import { ToAction, ActionType } from "../actions/Action";
 import { IResizePageAction, WindowAction } from "../actions/WindowActions";
 import { IWindowState } from "../redux/State";
 
@@ -7,7 +7,7 @@ const initialWindowState: IWindowState = {
     width: 800,
 };
 
-const windowState = (state: IWindowState = initialWindowState, action: Action<WindowAction>): IWindowState => {
+const windowState = (state: IWindowState = initialWindowState, action: ToAction<WindowAction>): IWindowState => {
     const types = ActionType.windowAction;
 
     switch (action.type) {

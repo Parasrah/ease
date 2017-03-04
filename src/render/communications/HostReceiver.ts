@@ -2,7 +2,7 @@ import { Instance } from "simple-peer";
 import { ClientMessageType, IControlMessage } from "../messages/ControlMessage";
 import { AbstractReceiver } from "./AbstractReceiver";
 
-class HostReceiver extends AbstractReceiver {
+export class HostReceiver extends AbstractReceiver {
     private peers: Instance[];
 
     constructor() {
@@ -29,5 +29,3 @@ class HostReceiver extends AbstractReceiver {
         });
     }
 }
-
-export default HostReceiver;

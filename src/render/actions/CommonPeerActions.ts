@@ -1,4 +1,5 @@
-import { Action, ActionType, ICheck } from "./Action";
+import { ToAction, ActionType } from "./Action";
+import { Action } from "redux";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
@@ -6,11 +7,11 @@ import { Action, ActionType, ICheck } from "./Action";
 
 export type CommonPeerAction = ISetServerStatusAction | ISetIDAction;
 
-export interface ISetServerStatusAction extends ICheck {
+export interface ISetServerStatusAction extends Action {
     readonly serverStatus: boolean;
 }
 
-export interface ISetIDAction extends ICheck {
+export interface ISetIDAction extends Action {
     readonly id: string;
 }
 
@@ -18,16 +19,16 @@ export interface ISetIDAction extends ICheck {
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const setIDAction = (id: string): Action<ISetIDAction> => {
+export const setIDAction = (id: string): ToAction<ISetIDAction> => {
     return {
         type: ActionType.commonPeerAction.setIDAction,
         id,
     };
 };
 
-export type setIDAction = (id: string) => Action<ISetIDAction>;
+export type setIDAction = (id: string) => ToAction<ISetIDAction>;
 
-const setServerStatusAction = (serverStatus: boolean): Action<ISetServerStatusAction> => {
+const setServerStatusAction = (serverStatus: boolean): ToAction<ISetServerStatusAction> => {
     return {
         type: ActionType.commonPeerAction.setServerStatusAction,
         serverStatus,
@@ -54,4 +55,4 @@ export const watchServerStatusAction = (socket: SocketIOClient.Socket) => {
     };
 };
 
-export type watchServerStatusAction = (socket: SocketIOClient.Socket) => Action<ISetServerStatusAction>;
+export type watchServerStatusAction = (socket: SocketIOClient.Socket) => ToAction<ISetServerStatusAction>;

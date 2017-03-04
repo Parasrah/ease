@@ -1,4 +1,5 @@
-import { Action, ActionType, ICheck } from "./Action";
+import { ToAction, ActionType } from "./Action";
+import { Action } from "redux";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
@@ -6,7 +7,7 @@ import { Action, ActionType, ICheck } from "./Action";
 
 export type WindowAction = IResizePageAction;
 
-export interface IResizePageAction extends ICheck {
+export interface IResizePageAction extends Action {
     readonly height: number;
     readonly width: number;
 }
@@ -15,7 +16,7 @@ export interface IResizePageAction extends ICheck {
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const resizePageAction = (width: number, height: number): Action<IResizePageAction> => {
+export const resizePageAction = (width: number, height: number): ToAction<IResizePageAction> => {
     return {
         type: ActionType.windowAction.resizePageAction,
         width,
@@ -23,4 +24,4 @@ export const resizePageAction = (width: number, height: number): Action<IResizeP
     };
 };
 
-export type resizePageAction = (width: number, height: number) => Action<IResizePageAction> ;
+export type resizePageAction = (width: number, height: number) => ToAction<IResizePageAction> ;

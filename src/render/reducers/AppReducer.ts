@@ -1,4 +1,4 @@
-import { Action, ActionType } from "../actions/Action";
+import { ToAction, ActionType } from "../actions/Action";
 import { AppAction, IChangePageAction } from "../actions/AppActions";
 import { IAppState } from "../redux/State";
 import { Page } from "../utils/Definitions";
@@ -8,7 +8,7 @@ const initialAppState: IAppState = {
     error: [],
 };
 
-const appState = (state: IAppState = initialAppState, action: Action<AppAction>): IAppState => {
+const appState = (state: IAppState = initialAppState, action: ToAction<AppAction>): IAppState => {
     const types = ActionType.appAction;
 
     switch (action.type) {

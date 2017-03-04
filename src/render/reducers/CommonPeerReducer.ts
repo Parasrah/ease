@@ -1,4 +1,4 @@
-import { Action, ActionType } from "../actions/Action";
+import { ToAction, ActionType } from "../actions/Action";
 import { CommonPeerAction, ISetIDAction, ISetServerStatusAction } from "../actions/CommonPeerActions";
 import { ICommonPeerState } from "../redux/State";
 
@@ -7,7 +7,7 @@ const initialCommonPeerState: ICommonPeerState = {
     id: "",
 };
 
-const commonPeerState = (state: ICommonPeerState = initialCommonPeerState, action: Action<CommonPeerAction>) => {
+const commonPeerState = (state: ICommonPeerState = initialCommonPeerState, action: ToAction<CommonPeerAction>) => {
     const types = ActionType.commonPeerAction;
 
     switch (action.type) {

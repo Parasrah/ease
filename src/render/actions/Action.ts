@@ -5,6 +5,8 @@
 /**
  * The various action types
  */
+import { Action } from "redux";
+
 export const ActionType = {
     appAction: {
         changePageAction: "CHANGE_PAGE",
@@ -41,15 +43,10 @@ export const ActionType = {
 };
 
 /**
- * A simple check, all action definitions must extend this interface
- */
-export interface ICheck {}
-
-/**
  * Defines the action interfaces
  */
 interface IType {
     readonly type: string;
 }
 
-export type Action<T extends ICheck> = T & IType;
+export type ToAction<T extends Action> = T & IType;

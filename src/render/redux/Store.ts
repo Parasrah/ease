@@ -28,6 +28,10 @@ export class StoreWrapper {
         return StoreWrapper.instance;
     }
 
+    public getState() {
+        return this.store.getState();
+    }
+
     /**
      * Generate a store, should not be called directly save for testing purposes
      * @param preloadedState - initial state for store

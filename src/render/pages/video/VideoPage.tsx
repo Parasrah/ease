@@ -1,8 +1,5 @@
 import * as React from "react";
-import * as SimplePeer from "simple-peer";
-import * as SocketIO from "socket.io-client";
 
-import { watchServerStatusAction } from "../../actions/CommonPeerActions";
 import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
 import { VideoElement } from "../../components/VideoElement";
 import "../../style/video.less";
@@ -14,15 +11,12 @@ export interface IVideoInputProps {
 
 export interface IVideoStoreProps {
     readonly id: string;
-    readonly signalHost: string;
     readonly videoReady: boolean;
-    readonly serverStatus: boolean;
     readonly fullscreen: boolean;
     readonly play: boolean;
 }
 
 export interface IVideoDispatchProps {
-    readonly watchServerStatusDispatch: watchServerStatusAction;
     readonly setVideoReadyDispatch: setVideoReadyAction;
     readonly setPlayStatusDispatch: setPlayStatusAction;
 }

@@ -1,4 +1,5 @@
-import { Action, ActionType, ICheck } from "./Action";
+import { ToAction, ActionType } from "./Action";
+import { Action } from "redux";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
@@ -6,7 +7,7 @@ import { Action, ActionType, ICheck } from "./Action";
 
 export type SettingsAction = ISetSignalHostAction;
 
-export interface ISetSignalHostAction extends ICheck {
+export interface ISetSignalHostAction extends Action {
     signalHost: string;
 }
 
@@ -21,4 +22,4 @@ export const setSignalHostAction = (signalHost: string) => {
     };
 };
 
-export type setSignalHostAction = (signalHost: string) => Action<ISetSignalHostAction>;
+export type setSignalHostAction = (signalHost: string) => ToAction<ISetSignalHostAction>;
