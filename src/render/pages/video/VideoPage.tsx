@@ -7,17 +7,6 @@ import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoAct
 import { VideoElement } from "../../components/VideoElement";
 import "../../style/video.less";
 
-export interface IOfferMessage {
-    hostID: string;
-    clientID: string;
-    signalData: SimplePeer.SignalData;
-}
-
-export interface IResponseMessage {
-    clientID: string;
-    signalData: SimplePeer.SignalData;
-}
-
 export interface IVideoInputProps {
     videoSource: string;
     poster: string;
@@ -67,7 +56,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             show: true,
         };
 
-        this.socket = SocketIO.connect(this.props.signalHost);
         this.props.watchServerStatusDispatch(this.socket);
     }
 

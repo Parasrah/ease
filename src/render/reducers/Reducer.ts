@@ -7,8 +7,9 @@ import hostPeerState from "./HostPeerReducer";
 import settingsState from "./SettingsReducer";
 import videoState from "./VideoReducer";
 import windowState from "./WindowReducer";
+import { IState } from "../redux/State";
 
-const easeReducer = combineReducers({
+const easeReducer = combineReducers<IState>({
     appState,
     windowState,
     videoState,

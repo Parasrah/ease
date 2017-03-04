@@ -3,12 +3,10 @@ import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 
 import EaseContainer from "./Ease";
-import configureStore from "./redux/Store";
-
-const store = configureStore();
+import { StoreWrapper } from "./redux/Store";
 
 ReactDOM.render((
-    <Provider store={store} >
+    <Provider store={StoreWrapper.getInstance().getStore()} >
         <EaseContainer />
     </Provider>),
     document.getElementById("app"),

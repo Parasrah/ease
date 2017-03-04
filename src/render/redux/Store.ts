@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore } from "redux";
+import { applyMiddleware, createStore, Store } from "redux";
 import * as createLogger from "redux-logger";
 import thunkMiddleware from "redux-thunk";
 import IState from "./State";
@@ -7,15 +7,39 @@ import easeReducer from "../reducers/Reducer";
 
 const loggerMiddleware = createLogger();
 
-const configureStore = (preloadedState?: IState) => {
-    return createStore(
-        easeReducer,
-        preloadedState,
-        applyMiddleware(
-            thunkMiddleware,
-            loggerMiddleware,
-        ),
-    );
-};
+export class StoreWrapper {
+    private static instance = null;
 
-export default configureStore;
+    private store: Store<IState>;
+
+    private constructor() {
+        this.store = StoreWrapper.configureStore();
+    }
+
+    public getStore() {
+        return this.store;
+    }
+
+    public static getInstance() {
+        if (StoreWrapper.instance === null) {
+            StoreWrapper.instance = new StoreWrapper();
+        }
+
+        return StoreWrapper.instance;
+    }
+
+    /**
+     * Generate a store, should not be called directly save for testing purposes
+     * @param preloadedState - initial state for store
+     */
+    public static configureStore(preloadedState?: IState) {
+        return createStore<IState>(
+            easeReducer,
+            preloadedState,
+            applyMiddleware(
+                thunkMiddleware,
+                loggerMiddleware,
+            ),
+        );
+    }
+}

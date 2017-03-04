@@ -10,7 +10,7 @@ import { ClientMessageType, ISeekMessage } from "../../messages/ControlMessage";
 import IState from "../../redux/State";
 import { shouldUpdate } from "../../utils/ComponentUtils";
 import { IPeer } from "../../utils/Definitions";
-import { IOfferMessage, IResponseMessage, IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage  } from "./VideoPage";
+import { IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage  } from "./VideoPage";
 
 interface IInitMessage {
     id: string;
