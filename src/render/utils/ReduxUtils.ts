@@ -1,5 +1,5 @@
 import { IHostPeerState } from "../redux/State";
-import { IAddSignalDataAction } from "../Actions/HostPeerActions";
+import { IAddSignalDataAction } from "../actions/HostPeerActions";
 import { DataType } from "./Definitions";
 
 export const addSignalData = (state: IHostPeerState, action: IAddSignalDataAction, type: DataType): IHostPeerState => {

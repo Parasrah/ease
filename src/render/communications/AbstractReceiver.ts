@@ -1,4 +1,4 @@
-import { IControlMessage } from "../Messages/ControlMessage";
+import { IControlMessage } from "../messages/ControlMessage";
 
 export interface ISubscription {
     event: string;

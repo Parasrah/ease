@@ -9,9 +9,9 @@ import VideoClientPageContainer from "./pages/video/VideoClientPage";
 import VideoHostPageContainer from "./pages/video/VideoHostPage";
 import { VideoPage } from "./pages/video/VideoPage";
 import { IState, IAppState } from "./redux/State";
-import { changePageAction } from "./Actions/AppActions";
-import { setIDAction } from "./Actions/CommonPeerActions";
-import { setFullscreenAction } from "./Actions/VideoActions";
+import { changePageAction } from "./actions/AppActions";
+import { setIDAction } from "./actions/CommonPeerActions";
+import { setFullscreenAction } from "./actions/VideoActions";
 
 interface IEaseStoreProps {
     id: string;

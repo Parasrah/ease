@@ -4,10 +4,9 @@ import * as SocketIO from "socket.io-client";
 
 import "../../style/video.less";
 import * as Exception from "../../../common/Exceptions";
-import { watchServerStatusAction } from "../../Actions/CommonPeerActions";
-import { setVideoReadyAction, setPlayStatusAction, setFullscreenAction } from "../../Actions/VideoActions";
+import { watchServerStatusAction } from "../../actions/CommonPeerActions";
+import { setVideoReadyAction, setPlayStatusAction } from "../../actions/VideoActions";
 import { VideoElement } from "../../components/VideoElement";
-import { shouldUpdate } from "../../utils/ComponentUtils";
 
 export interface IOfferMessage {
     hostID: string;

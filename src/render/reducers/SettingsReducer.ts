@@ -1,7 +1,6 @@
 import { ISettingsState } from "../redux/State";
-import { Action, ActionType } from "../Actions/Action";
-import { SettingsAction, ISetSignalHostAction } from "../Actions/SettingsActions";
-import { Page } from "../utils/Definitions";
+import { Action, ActionType } from "../actions/Action";
+import { SettingsAction, ISetSignalHostAction } from "../actions/SettingsActions";
 import { SIGNAL_HOST } from "../../constants/Constants";
 
 const initialSettingsState: ISettingsState = {

@@ -1,6 +1,6 @@
 import { IClientPeerState } from "../redux/State";
-import { Action, ActionType } from "../Actions/Action";
-import { ClientPeerAction, IClearOfferDataAction, ISetHostIDAction, IStoreOfferAction, ISetPeerStatusAction } from "../Actions/ClientPeerActions";
+import { Action, ActionType } from "../actions/Action";
+import { ClientPeerAction, ISetHostIDAction, IStoreOfferAction, ISetPeerStatusAction } from "../actions/ClientPeerActions";
 
 const initialClientPeerState: IClientPeerState = {
     peerStatus: false,

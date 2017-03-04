@@ -3,7 +3,7 @@ import { createStore, applyMiddleware } from "redux";
 import * as createLogger from "redux-logger";
 import IState from "./State";
 
-import easeReducer from "../Reducers/Reducer";
+import easeReducer from "../reducers/Reducer";
 
 const loggerMiddleware = createLogger();
 

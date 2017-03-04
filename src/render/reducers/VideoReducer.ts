@@ -1,6 +1,6 @@
 import { IVideoState } from "../redux/State";
-import { Action, ActionType } from "../Actions/Action";
-import { VideoAction, IFullscreenAction, IPlayPauseAction, ISetVideoReadyAction } from "../Actions/VideoActions";
+import { Action, ActionType } from "../actions/Action";
+import { VideoAction, IFullscreenAction, IPlayPauseAction, ISetVideoReadyAction } from "../actions/VideoActions";
 
 const initialVideoState: IVideoState = {
     play: false,

@@ -1,6 +1,6 @@
 import { IHostPeerState } from "../redux/State";
-import { Action, ActionType } from "../Actions/Action";
-import { HostPeerAction, IAddSignalDataAction, IClearSignalDataAction, ICreatePeerAction, ISetPeerStatusAction } from "../Actions/HostPeerActions";
+import { Action, ActionType } from "../actions/Action";
+import { HostPeerAction, IAddSignalDataAction, IClearSignalDataAction, ICreatePeerAction, ISetPeerStatusAction } from "../actions/HostPeerActions";
 import { addSignalData } from "../utils/ReduxUtils";
 import { DataType } from "../utils/Definitions";
 

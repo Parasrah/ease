@@ -1,5 +1,5 @@
 import { Instance } from "simple-peer";
-import { ClientMessageType, IControlMessage, ISeekMessage } from "../Messages/ControlMessage";
+import { ClientMessageType, IControlMessage, ISeekMessage } from "../messages/ControlMessage";
 
 class ClientMessenger {
     private peer: Instance;
