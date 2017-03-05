@@ -10,19 +10,27 @@ interface IInitMessage {
     id: string;
 }
 
-export class HostSignal extends AbstractSignal {
+export class HostPeerManager extends AbstractSignal {
     private hostReceiver: HostReceiver;
     private hostMessenger: HostMessenger;
     private peers: SimplePeer.Instance[];
     private stream: any;
 
-    constructor(hostMessenger: HostMessenger, hostReceiver: HostReceiver) {
+    constructor() {
         super();
 
-        this.hostReceiver = hostReceiver;
-        this.hostMessenger = hostMessenger;
+        this.hostReceiver = new HostReceiver();
+        this.hostMessenger = new HostMessenger();
         this.socket.on("offer", this.dealWithOffer);
         this.peers = [];
+    }
+
+    public getMessenger() {
+        return this.hostMessenger;
+    }
+
+    public getReceiver() {
+        return this.hostReceiver;
     }
 
     public registerStream(stream: MediaStream) {

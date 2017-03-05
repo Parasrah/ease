@@ -1,10 +1,9 @@
 import { connect } from "react-redux";
-
 import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
 import { HostMessenger } from "../../communications/HostMessenger";
 import { HostReceiver } from "../../communications/HostReceiver";
 import { ClientMessageType, ISeekMessage } from "../../messages/ControlMessage";
-import { HostSignal } from "../../peer/HostSignal";
+import { HostPeerManager } from "../../peer/HostPeerManager";
 import IState from "../../redux/State";
 import { IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage } from "./VideoPage";
 
@@ -24,15 +23,15 @@ type IHostProps = IHostInputProps & IHostStoreProps & IHostDispatchProps;
 
 export class VideoHostPage extends VideoPage<IHostProps> {
     private initialPlay: boolean;
-    private hostReceiver: HostReceiver;
-    private hostMessenger: HostMessenger;
-    private hostSignal: HostSignal;
+    private receiver: HostReceiver;
+    private messenger: HostMessenger;
+    private peerManager: HostPeerManager;
 
     constructor(props) {
         super(props);
-        this.hostMessenger = new HostMessenger();
-        this.hostReceiver = new HostReceiver();
-        this.hostSignal = new HostSignal(this.hostMessenger, this.hostReceiver);
+        this.peerManager = new HostPeerManager();
+        this.messenger = this.peerManager.getMessenger();
+        this.receiver = this.peerManager.getReceiver();
         this.initialPlay = true;
     }
 
@@ -57,7 +56,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         video.addEventListener("play", () => {
             if (this.initialPlay) {
                 video.pause();
-                this.hostSignal.registerStream((video as any).captureStream());
+                this.peerManager.registerStream((video as any).captureStream());
                 this.props.setVideoReadyDispatch(true);
                 this.setupMessenger();
                 this.initialPlay = false;
@@ -67,11 +66,11 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     }
 
     private setupMessenger = () => {
-        this.hostReceiver.on(ClientMessageType.PLAY_PAUSE, () => {
+        this.receiver.on(ClientMessageType.PLAY_PAUSE, () => {
             this.toggleVideo();
         });
 
-        this.hostReceiver.on(ClientMessageType.SEEK, (message: ISeekMessage) => {
+        this.receiver.on(ClientMessageType.SEEK, (message: ISeekMessage) => {
             this.video.currentTime = message.time;
         });
     }
@@ -100,15 +99,15 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         super.componentWillUpdate(nextProps, nextState);
 
         if (this.state.time !== nextState.time) {
-            this.hostMessenger.publishTime(nextState.time);
+            this.messenger.publishTime(nextState.time);
         }
 
         if (this.state.duration !== nextState.duration) {
-            this.hostMessenger.publishDuration(nextState.duration);
+            this.messenger.publishDuration(nextState.duration);
         }
 
         if (this.props.play !== nextProps.play) {
-            this.hostMessenger.publishPlay(nextProps.play);
+            this.messenger.publishPlay(nextProps.play);
         }
     }
 
