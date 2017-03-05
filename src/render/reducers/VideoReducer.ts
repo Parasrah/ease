@@ -1,4 +1,4 @@
-import { ToAction, ActionType } from "../actions/Action";
+import { ActionType, ToAction } from "../actions/Action";
 import { IFullscreenAction, IPlayPauseAction, ISetVideoReadyAction, VideoAction } from "../actions/VideoActions";
 import { IVideoState } from "../redux/State";
 

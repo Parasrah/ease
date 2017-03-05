@@ -1,4 +1,4 @@
-import { ToAction, ActionType } from "../actions/Action";
+import { ActionType, ToAction } from "../actions/Action";
 import { IResizePageAction, WindowAction } from "../actions/WindowActions";
 import { IWindowState } from "../redux/State";
 

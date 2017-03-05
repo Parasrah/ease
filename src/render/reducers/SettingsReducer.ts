@@ -1,5 +1,5 @@
 import { SIGNAL_HOST } from "../../constants/Constants";
-import { ToAction, ActionType } from "../actions/Action";
+import { ActionType, ToAction } from "../actions/Action";
 import { ISetSignalHostAction, SettingsAction } from "../actions/SettingsActions";
 import { ISettingsState } from "../redux/State";
 

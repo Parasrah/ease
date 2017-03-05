@@ -1,6 +1,6 @@
-import { SignalData } from "simple-peer";
-import { ToAction, ActionType } from "./Action";
 import { Action } from "redux";
+import { SignalData } from "simple-peer";
+import { ActionType, ToAction } from "./Action";
 
 /*************************************************************/
 /********************* Action Definitions ********************/

@@ -1,5 +1,5 @@
-import { ToAction, ActionType } from "./Action";
 import { Action } from "redux";
+import { ActionType, ToAction } from "./Action";
 
 /*************************************************************/
 /********************* Action Definitions ********************/

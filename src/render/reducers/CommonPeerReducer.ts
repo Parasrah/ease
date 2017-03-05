@@ -1,4 +1,4 @@
-import { ToAction, ActionType } from "../actions/Action";
+import { ActionType, ToAction } from "../actions/Action";
 import { CommonPeerAction, ISetIDAction, ISetServerStatusAction } from "../actions/CommonPeerActions";
 import { ICommonPeerState } from "../redux/State";
 

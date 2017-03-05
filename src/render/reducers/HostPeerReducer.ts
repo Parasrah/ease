@@ -1,4 +1,4 @@
-import { ToAction, ActionType } from "../actions/Action";
+import { ActionType, ToAction } from "../actions/Action";
 import { HostPeerAction, IAddSignalDataAction, IClearSignalDataAction, ICreatePeerAction, ISetPeerStatusAction } from "../actions/HostPeerActions";
 import { IHostPeerState } from "../redux/State";
 import { DataType } from "../utils/Definitions";
