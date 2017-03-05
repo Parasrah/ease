@@ -4,9 +4,9 @@ import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoAct
 import { HostMessenger } from "../../communications/HostMessenger";
 import { HostReceiver } from "../../communications/HostReceiver";
 import { ClientMessageType, ISeekMessage } from "../../messages/ControlMessage";
+import { HostSignal } from "../../peer/HostSignal";
 import IState from "../../redux/State";
 import { IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage } from "./VideoPage";
-import { HostSignal } from "../../signaling/HostSignal";
 
 interface IHostInputProps extends IVideoInputProps {
 

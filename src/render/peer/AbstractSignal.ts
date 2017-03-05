@@ -1,8 +1,8 @@
-import { SignalData } from "simple-peer";
-import { StoreWrapper } from "../redux/Store";
-import { IState, IHostPeerState, IClientPeerState } from "../redux/State";
-import { Client, SocketIO } from "socket.io-client";
 import { Action } from "redux";
+import { SignalData } from "simple-peer";
+import * as SocketIOClient from "socket.io-client";
+import { IClientPeerState, IHostPeerState, IState } from "../redux/State";
+import { StoreWrapper } from "../redux/Store";
 
 export interface IOfferMessage {
     hostID: string;
@@ -16,13 +16,13 @@ export interface IResponseMessage {
 }
 
 export abstract class AbstractSignal {
-    protected socket: Client;
+    protected socket: SocketIOClient.Socket;
     private state: IState;
     private storeWrapper: StoreWrapper;
 
     constructor() {
         this.state = this.getState();
-        this.socket = SocketIO.connect(this.state.settingsState.signalHost);
+        this.socket = SocketIOClient.connect(this.state.settingsState.signalHost);
         this.storeWrapper = StoreWrapper.getInstance();
         this.listen();
     }

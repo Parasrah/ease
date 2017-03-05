@@ -1,10 +1,10 @@
-import { AbstractSignal, IOfferMessage, IResponseMessage } from "./AbstractSignal";
-import { IState } from "../redux/State";
 import * as SimplePeer from "simple-peer";
-import { setPeerStatusAction, clearSignalDataAction, addClientSignalDataAction, createPeerAction, addHostSignalDataAction } from "../actions/HostPeerActions";
+import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, createPeerAction, setPeerStatusAction } from "../actions/HostPeerActions";
 import { HostMessenger } from "../communications/HostMessenger";
 import { HostReceiver } from "../communications/HostReceiver";
+import { IState } from "../redux/State";
 import { IPeer } from "../utils/Definitions";
+import { AbstractSignal, IOfferMessage, IResponseMessage } from "./AbstractSignal";
 
 interface IInitMessage {
     id: string;

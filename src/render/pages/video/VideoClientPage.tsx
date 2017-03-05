@@ -41,80 +41,9 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     /********************* Methods ***********************/
 
-    private setupPeer = () => {
-        this.peer = new SimplePeer({
-            initiator: true,
-            trickle: true,
-            offerConstraints: {
-                offerToReceiveVideo: true,
-                offerToReceiveAudio: true,
-            },
-        });
-
-        this.messenger = new ClientMessenger(this.peer);
-        this.receiver = new ClientReceiver(this.peer);
-        this.setupReceiver();
-
-        this.props.watchPeerStatusDispatch(this.peer);
-
-        this.peer.on("signal", this.dealWithSignal);
-
-        this.socket.on("response", this.dealWithResponse);
-
-        this.peer.on("stream", (stream) => {
-            this.stream(stream);
-        });
-    }
-
-    private setupReceiver = () => {
-        this.receiver.on(HostMessageType.DURATION, (message: IDurationMessage) => {
-            this.setState({
-                duration: message.duration,
-            });
-        });
-
-        this.receiver.on(HostMessageType.TIME, (message: ITimeMessage) => {
-            this.setTime(message.time);
-        });
-
-        this.receiver.on(HostMessageType.PLAY, (message: IPlayMessage) => {
-            this.props.setPlayStatusDispatch(message.play);
-        });
-    }
-
-    private dealWithSignal = (signalData: SimplePeer.SignalData) => {
-        if (!this.props.serverStatus) {
-            this.props.storeOfferDataDispatch(signalData);
-        }
-        else {
-            this.sendOffer(this.formOffer(signalData));
-        }
-    }
-
-    private dealWithResponse = (responseMessage: IResponseMessage) => {
-        if (responseMessage.clientID === this.props.id) {
-            this.peer.signal(responseMessage.signalData);
-        }
-        else {
-            console.log("Received response not intended for you!! Please open an issue on https://github.com/Right2Drive/ease/issues");
-        }
-    }
-
     private stream = (stream: MediaStream) => {
         this.video.srcObject = stream;
         this.video.play();
-    }
-
-    private formOffer = (data: SimplePeer.SignalData): IOfferMessage => {
-        return {
-            clientID: this.props.id,
-            hostID: this.props.hostID,
-            signalData: data,
-        };
-    }
-
-    private sendOffer = (offerMessage: IOfferMessage) => {
-        this.socket.emit("offer", offerMessage);
     }
 
     /********************* Video Listeners ***********************/
@@ -136,15 +65,6 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     }
 
     /********************* React Lifecycle ***********************/
-
-    protected componentWillReceiveProps(nextProps: IClientProps) {
-        if (nextProps.serverStatus && nextProps.offerData.length > 0) {
-            for (const signalData of nextProps.offerData) {
-                this.sendOffer(this.formOffer(signalData));
-            }
-            this.props.clearOfferDataDispatch();
-        }
-    }
 
     /*********************** Redux ***************************/
 
