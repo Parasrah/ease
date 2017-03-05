@@ -3,7 +3,7 @@ import { Instance } from "simple-peer";
 import { HostMessageType } from "../messages/ControlMessage";
 import { AbstractReceiver } from "./AbstractReceiver";
 
-class ClientReceiver extends AbstractReceiver {
+export class ClientReceiver extends AbstractReceiver {
     private peer;
 
     constructor(peer: Instance) {
@@ -24,5 +24,3 @@ class ClientReceiver extends AbstractReceiver {
         });
     }
 }
-
-export default ClientReceiver;

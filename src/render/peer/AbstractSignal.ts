@@ -1,6 +1,8 @@
-import { Action } from "redux";
+import { Action, ThunkAction } from "redux";
+
 import { SignalData } from "simple-peer";
 import * as SocketIOClient from "socket.io-client";
+import { watchServerStatusAction } from "../actions/CommonPeerActions";
 import { IClientPeerState, IHostPeerState, IState } from "../redux/State";
 import { StoreWrapper } from "../redux/Store";
 
@@ -23,12 +25,13 @@ export abstract class AbstractSignal {
     constructor() {
         this.state = this.getState();
         this.socket = SocketIOClient.connect(this.state.settingsState.signalHost);
+        this.dispatch(watchServerStatusAction(this.socket));
         this.storeWrapper = StoreWrapper.getInstance();
         this.listen();
     }
 
-    protected dispatch<T extends Action>(action: T) {
-        this.storeWrapper.getStore().dispatch(action);
+    protected dispatch<T extends Action>(action: T | ThunkAction<void, IState, void>) {
+        this.storeWrapper.getStore().dispatch(action as T);
     }
 
     protected getID() {

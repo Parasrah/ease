@@ -33,8 +33,6 @@ export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchPr
 
 export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, IVideoState> {
     private readonly SHOW_CONTROLS_TIME = 5000;
-
-    protected socket: SocketIOClient.Socket;
     protected video: HTMLVideoElement;
     protected videoWrapper: HTMLDivElement;
     protected timer: number;
@@ -49,8 +47,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             duration: 100,
             show: true,
         };
-
-        this.props.watchServerStatusDispatch(this.socket);
     }
 
     /************************ Methods ************************/
