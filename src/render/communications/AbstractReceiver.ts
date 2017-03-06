@@ -20,7 +20,8 @@ export abstract class AbstractReceiver {
         }
     }
 
-    protected handleMessage<T extends IControlMessage>(message: T) {
+    protected handleMessage(jsonMessage) {
+        const message = JSON.parse(jsonMessage);
         for (const sub of this.subs) {
             if (sub.event === message.type) {
                 for (const listener of sub.listeners) {

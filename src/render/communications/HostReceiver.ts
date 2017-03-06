@@ -1,5 +1,5 @@
 import { Instance } from "simple-peer";
-import { ClientMessageType, IControlMessage } from "../messages/ControlMessage";
+import { ClientMessageType } from "../messages/ControlMessage";
 import { AbstractReceiver } from "./AbstractReceiver";
 
 export class HostReceiver extends AbstractReceiver {
@@ -23,9 +23,6 @@ export class HostReceiver extends AbstractReceiver {
             this.peers.splice(this.peers.indexOf(peer));
         });
 
-        peer.on("data", (message: string) => {
-            const controlMessage: IControlMessage = JSON.parse(message);
-            this.handleMessage(controlMessage);
-        });
+        peer.on("data", this.handleMessage);
     }
 }

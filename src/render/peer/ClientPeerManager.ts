@@ -18,25 +18,10 @@ export class ClientPeerManager {
         this.stream = null;
         this.deliverStream = null;
         this.storeWrapper = StoreWrapper.getInstance();
-
-        this.peer = new SimplePeer({
-            initiator: true,
-            trickle: true,
-            offerConstraints: {
-                offerToReceiveVideo: true,
-                offerToReceiveAudio: true,
-            },
-        });
-
-        this.peer.on("stream", this.resolveStream);
-        this.storeWrapper.dispatch(watchPeerStatusAction(this.peer));
-
+        this.messenger = new ClientMessenger();
+        this.receiver = new ClientReceiver();
         this.signaler = new ClientSignaler();
-        this.messenger = new ClientMessenger(this.peer);
-        this.receiver = new ClientReceiver(this.peer);
-
-        this.peer.on("signal", this.signaler.sendSignal);
-        this.signaler.onResponse((signalData) => this.peer.signal(signalData));
+        this.setupPeer();
     }
 
     public getMessenger() {
@@ -58,10 +43,35 @@ export class ClientPeerManager {
         this.deliverStream = callback;
     }
 
+    private createPeer() {
+        return new SimplePeer({
+            initiator: true,
+            trickle: true,
+            offerConstraints: {
+                offerToReceiveVideo: true,
+                offerToReceiveAudio: true,
+            },
+        });
+    }
+
     private resolveStream = (stream: MediaStream) => {
         this.stream = stream;
         if (this.deliverStream) {
             this.deliverStream(stream);
         }
+    }
+
+    private setupPeer = () => {
+        if (this.peer) {
+            delete this.peer;
+        }
+        this.peer = this.createPeer();
+        this.peer.on("stream", this.resolveStream);
+        this.storeWrapper.dispatch(watchPeerStatusAction(this.peer));
+        this.messenger.renewPeer(this.peer);
+        this.receiver.renewPeer(this.peer);
+        this.peer.on("signal", this.signaler.sendSignal);
+        this.peer.on("close", this.setupPeer);
+        this.signaler.onResponse((signalData) => this.peer.signal(signalData));
     }
 }
