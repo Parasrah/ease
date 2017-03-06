@@ -1,4 +1,4 @@
-import { Action, ActionType } from "../actions/Action";
+import { ActionType, ToAction } from "../actions/Action";
 import { HostPeerAction, IAddSignalDataAction, IClearSignalDataAction, ICreatePeerAction, ISetPeerStatusAction } from "../actions/HostPeerActions";
 import { IHostPeerState } from "../redux/State";
 import { DataType } from "../utils/Definitions";
@@ -8,7 +8,7 @@ const initialHostPeerState: IHostPeerState = {
     hostPeers: [],
 };
 
-const hostPeerState = (state: IHostPeerState = initialHostPeerState, action: Action<HostPeerAction>) => {
+const hostPeerState = (state: IHostPeerState = initialHostPeerState, action: ToAction<HostPeerAction>) => {
     const types = ActionType.hostPeerAction;
 
     switch (action.type) {
@@ -50,6 +50,8 @@ const hostPeerState = (state: IHostPeerState = initialHostPeerState, action: Act
                             peerStatus: (action as ISetPeerStatusAction).status,
                         });
                     }
+
+                    return peer;
                 }),
             });
 

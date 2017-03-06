@@ -25,8 +25,6 @@ interface IEaseDispatchProps {
 export type IEaseProps = IEaseStoreProps & IEaseDispatchProps;
 
 export class Ease extends React.Component<IEaseProps, {}> {
-    private static readonly POSTER = __dirname + "/data/heart.gif";
-
     private videoPath: string;
     private hostID: string;
     private renderedPage: JSX.Element;
@@ -79,7 +77,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
             case Page.VIDEO_CLIENT:
                 this.renderedPage = (
                     <VideoClientPageContainer
-                        poster={Ease.POSTER}
+                        poster=""
                         videoSource=""
                     />
                 );

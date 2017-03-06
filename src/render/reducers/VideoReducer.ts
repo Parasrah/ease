@@ -1,4 +1,4 @@
-import { Action, ActionType } from "../actions/Action";
+import { ActionType, ToAction } from "../actions/Action";
 import { IFullscreenAction, IPlayPauseAction, ISetVideoReadyAction, VideoAction } from "../actions/VideoActions";
 import { IVideoState } from "../redux/State";
 
@@ -12,7 +12,7 @@ const initialVideoState: IVideoState = {
     videoReady: false,
 };
 
-const videoState = (state: IVideoState = initialVideoState, action: Action<VideoAction>): IVideoState => {
+const videoState = (state: IVideoState = initialVideoState, action: ToAction<VideoAction>): IVideoState => {
     const types = ActionType.videoAction;
 
     switch (action.type) {

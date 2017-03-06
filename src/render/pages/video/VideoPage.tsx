@@ -1,22 +1,8 @@
 import * as React from "react";
-import * as SimplePeer from "simple-peer";
-import * as SocketIO from "socket.io-client";
 
-import { watchServerStatusAction } from "../../actions/CommonPeerActions";
 import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
 import { VideoElement } from "../../components/VideoElement";
 import "../../style/video.less";
-
-export interface IOfferMessage {
-    hostID: string;
-    clientID: string;
-    signalData: SimplePeer.SignalData;
-}
-
-export interface IResponseMessage {
-    clientID: string;
-    signalData: SimplePeer.SignalData;
-}
 
 export interface IVideoInputProps {
     videoSource: string;
@@ -25,15 +11,12 @@ export interface IVideoInputProps {
 
 export interface IVideoStoreProps {
     readonly id: string;
-    readonly signalHost: string;
     readonly videoReady: boolean;
-    readonly serverStatus: boolean;
     readonly fullscreen: boolean;
     readonly play: boolean;
 }
 
 export interface IVideoDispatchProps {
-    readonly watchServerStatusDispatch: watchServerStatusAction;
     readonly setVideoReadyDispatch: setVideoReadyAction;
     readonly setPlayStatusDispatch: setPlayStatusAction;
 }
@@ -50,8 +33,6 @@ export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchPr
 
 export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, IVideoState> {
     private readonly SHOW_CONTROLS_TIME = 5000;
-
-    protected socket: SocketIOClient.Socket;
     protected video: HTMLVideoElement;
     protected videoWrapper: HTMLDivElement;
     protected timer: number;
@@ -66,9 +47,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             duration: 100,
             show: true,
         };
-
-        this.socket = SocketIO.connect(this.props.signalHost);
-        this.props.watchServerStatusDispatch(this.socket);
     }
 
     /************************ Methods ************************/

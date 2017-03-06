@@ -1,5 +1,5 @@
 import { SIGNAL_HOST } from "../../constants/Constants";
-import { Action, ActionType } from "../actions/Action";
+import { ActionType, ToAction } from "../actions/Action";
 import { ISetSignalHostAction, SettingsAction } from "../actions/SettingsActions";
 import { ISettingsState } from "../redux/State";
 
@@ -7,7 +7,7 @@ const initialSettingsState: ISettingsState = {
     signalHost: SIGNAL_HOST,
 };
 
-const settingsState = (state: ISettingsState = initialSettingsState, action: Action<SettingsAction>): ISettingsState => {
+const settingsState = (state: ISettingsState = initialSettingsState, action: ToAction<SettingsAction>): ISettingsState => {
     const types = ActionType.settingsAction;
 
     switch (action.type) {

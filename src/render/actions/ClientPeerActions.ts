@@ -1,25 +1,19 @@
-import { Instance, SignalData } from "simple-peer";
-import { Action, ActionType, ICheck } from "./Action";
+import { Action, ThunkAction } from "redux";
+import { Instance } from "simple-peer";
+import { IState } from "../redux/State";
+import { ActionType, ToAction } from "./Action";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
 /*************************************************************/
 
-export type ClientPeerAction = ISetHostIDAction | IStoreOfferAction | IClearOfferDataAction | ISetPeerStatusAction;
+export type ClientPeerAction = ISetHostIDAction | ISetPeerStatusAction;
 
-export interface ISetHostIDAction extends ICheck {
+export interface ISetHostIDAction extends Action {
     readonly hostID: string;
 }
 
-export interface IStoreOfferAction {
-    signalData: SignalData;
-}
-
-export interface IClearOfferDataAction extends ICheck {
-
-}
-
-export interface ISetPeerStatusAction extends ICheck {
+export interface ISetPeerStatusAction extends Action {
     peerStatus: boolean;
 }
 
@@ -27,31 +21,14 @@ export interface ISetPeerStatusAction extends ICheck {
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const setHostIDAction = (hostID: string): Action<ISetHostIDAction> => {
+export const setHostIDAction = (hostID: string): ToAction<ISetHostIDAction> => {
     return {
         type: ActionType.clientPeerAction.setHostIDAction,
         hostID,
     };
 };
 
-export type setHostIDAction = (hostID: string) => Action<ISetHostIDAction>;
-
-export const storeOfferDataAction = (signalData: SignalData): Action<IStoreOfferAction> => {
-    return {
-        type: ActionType.clientPeerAction.storeOfferDataAction,
-        signalData,
-    };
-};
-
-export type storeOfferDataAction = (signalData: SignalData) => Action<IStoreOfferAction>;
-
-export const clearOfferDataAction: clearOfferDataAction = () => {
-    return {
-        type: ActionType.clientPeerAction.clearOfferDataAction,
-    };
-};
-
-export type clearOfferDataAction = () => Action<IClearOfferDataAction>;
+export type setHostIDAction = (hostID: string) => ToAction<ISetHostIDAction>;
 
 export const setPeerStatusAction: setPeerStatusAction = (peerStatus) => {
     return {
@@ -60,10 +37,10 @@ export const setPeerStatusAction: setPeerStatusAction = (peerStatus) => {
     };
 };
 
-export type setPeerStatusAction = (peerStatus: boolean) => Action<ISetPeerStatusAction>;
+export type setPeerStatusAction = (peerStatus: boolean) => ToAction<ISetPeerStatusAction>;
 
-export const watchPeerStatusAction = (peer: Instance) => {
-    return (dispatch) => {
+export const watchPeerStatusAction: watchPeerStatusAction = (peer) => {
+    return (dispatch, getState) => {
         peer.on("connect", () => {
             dispatch(setPeerStatusAction(true));
         });
@@ -74,4 +51,4 @@ export const watchPeerStatusAction = (peer: Instance) => {
     };
 };
 
-export type watchPeerStatusAction = (peer: Instance) => void;
+export type watchPeerStatusAction = (peer: Instance) => ThunkAction<void, IState, void>;

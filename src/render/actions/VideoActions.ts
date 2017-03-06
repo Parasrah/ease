@@ -1,4 +1,5 @@
-import { Action, ActionType, ICheck } from "./Action";
+import { Action } from "redux";
+import { ActionType, ToAction } from "./Action";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
@@ -6,15 +7,15 @@ import { Action, ActionType, ICheck } from "./Action";
 
 export type VideoAction = IPlayPauseAction | IFullscreenAction | ISetVideoReadyAction;
 
-export interface IPlayPauseAction extends ICheck {
+export interface IPlayPauseAction extends Action {
     readonly play: boolean;
 }
 
-export interface IFullscreenAction extends ICheck {
+export interface IFullscreenAction extends Action {
     readonly fullscreen: boolean;
 }
 
-export interface ISetVideoReadyAction extends ICheck {
+export interface ISetVideoReadyAction extends Action {
     readonly videoReady: boolean;
 }
 
@@ -23,29 +24,29 @@ export interface ISetVideoReadyAction extends ICheck {
 /*************************************************************/
 
 // TODO split this into two separate actions
-export const setPlayStatusAction = (play: boolean): Action<IPlayPauseAction> => {
+export const setPlayStatusAction = (play: boolean): ToAction<IPlayPauseAction> => {
     return {
         type: ActionType.videoAction.setPlayStatusAction,
         play,
     };
 };
 
-export type setPlayStatusAction = (play: boolean) => Action<IPlayPauseAction>;
+export type setPlayStatusAction = (play: boolean) => ToAction<IPlayPauseAction>;
 
-export const setFullscreenAction = (fullscreen: boolean): Action<IFullscreenAction> => {
+export const setFullscreenAction = (fullscreen: boolean): ToAction<IFullscreenAction> => {
     return {
         type: ActionType.videoAction.fullscreenAction,
         fullscreen,
     };
 };
 
-export type setFullscreenAction = (fullscreen: boolean) => Action<IFullscreenAction>;
+export type setFullscreenAction = (fullscreen: boolean) => ToAction<IFullscreenAction>;
 
-export const setVideoReadyAction = (videoReady: boolean): Action<ISetVideoReadyAction> => {
+export const setVideoReadyAction = (videoReady: boolean): ToAction<ISetVideoReadyAction> => {
     return {
         type: ActionType.videoAction.setVideoReadyAction,
         videoReady,
     };
 };
 
-export type setVideoReadyAction = (videoReady: boolean) => Action<ISetVideoReadyAction>;
+export type setVideoReadyAction = (videoReady: boolean) => ToAction<ISetVideoReadyAction>;

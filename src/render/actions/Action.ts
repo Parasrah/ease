@@ -1,10 +1,5 @@
-/*************************************************************/
-/************************* Structure *************************/
-/*************************************************************/
+import { Action } from "redux";
 
-/**
- * The various action types
- */
 export const ActionType = {
     appAction: {
         changePageAction: "CHANGE_PAGE",
@@ -30,8 +25,6 @@ export const ActionType = {
         setPeerStatusAction: "SET_PEER_SIGNAL_STATUS",
     },
     clientPeerAction: {
-        storeOfferDataAction: "STORE_OFFER_DATA",
-        clearOfferDataAction: "CLEAR_OFFER_DATA_ACTION",
         setHostIDAction: "SET_HOST_ID",
         setPeerStatusAction: "SET_PEER_STATUS_ACTION",
     },
@@ -41,15 +34,10 @@ export const ActionType = {
 };
 
 /**
- * A simple check, all action definitions must extend this interface
- */
-export interface ICheck {}
-
-/**
  * Defines the action interfaces
  */
 interface IType {
     readonly type: string;
 }
 
-export type Action<T extends ICheck> = T & IType;
+export type ToAction<T extends Action> = T & IType;
