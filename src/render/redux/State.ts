@@ -1,5 +1,3 @@
-import { SignalData } from "simple-peer";
-
 import * as Def from "../utils/Definitions";
 
 export interface IState {
@@ -43,7 +41,6 @@ export interface IHostPeerState {
 
 export interface IClientPeerState {
     hostID: string;
-    offerData: SignalData[];
     peerStatus: boolean;
 }
 

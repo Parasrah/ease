@@ -1,10 +1,3 @@
-/*************************************************************/
-/************************* Structure *************************/
-/*************************************************************/
-
-/**
- * The various action types
- */
 import { Action } from "redux";
 
 export const ActionType = {
@@ -32,8 +25,6 @@ export const ActionType = {
         setPeerStatusAction: "SET_PEER_SIGNAL_STATUS",
     },
     clientPeerAction: {
-        storeOfferDataAction: "STORE_OFFER_DATA",
-        clearOfferDataAction: "CLEAR_OFFER_DATA_ACTION",
         setHostIDAction: "SET_HOST_ID",
         setPeerStatusAction: "SET_PEER_STATUS_ACTION",
     },

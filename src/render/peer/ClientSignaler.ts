@@ -1,14 +1,15 @@
 import * as SimplePeer from "simple-peer";
-import { clearOfferDataAction, storeOfferDataAction } from "../actions/ClientPeerActions";
 import { IState } from "../redux/State";
 import { AbstractSignal, IOfferMessage, IResponseMessage } from "./AbstractSignal";
 
 export class ClientSignaler extends AbstractSignal {
     private deliverSignal: (signalData: SimplePeer.SignalData) => void;
     private responseData: SimplePeer.SignalData[];
+    private offerData: SimplePeer.SignalData[];
 
     constructor() {
         super();
+        this.offerData = [];
         this.responseData = [];
         this.socket.on("response", this.dealWithResponse);
     }
@@ -23,7 +24,7 @@ export class ClientSignaler extends AbstractSignal {
 
     public sendSignal = (signalData: SimplePeer.SignalData) => {
         if (!this.getServerStatus()) {
-            this.dispatch(storeOfferDataAction(signalData));
+            this.offerData.push(signalData);
         }
         else {
             this.sendOffer(this.formOffer(signalData));
@@ -31,11 +32,11 @@ export class ClientSignaler extends AbstractSignal {
     }
 
     protected notify(oldState: IState, nextState: IState) {
-        if (nextState.commonPeerState.serverStatus && nextState.clientPeerState.offerData.length > 0) {
-            for (const signalData of nextState.clientPeerState.offerData) {
+        if (nextState.commonPeerState.serverStatus && this.offerData.length > 0) {
+            for (const signalData of this.offerData) {
                 this.sendOffer(this.formOffer(signalData));
             }
-            this.dispatch(clearOfferDataAction());
+            this.offerData = [];
         }
     }
 
