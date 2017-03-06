@@ -1,6 +1,8 @@
 import * as SimplePeer from "simple-peer";
+import { watchPeerStatusAction } from "../actions/ClientPeerActions";
 import { ClientMessenger } from "../communications/ClientMessenger";
 import { ClientReceiver } from "../communications/ClientReceiver";
+import { StoreWrapper } from "../redux/Store";
 import { ClientSignaler } from "./ClientSignaler";
 
 export class ClientPeerManager {
@@ -8,12 +10,14 @@ export class ClientPeerManager {
     private messenger: ClientMessenger;
     private receiver: ClientReceiver;
     private signaler: ClientSignaler;
+    private storeWrapper: StoreWrapper;
     private stream: MediaStream;
     private deliverStream: (stream: MediaStream) => void;
 
     constructor() {
         this.stream = null;
         this.deliverStream = null;
+        this.storeWrapper = StoreWrapper.getInstance();
 
         this.peer = new SimplePeer({
             initiator: true,
@@ -24,14 +28,12 @@ export class ClientPeerManager {
             },
         });
 
+        this.peer.on("stream", this.resolveStream);
+        this.storeWrapper.dispatch(watchPeerStatusAction(this.peer));
+
+        this.signaler = new ClientSignaler();
         this.messenger = new ClientMessenger(this.peer);
         this.receiver = new ClientReceiver(this.peer);
-        this.signaler = new ClientSignaler((stream) => {
-            this.stream = stream;
-            if (this.deliverStream) {
-                this.deliverStream(stream);
-            }
-        });
 
         this.peer.on("signal", this.signaler.sendSignal);
         this.signaler.onResponse((signalData) => this.peer.signal(signalData));
@@ -54,5 +56,12 @@ export class ClientPeerManager {
             callback(this.stream);
         }
         this.deliverStream = callback;
+    }
+
+    private resolveStream = (stream: MediaStream) => {
+        this.stream = stream;
+        if (this.deliverStream) {
+            this.deliverStream(stream);
+        }
     }
 }

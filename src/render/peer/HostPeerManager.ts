@@ -37,6 +37,11 @@ export class HostPeerManager extends AbstractSignal {
         this.stream = stream;
     }
 
+    /**
+     * Called when state changes
+     * @param oldState - Previous value of state
+     * @param nextState - New value of state
+     */
     protected notify(oldState: IState, nextState: IState) {
         if (!oldState.commonPeerState.serverStatus && nextState.commonPeerState.serverStatus) {
             this.discover();

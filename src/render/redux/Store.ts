@@ -3,6 +3,7 @@ import * as createLogger from "redux-logger";
 import thunkMiddleware from "redux-thunk";
 import IState from "./State";
 
+import { Action, ThunkAction } from "redux";
 import easeReducer from "../reducers/Reducer";
 
 const loggerMiddleware = createLogger();
@@ -30,6 +31,10 @@ export class StoreWrapper {
 
     public getState() {
         return this.store.getState();
+    }
+
+    public dispatch(action: Action | ThunkAction<any, IState, any>) {
+        this.store.dispatch(action as any);
     }
 
     /**

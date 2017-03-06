@@ -7,7 +7,7 @@ export class ClientSignaler extends AbstractSignal {
     private deliverSignal: (signalData: SimplePeer.SignalData) => void;
     private responseData: SimplePeer.SignalData[];
 
-    constructor(callbackStream: (stream: MediaStream) => void) {
+    constructor() {
         super();
         this.responseData = [];
         this.socket.on("response", this.dealWithResponse);

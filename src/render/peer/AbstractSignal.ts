@@ -23,10 +23,10 @@ export abstract class AbstractSignal {
     private storeWrapper: StoreWrapper;
 
     constructor() {
+        this.storeWrapper = StoreWrapper.getInstance();
         this.state = this.getState();
         this.socket = SocketIOClient.connect(this.state.settingsState.signalHost);
         this.dispatch(watchServerStatusAction(this.socket));
-        this.storeWrapper = StoreWrapper.getInstance();
         this.listen();
     }
 
