@@ -50,6 +50,8 @@ const hostPeerState = (state: IHostPeerState = initialHostPeerState, action: ToA
                             peerStatus: (action as ISetPeerStatusAction).status,
                         });
                     }
+
+                    return peer;
                 }),
             });
 
