@@ -24,6 +24,15 @@ export class ClientPeerManager {
         this.setupPeer();
     }
 
+    public reconnect = () => {
+        if (this.peer) {
+            this.peer.destroy(this.setupPeer);
+        }
+        else {
+            this.setupPeer();
+        }
+    }
+
     public getMessenger() {
         return this.messenger;
     }
@@ -62,9 +71,6 @@ export class ClientPeerManager {
     }
 
     private setupPeer = () => {
-        if (this.peer) {
-            delete this.peer;
-        }
         this.peer = this.createPeer();
         this.peer.on("stream", this.resolveStream);
         this.storeWrapper.dispatch(watchPeerStatusAction(this.peer));

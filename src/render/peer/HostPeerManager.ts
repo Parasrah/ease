@@ -103,6 +103,7 @@ export class HostPeerManager extends AbstractSignal {
         });
 
         peer.on("close", () => {
+            delete this.peers[clientID];
             this.dispatch(setPeerStatusAction(clientID, false));
         });
 
@@ -126,7 +127,8 @@ export class HostPeerManager extends AbstractSignal {
 
         // Deal with peer creation
         if (!this.peers[offer.clientID] && this.getVideoReady() && this.getServerStatus()) {
-            this.peers[offer.clientID] = this.createPeer(offer.clientID, (storePeer) ? storePeer.clientSignalData.concat(offer.signalData) : offer.signalData);
+            const signalData = storePeer ? storePeer.clientSignalData.concat(offer.signalData) : [offer.signalData];
+            this.peers[offer.clientID] = this.createPeer(offer.clientID, ...signalData);
             this.dispatch(clearSignalDataAction(offer.clientID));
         }
 

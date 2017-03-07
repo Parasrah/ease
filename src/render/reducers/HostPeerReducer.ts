@@ -1,7 +1,7 @@
 import { ActionType, ToAction } from "../actions/Action";
 import { HostPeerAction, IAddSignalDataAction, IClearSignalDataAction, ICreatePeerAction, ISetPeerStatusAction } from "../actions/HostPeerActions";
 import { IHostPeerState } from "../redux/State";
-import { DataType } from "../utils/Definitions";
+import { UserType } from "../utils/Definitions";
 import { addSignalData } from "../utils/ReduxUtils";
 
 const initialHostPeerState: IHostPeerState = {
@@ -13,10 +13,10 @@ const hostPeerState = (state: IHostPeerState = initialHostPeerState, action: ToA
 
     switch (action.type) {
         case types.addClientSignalDataAction:
-            return addSignalData(state, action as IAddSignalDataAction, DataType.CLIENT);
+            return addSignalData(state, action as IAddSignalDataAction, UserType.CLIENT);
 
         case types.addHostSignalDataAction:
-            return addSignalData(state, action as IAddSignalDataAction, DataType.HOST);
+            return addSignalData(state, action as IAddSignalDataAction, UserType.HOST);
 
         case types.clearSignalDataAction:
             return Object.assign({}, state, {
@@ -48,6 +48,7 @@ const hostPeerState = (state: IHostPeerState = initialHostPeerState, action: ToA
                     if (peer.clientID === (action as ISetPeerStatusAction).clientID) {
                         return Object.assign(peer, {
                             peerStatus: (action as ISetPeerStatusAction).status,
+                            clientSignalData: ((action as ISetPeerStatusAction).status) ? peer.clientSignalData : [],
                         });
                     }
 
