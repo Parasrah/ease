@@ -2,9 +2,14 @@ import * as SimplePeer from "simple-peer";
 import { IState } from "../redux/State";
 import { AbstractSignal, IOfferMessage, IResponseMessage } from "./AbstractSignal";
 
+interface IResponseStore {
+    id: string;
+    signalData: SimplePeer.SignalData;
+}
+
 export class ClientSignaler extends AbstractSignal {
     private deliverSignal: (signalData: SimplePeer.SignalData) => void;
-    private responseData: SimplePeer.SignalData[];
+    private responseData: IResponseStore[];
     private offerData: SimplePeer.SignalData[];
 
     constructor() {
@@ -17,7 +22,9 @@ export class ClientSignaler extends AbstractSignal {
     public onResponse(deliverSignal: (signalData: SimplePeer.SignalData) => void) {
         this.deliverSignal = deliverSignal;
         for (const data of this.responseData) {
-            deliverSignal(data);
+            if (this.getID() === data.id) {
+                deliverSignal(data);
+            }
         }
         this.responseData = [];
     }
@@ -58,11 +65,11 @@ export class ClientSignaler extends AbstractSignal {
                 this.deliverSignal(responseMessage.signalData);
             }
             else {
-                this.responseData.push(responseMessage.signalData);
+                this.responseData.push({
+                    id: responseMessage.clientID,
+                    signalData: responseMessage.signalData,
+                });
             }
-        }
-        else {
-            console.log("Received response not intended for you!! Please open an issue on https://github.com/Right2Drive/ease/issues");
         }
     }
 }

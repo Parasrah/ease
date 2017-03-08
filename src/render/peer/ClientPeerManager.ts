@@ -1,5 +1,8 @@
+import * as Guid from "guid";
 import * as SimplePeer from "simple-peer";
+
 import { watchPeerStatusAction } from "../actions/ClientPeerActions";
+import { setIDAction } from "../actions/CommonPeerActions";
 import { ClientMessenger } from "../communications/ClientMessenger";
 import { ClientReceiver } from "../communications/ClientReceiver";
 import { StoreWrapper } from "../redux/Store";
@@ -25,6 +28,7 @@ export class ClientPeerManager {
     }
 
     public reconnect = () => {
+        this.storeWrapper.dispatch(setIDAction(Guid.raw()));
         if (this.peer) {
             this.peer.destroy(this.setupPeer);
         }

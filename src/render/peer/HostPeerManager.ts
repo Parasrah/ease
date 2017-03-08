@@ -127,8 +127,11 @@ export class HostPeerManager extends AbstractSignal {
 
         // Deal with peer creation
         if (!this.peers[offer.clientID] && this.getVideoReady() && this.getServerStatus()) {
-            const signalData = storePeer ? storePeer.clientSignalData.concat(offer.signalData) : [offer.signalData];
-            this.peers[offer.clientID] = this.createPeer(offer.clientID, ...signalData);
+            if (storePeer) {
+                this.peers[offer.clientID] = this.createPeer(offer.clientID, ...storePeer.clientSignalData.concat(offer.signalData));
+            } else {
+                this.peers[offer.clientID] = this.createPeer(offer.clientID, offer.signalData);
+            }
             this.dispatch(clearSignalDataAction(offer.clientID));
         }
 

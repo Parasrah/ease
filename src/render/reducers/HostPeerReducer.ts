@@ -22,7 +22,7 @@ const hostPeerState = (state: IHostPeerState = initialHostPeerState, action: ToA
             return Object.assign({}, state, {
                 hostPeers: state.hostPeers.map((peer) => {
                     if (peer.clientID === (action as IClearSignalDataAction).id) {
-                        Object.assign(peer, {
+                        return Object.assign(peer, {
                             hostSignalData: [],
                         });
                     }
