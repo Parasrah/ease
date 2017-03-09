@@ -1,7 +1,7 @@
 import * as Guid from "guid";
 import * as SimplePeer from "simple-peer";
 
-import { watchPeerStatusAction } from "../actions/ClientPeerActions";
+import { setPeerStatusAction, watchPeerStatusAction } from "../actions/ClientPeerActions";
 import { setIDAction } from "../actions/CommonPeerActions";
 import { ClientMessenger } from "../communications/ClientMessenger";
 import { ClientReceiver } from "../communications/ClientReceiver";
@@ -30,6 +30,8 @@ export class ClientPeerManager {
     public reconnect = () => {
         this.storeWrapper.dispatch(setIDAction(Guid.raw()));
         if (this.peer) {
+            this.peer.removeAllListeners();
+            this.storeWrapper.dispatch(setPeerStatusAction(false));
             this.peer.destroy(this.setupPeer);
         }
         else {

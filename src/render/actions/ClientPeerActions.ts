@@ -1,7 +1,7 @@
 import { Action, ThunkAction } from "redux";
 import { Instance } from "simple-peer";
 import { IState } from "../redux/State";
-import { ActionType, ToAction } from "./Action";
+import { ActionType } from "./Action";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
@@ -21,14 +21,14 @@ export interface ISetPeerStatusAction extends Action {
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const setHostIDAction = (hostID: string): ToAction<ISetHostIDAction> => {
+export const setHostIDAction = (hostID: string): ISetHostIDAction => {
     return {
         type: ActionType.clientPeerAction.setHostIDAction,
         hostID,
     };
 };
 
-export type setHostIDAction = (hostID: string) => ToAction<ISetHostIDAction>;
+export type setHostIDAction = (hostID: string) => ISetHostIDAction;
 
 export const setPeerStatusAction: setPeerStatusAction = (peerStatus) => {
     return {
@@ -37,7 +37,7 @@ export const setPeerStatusAction: setPeerStatusAction = (peerStatus) => {
     };
 };
 
-export type setPeerStatusAction = (peerStatus: boolean) => ToAction<ISetPeerStatusAction>;
+export type setPeerStatusAction = (peerStatus: boolean) => ISetPeerStatusAction;
 
 export const watchPeerStatusAction: watchPeerStatusAction = (peer) => {
     return (dispatch, getState) => {

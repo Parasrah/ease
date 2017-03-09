@@ -1,5 +1,3 @@
-import { Action } from "redux";
-
 export const ActionType = {
     appAction: {
         changePageAction: "CHANGE_PAGE",
@@ -21,8 +19,10 @@ export const ActionType = {
         createPeerAction: "CREATE_PEER",
         addClientSignalDataAction: "ADD_CLIENT_SIGNAL_DATA",
         addHostSignalDataAction: "ADD_HOST_SIGNAL_DATA",
-        clearSignalDataAction: "CLEAR_SIGNAL_DATA",
+        clearClientSignalDataAction: "CLEAR_SIGNAL_DATA",
         setPeerStatusAction: "SET_PEER_SIGNAL_STATUS",
+        removePeerAction: "REMOVE_PEER_ACTION",
+        clearHostSignalDataAction: "CLEAR_HOST_SIGNAL_DATA_ACTION",
     },
     clientPeerAction: {
         setHostIDAction: "SET_HOST_ID",
@@ -32,12 +32,3 @@ export const ActionType = {
         setSignalHostAction: "SET_SIGNAL_HOST",
     },
 };
-
-/**
- * Defines the action interfaces
- */
-interface IType {
-    readonly type: string;
-}
-
-export type ToAction<T extends Action> = T & IType;
