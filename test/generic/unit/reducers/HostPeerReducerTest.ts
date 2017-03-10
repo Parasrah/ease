@@ -31,12 +31,11 @@ describe("Unit testing host peer reducer", function() {
                 },
             ],
         });
-        initialState = Object.assign({}, state);
+        initialState = state;
     });
 
     beforeEach(function() {
-        console.log(JSON.stringify(initialState));
-        store = StoreWrapper.configureStore(Object.assign({}, initialState), false);
+        store = StoreWrapper.configureStore(JSON.parse(JSON.stringify(initialState)), false);
     });
 
     describe("#addClientSignalData", function() {
