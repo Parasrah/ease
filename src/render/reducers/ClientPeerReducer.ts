@@ -1,4 +1,4 @@
-import { ActionType, ToAction } from "../actions/Action";
+import { ActionType } from "../actions/Action";
 import { ClientPeerAction, ISetHostIDAction, ISetPeerStatusAction } from "../actions/ClientPeerActions";
 import { IClientPeerState } from "../redux/State";
 
@@ -7,7 +7,7 @@ const initialClientPeerState: IClientPeerState = {
     hostID: "",
 };
 
-const clientPeerState = (state: IClientPeerState = initialClientPeerState, action: ToAction<ClientPeerAction>) => {
+const clientPeerState = (state: IClientPeerState = initialClientPeerState, action: ClientPeerAction) => {
     const types = ActionType.clientPeerAction;
 
     switch (action.type) {

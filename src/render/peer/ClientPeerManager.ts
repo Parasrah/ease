@@ -1,5 +1,8 @@
+import * as Guid from "guid";
 import * as SimplePeer from "simple-peer";
-import { watchPeerStatusAction } from "../actions/ClientPeerActions";
+
+import { setPeerStatusAction, watchPeerStatusAction } from "../actions/ClientPeerActions";
+import { setIDAction } from "../actions/CommonPeerActions";
 import { ClientMessenger } from "../communications/ClientMessenger";
 import { ClientReceiver } from "../communications/ClientReceiver";
 import { StoreWrapper } from "../redux/Store";
@@ -18,25 +21,22 @@ export class ClientPeerManager {
         this.stream = null;
         this.deliverStream = null;
         this.storeWrapper = StoreWrapper.getInstance();
-
-        this.peer = new SimplePeer({
-            initiator: true,
-            trickle: true,
-            offerConstraints: {
-                offerToReceiveVideo: true,
-                offerToReceiveAudio: true,
-            },
-        });
-
-        this.peer.on("stream", this.resolveStream);
-        this.storeWrapper.dispatch(watchPeerStatusAction(this.peer));
-
+        this.messenger = new ClientMessenger();
+        this.receiver = new ClientReceiver();
         this.signaler = new ClientSignaler();
-        this.messenger = new ClientMessenger(this.peer);
-        this.receiver = new ClientReceiver(this.peer);
+        this.setupPeer();
+    }
 
-        this.peer.on("signal", this.signaler.sendSignal);
-        this.signaler.onResponse((signalData) => this.peer.signal(signalData));
+    public reconnect = () => {
+        this.storeWrapper.dispatch(setIDAction(Guid.raw()));
+        if (this.peer) {
+            this.peer.removeAllListeners();
+            this.storeWrapper.dispatch(setPeerStatusAction(false));
+            this.peer.destroy(this.setupPeer);
+        }
+        else {
+            this.setupPeer();
+        }
     }
 
     public getMessenger() {
@@ -58,10 +58,32 @@ export class ClientPeerManager {
         this.deliverStream = callback;
     }
 
+    private createPeer() {
+        return new SimplePeer({
+            initiator: true,
+            trickle: true,
+            offerConstraints: {
+                offerToReceiveVideo: true,
+                offerToReceiveAudio: true,
+            },
+        });
+    }
+
     private resolveStream = (stream: MediaStream) => {
         this.stream = stream;
         if (this.deliverStream) {
             this.deliverStream(stream);
         }
+    }
+
+    private setupPeer = () => {
+        this.peer = this.createPeer();
+        this.peer.on("stream", this.resolveStream);
+        this.storeWrapper.dispatch(watchPeerStatusAction(this.peer));
+        this.messenger.renewPeer(this.peer);
+        this.receiver.renewPeer(this.peer);
+        this.peer.on("signal", this.signaler.sendSignal);
+        this.peer.on("close", this.setupPeer);
+        this.signaler.onResponse((signalData) => this.peer.signal(signalData));
     }
 }

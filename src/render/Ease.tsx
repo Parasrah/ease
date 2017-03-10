@@ -60,28 +60,22 @@ export class Ease extends React.Component<IEaseProps, {}> {
         switch (page) {
             case Page.START:
                 this.renderedPage = (
-                    <StartPageContainer
-                        filepathCallback={this.startVideo}
-                    />
+                    <StartPageContainer filepathCallback={this.startVideo} />
                 );
                 break;
+
             case Page.VIDEO_HOST:
                 this.renderedPage = (
-                    <VideoHostPageContainer
-                        videoSource={this.videoPath}
-                        poster=""
-                    />
+                    <VideoHostPageContainer videoSource={this.videoPath} />
                 );
                 break;
 
             case Page.VIDEO_CLIENT:
                 this.renderedPage = (
-                    <VideoClientPageContainer
-                        poster=""
-                        videoSource=""
-                    />
+                    <VideoClientPageContainer/>
                 );
                 break;
+
             default:
                 throw new Error("NoSuchEnum");
         }

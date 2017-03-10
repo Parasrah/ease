@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import { Page } from "../utils/Definitions";
-import { ActionType, ToAction } from "./Action";
+import { ActionType } from "./Action";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
@@ -16,11 +16,11 @@ export interface IChangePageAction extends Action {
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const changePageAction = (page: Page): ToAction<IChangePageAction> => {
+export const changePageAction = (page: Page): IChangePageAction => {
     return {
         type: ActionType.appAction.changePageAction,
         page,
     };
 };
 
-export type changePageAction = (page: Page) => ToAction<IChangePageAction>;
+export type changePageAction = (page: Page) => IChangePageAction;

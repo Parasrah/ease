@@ -5,6 +5,7 @@ import { HostMessageType, IControlMessage, IDurationMessage, IPlayMessage, ITime
 interface IConnection {
     peer: Instance;
     connected: boolean;
+    clientID: string;
 }
 
 export class HostMessenger {
@@ -16,11 +17,12 @@ export class HostMessenger {
         this.connections = [];
     }
 
-    public registerPeer(peer: Instance) {
+    public registerPeer(peer: Instance, clientID: string) {
 
         this.connections.push({
             peer,
             connected: false,
+            clientID,
         });
 
         peer.on("connect", () => {
@@ -35,14 +37,17 @@ export class HostMessenger {
                 }
             }
         });
+    }
 
-        peer.on("close", () => {
-            for (let i = 0; i < this.connections.length; i++) {
-                if (this.connections[i].peer === peer) {
-                    this.connections.splice(i, 1);
-                }
+    public deregisterPeer(clientID: string) {
+        for (let i = 0; i < this.connections.length; i++) {
+            if (this.connections[i].clientID === clientID) {
+                this.connections.splice(i, 1);
+
+                return;
             }
-        });
+        }
+        throw new Error("No registered peer with id: " + clientID);
     }
 
     public publishDuration(duration: number) {

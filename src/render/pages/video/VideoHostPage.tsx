@@ -1,14 +1,18 @@
+import * as React from "react";
 import { connect } from "react-redux";
+
 import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
 import { HostMessenger } from "../../communications/HostMessenger";
 import { HostReceiver } from "../../communications/HostReceiver";
+import { VideoElement } from "../../components/VideoElement";
 import { ClientMessageType, ISeekMessage } from "../../messages/ControlMessage";
 import { HostPeerManager } from "../../peer/HostPeerManager";
 import IState from "../../redux/State";
+import { UserType } from "../../utils/Definitions";
 import { IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage } from "./VideoPage";
 
 interface IHostInputProps extends IVideoInputProps {
-
+    videoSource: string;
 }
 
 interface IHostStoreProps extends IVideoStoreProps {
@@ -29,6 +33,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     constructor(props) {
         super(props);
+        this.type = UserType.HOST;
         this.peerManager = new HostPeerManager();
         this.messenger = this.peerManager.getMessenger();
         this.receiver = this.peerManager.getReceiver();
@@ -115,6 +120,35 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         super.componentDidMount();
 
         this.setupVideo(this.video);
+    }
+
+    public render(): JSX.Element {
+        return (
+            <div className="video">
+                <b> ID: </b> {this.props.id}
+                <button onClick={this.copyClick}>copy</button>
+                <VideoElement
+                    poster=""
+                    videoSource={this.props.videoSource}
+                    setVideo={this.setVideo}
+                    setVideoWrapper={this.setVideoWrapper}
+                    onPlayPauseButton={this.togglePlay}
+                    onVolumeButton={this.toggleVolume}
+                    onCastButton={this.onCastButton}
+                    onFullscreenButton={this.toggleFullscreen}
+                    onSeek={this.seek}
+                    onVolumeChange={this.setVolume}
+                    duration={this.state.duration}
+                    time={this.state.time}
+                    volume={this.state.volume}
+                    play={this.props.play}
+                    show={this.state.show}
+                    onMouseMove={this.onMouseMove}
+                    onVideoWheel={this.onVideoWheel}
+                    onVideoClick={this.togglePlay}
+                />
+            </div>
+        );
     }
 
     /*********************** Redux *******************************/

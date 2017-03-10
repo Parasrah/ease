@@ -1,5 +1,5 @@
 import * as SimplePeer from "simple-peer";
-import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, createPeerAction, setPeerStatusAction } from "../actions/HostPeerActions";
+import { addClientSignalDataAction, addHostSignalDataAction, clearClientSignalDataAction, clearHostSignalDataAction, createPeerAction, removePeerAction, setPeerStatusAction } from "../actions/HostPeerActions";
 import { HostMessenger } from "../communications/HostMessenger";
 import { HostReceiver } from "../communications/HostReceiver";
 import { IState } from "../redux/State";
@@ -54,20 +54,27 @@ export class HostPeerManager extends AbstractSignal {
                     for (const data of storePeer.clientSignalData) {
                         this.peers[storePeer.clientID].signal(data); // TODO investigate this
                     }
-                    this.dispatch(clearSignalDataAction(storePeer.clientID));
+                    this.dispatch(clearClientSignalDataAction(storePeer.clientID));
                 }
             }
             else if (storePeer.clientSignalData.length > 0 && nextState.videoState.videoReady) {
-                this.peers[storePeer.clientID] = this.createPeer(storePeer.clientID, storePeer.clientSignalData);
-                this.dispatch(clearSignalDataAction(storePeer.clientID));
+                if (this.peers[storePeer.clientID] !== null) {
+                    this.peers[storePeer.clientID] = this.createPeer(storePeer.clientID, storePeer.clientSignalData);
+                }
+                this.dispatch(clearClientSignalDataAction(storePeer.clientID));
             }
         });
 
         // See if host signal data can be used (waiting on server)
         if (this.getServerStatus()) {
             this.getHostState().hostPeers.forEach((storePeer) => {
-                for (const data of storePeer.hostSignalData) {
-                    this.respond(storePeer.clientID, data);
+                if (this.peers[storePeer.clientID] !== null && storePeer.hostSignalData.length > 0) {
+                    for (const data of storePeer.hostSignalData) {
+                        this.respond(storePeer.clientID, data);
+                    }
+                }
+                if (storePeer.hostSignalData.length > 0) {
+                    this.dispatch(clearHostSignalDataAction(storePeer.clientID));
                 }
             });
         }
@@ -91,8 +98,8 @@ export class HostPeerManager extends AbstractSignal {
             },
         });
 
-        this.hostReceiver.registerPeer(peer);
-        this.hostMessenger.registerPeer(peer);
+        this.hostReceiver.registerPeer(peer, clientID);
+        this.hostMessenger.registerPeer(peer, clientID);
 
         peer.on("signal", (signalData: SimplePeer.SignalData) => {
             this.tryToRespond(clientID, signalData);
@@ -103,7 +110,12 @@ export class HostPeerManager extends AbstractSignal {
         });
 
         peer.on("close", () => {
-            this.dispatch(setPeerStatusAction(clientID, false));
+            this.hostMessenger.deregisterPeer(clientID);
+            this.hostReceiver.deregisterPeer(clientID);
+            (this.peers[clientID] as SimplePeer.Instance).removeAllListeners();
+            delete this.peers[clientID];
+            this.peers[clientID] = null;
+            this.dispatch(removePeerAction(clientID));
         });
 
         for (const data of offerData) {
@@ -115,9 +127,16 @@ export class HostPeerManager extends AbstractSignal {
 
     private dealWithOffer = (offer: IOfferMessage) => {
         let storePeer: IPeer = null;
+        let signalData = [ offer.signalData ];
+
+        // Look for existing store peer
         this.getHostState().hostPeers.forEach((peer) => {
             if (peer.clientID === offer.clientID) {
+                // Discovered store peer
                 storePeer = peer;
+                signalData.push(...storePeer.clientSignalData);
+
+                // If not ready, store the data
                 if (!this.getVideoReady() || !this.getServerStatus()) {
                     this.dispatch(addClientSignalDataAction(offer.clientID, offer.signalData));
                 }
@@ -126,12 +145,28 @@ export class HostPeerManager extends AbstractSignal {
 
         // Deal with peer creation
         if (!this.peers[offer.clientID] && this.getVideoReady() && this.getServerStatus()) {
-            this.peers[offer.clientID] = this.createPeer(offer.clientID, (storePeer) ? storePeer.clientSignalData.concat(offer.signalData) : offer.signalData);
-            this.dispatch(clearSignalDataAction(offer.clientID));
+            // If store peer exists, check for store data
+            if (storePeer) {
+                this.peers[offer.clientID] = this.createPeer(offer.clientID, ...signalData);
+            } else {
+                // Else, use offer data
+                this.peers[offer.clientID] = this.createPeer(offer.clientID, ...signalData);
+            }
+            if (signalData.length > 1) {
+                this.dispatch(clearClientSignalDataAction(offer.clientID));
+            }
+            signalData = [];
         }
 
         else if (this.peers[offer.clientID] && this.getVideoReady() && this.getServerStatus()) {
-            this.peers[offer.clientID].signal(offer.signalData);
+            const peer = this.peers[offer.clientID];
+            for (const data of signalData) {
+                peer.signal(data);
+            }
+            if (signalData.length > 1) {
+                this.dispatch(clearClientSignalDataAction(offer.clientID));
+            }
+            signalData = [];
         }
 
         // Create store peer if necessary

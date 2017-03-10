@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { ActionType, ToAction } from "./Action";
+import { ActionType } from "./Action";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
@@ -22,4 +22,4 @@ export const setSignalHostAction = (signalHost: string) => {
     };
 };
 
-export type setSignalHostAction = (signalHost: string) => ToAction<ISetSignalHostAction>;
+export type setSignalHostAction = (signalHost: string) => ISetSignalHostAction;

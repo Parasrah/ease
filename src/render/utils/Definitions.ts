@@ -26,7 +26,8 @@ export interface IPeer {
     hostSignalData: SignalData[];
 }
 
-export enum DataType {
+export enum UserType {
     HOST = 1,
     CLIENT,
+    PENDING,
 }
