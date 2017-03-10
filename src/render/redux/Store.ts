@@ -17,11 +17,11 @@ export class StoreWrapper {
         this.store = StoreWrapper.configureStore();
     }
 
-    public getStore() {
+    public getStore(): Store<IState> {
         return this.store;
     }
 
-    public static getInstance() {
+    public static getInstance(): StoreWrapper {
         if (StoreWrapper.instance === null) {
             StoreWrapper.instance = new StoreWrapper();
         }
@@ -29,7 +29,7 @@ export class StoreWrapper {
         return StoreWrapper.instance;
     }
 
-    public getState() {
+    public getState(): IState {
         return this.store.getState();
     }
 
@@ -41,14 +41,24 @@ export class StoreWrapper {
      * Generate a store, should not be called directly save for testing purposes
      * @param preloadedState - initial state for store
      */
-    public static configureStore(preloadedState?: IState) {
+    public static configureStore(preloadedState?: IState, log?: boolean) {
+        let middleware;
+        if (log === false) {
+            middleware = applyMiddleware(
+                thunkMiddleware,
+            );
+        }
+        else {
+            middleware = applyMiddleware(
+                thunkMiddleware,
+                loggerMiddleware,
+            );
+        }
+
         return createStore<IState>(
             easeReducer,
             preloadedState,
-            applyMiddleware(
-                thunkMiddleware,
-                loggerMiddleware,
-            ),
+            middleware,
         );
     }
 }
