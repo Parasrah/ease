@@ -14,7 +14,7 @@ For the more technical minded out there, Ease is using an experimental chromium 
 
 ### Future
 
-In the future we aspire to building a web client, or perhaps some mobile apps, for the peers (the host will unfortunately be constrained to electron). If you want to see more features, please open an issue with the `Feature Request` tag, and we will be happy to take a look =D
+In the future we aspire to building a web client, or perhaps some mobile apps, for the peers (the host will unfortunately be constrained to electron). If you want to see more features, please open an issue with the `Feature Request` tag, and we will be happy to take a look :octocat:
 
 ## Getting Started Developing
 
@@ -50,7 +50,7 @@ In the future we aspire to building a web client, or perhaps some mobile apps, f
 
   - `npm run watch:wp` and `npm run watch:ts`
 
-- Having this many file watchers is ridiculous though. Don't worry, we've got you covered! The following script runs all watchers concurrently so you don't have to stress! =D
+- Having this many file watchers is ridiculous though. Don't worry, we've got you covered! The following script runs all watchers concurrently so you don't have to stress! :octocat:
 
   - `npm run watch`
 
@@ -72,10 +72,31 @@ In the future we aspire to building a web client, or perhaps some mobile apps, f
 
     - `npm run test:render`
 
+  - Some of the tests for the render process don't need to be run in an electron environment. These are run via:
+
+    - `npm run test:generic`
+
   - To debug render process:
 
-    1) `npm run test:debug-main`
+    1) `npm run test:debug-render`
 
     2) Set your breakpoints using the console that is shown
 
     3) Press `CTRL-R` to reload and run the tests again
+
+  - Debugging main process and generic tests
+
+    - If you are using vscode, you can find an example `launch.json` [here](https://gist.github.com/Right2Drive/b1812090383600cbf54d5d4c56c6a286)
+
+    - If you are using some other editor/IDE, I'm afraid right now you'll have to figure it out for yourself. Feel free to share your configurations with us, and we can add links in the README :octocat:
+
+
+### Issues
+
+- Feel free to open any issues you find [here](https://github.com/Right2Drive/ease/issues)
+
+- The project uses ZenHub for issue tracking, so if you want to see a more detailed overview of where the project is you can download the extension (free) [here](https://www.zenhub.com/)
+
+### Thanks
+
+- A huge thanks to all the open source projects that have made this possible, Ease is our way of giving back :octocat: :heart:

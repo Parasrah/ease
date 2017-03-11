@@ -61,6 +61,7 @@ const hostPeerState = (state: IHostPeerState = initialHostPeerState, action: Hos
                         return Object.assign(peer, {
                             peerStatus: (action as ISetPeerStatusAction).status,
                             clientSignalData: ((action as ISetPeerStatusAction).status) ? peer.clientSignalData : [],
+                            hostSignalData: ((action as ISetPeerStatusAction).status) ? peer.hostSignalData : [],
                         });
                     }
 
