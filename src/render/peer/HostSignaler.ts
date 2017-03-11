@@ -23,6 +23,9 @@ export class HostSignaler extends AbstractSignaler {
 
     /**
      * Send signal data from the host peer to the appropriate location
+     *
+     * @param clientID - Target of signal data
+     * @param signalData - simple-peer signal data payload
      */
     public handleSignalData = (clientID: string, signalData: SimplePeer.SignalData) => {
         if (this.getServerStatus()) {
@@ -33,6 +36,11 @@ export class HostSignaler extends AbstractSignaler {
         }
     }
 
+    /**
+     * Subscribe to signal data from the signaler
+     *
+     * @param callback - callback through which to deliver signal data to subscriber
+     */
     public subscribe = (callback: deliverSignalData) => {
         this.deliverSignalData = callback;
         this.checkSignalStore(this.getHostState().hostPeers);
@@ -40,7 +48,7 @@ export class HostSignaler extends AbstractSignaler {
 
     /**
      * Called when state changes
-
+     *
      * @param oldState - Previous value of state
      * @param nextState - New value of state
      */
@@ -49,12 +57,23 @@ export class HostSignaler extends AbstractSignaler {
         this.checkSignalStore(nextState.hostPeerState.hostPeers);
     }
 
+    /**
+     * If the server reconnects, send discovery message
+     *
+     * @param oldServerStatus Previous state of server
+     * @param newServerStatus New state of server
+     */
     private checkServerStatus(oldServerStatus, newServerStatus) {
         if (!oldServerStatus && newServerStatus) {
             this.discover();
         }
     }
 
+    /**
+     * Run through the hostPeers, checking for stored signal data
+     *
+     * @param hostPeers - hostPeers from store
+     */
     private checkSignalStore(hostPeers: IPeer[]) {
         hostPeers.forEach((peer) => {
             if (peer.clientSignalData.length && this.getVideoReady() && this.deliverSignalData) {
@@ -78,7 +97,7 @@ export class HostSignaler extends AbstractSignaler {
     }
 
     private handleOffer = (offer: IOfferMessage) => {
-
+        // TODO
     }
 
     private respond = (clientID: string, signalData: SimplePeer.SignalData) => {

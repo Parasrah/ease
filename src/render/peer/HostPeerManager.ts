@@ -30,10 +30,37 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
 
         this.storeWrapper = StoreWrapper.getInstance();
         this.peers = [];
+        this.signaler.subscribe(this.recieveSignalData);
     }
 
+    /**
+     * Register the video stream with the HostPeerManager
+     *
+     * @param stream - Video stream
+     */
     public registerStream(stream: MediaStream) {
         this.stream = stream;
+    }
+
+    /**
+     * Handle signal data returned from the host signaler
+     *
+     * @param clientID - ID of peer targeted by signal data
+     * @param signalData - simple-peer signal data
+     */
+    private recieveSignalData = (clientID: string, ...signalData: SimplePeer.SignalData[]) => {
+        for (let i = 0; i < this.peers.length; i++) {
+            if (this.peers[i].clientID === clientID) {
+                for (let j = 0; j < signalData.length; j++) {
+                    this.peers[i].signal(signalData[j]);
+                }
+
+                return;
+            }
+        }
+
+        // No peer already exists, create a new peer
+        this.createPeer(clientID, ...signalData);
     }
 
     /**
@@ -98,6 +125,10 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
                 this.peers.splice(i, 1);
                 removed = true;
             }
+        }
+
+        if (!removed) {
+            console.error("Attempted to remove a peer that does not exist\nPeer: " + peer.clientID);
         }
 
         this.storeWrapper.dispatch(removePeerAction(peer.clientID));
