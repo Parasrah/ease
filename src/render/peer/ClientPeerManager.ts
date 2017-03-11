@@ -6,24 +6,24 @@ import { setIDAction } from "../actions/CommonPeerActions";
 import { ClientMessenger } from "../communications/ClientMessenger";
 import { ClientReceiver } from "../communications/ClientReceiver";
 import { StoreWrapper } from "../redux/Store";
+import { AbstractPeerManager } from "./AbstractPeerManager";
 import { ClientSignaler } from "./ClientSignaler";
 
-export class ClientPeerManager {
+export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, ClientMessenger, ClientSignaler> {
     private peer: SimplePeer.Instance;
-    private messenger: ClientMessenger;
-    private receiver: ClientReceiver;
-    private signaler: ClientSignaler;
     private storeWrapper: StoreWrapper;
     private stream: MediaStream;
     private deliverStream: (stream: MediaStream) => void;
 
     constructor() {
+        super(
+            new ClientReceiver(),
+            new ClientMessenger(),
+            new ClientSignaler(),
+        );
         this.stream = null;
         this.deliverStream = null;
         this.storeWrapper = StoreWrapper.getInstance();
-        this.messenger = new ClientMessenger();
-        this.receiver = new ClientReceiver();
-        this.signaler = new ClientSignaler();
         this.setupPeer();
     }
 
@@ -37,14 +37,6 @@ export class ClientPeerManager {
         else {
             this.setupPeer();
         }
-    }
-
-    public getMessenger() {
-        return this.messenger;
-    }
-
-    public getReceiver() {
-        return this.receiver;
     }
 
     public getPeer() {
@@ -80,8 +72,8 @@ export class ClientPeerManager {
         this.peer = this.createPeer();
         this.peer.on("stream", this.resolveStream);
         this.storeWrapper.dispatch(watchPeerStatusAction(this.peer));
-        this.messenger.renewPeer(this.peer);
-        this.receiver.renewPeer(this.peer);
+        this.getMessenger().renewPeer(this.peer);
+        this.getReceiver().renewPeer(this.peer);
         this.peer.on("signal", this.signaler.sendSignal);
         this.peer.on("close", this.setupPeer);
         this.signaler.onResponse((signalData) => this.peer.signal(signalData));

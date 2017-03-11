@@ -1,14 +1,16 @@
 import * as SimplePeer from "simple-peer";
 import { IState } from "../redux/State";
-import { AbstractSignal, IOfferMessage, IResponseMessage } from "./AbstractSignal";
+import { AbstractSignaler, IOfferMessage, IResponseMessage } from "./AbstractSignaler";
 
 interface IResponseStore {
     id: string;
     signalData: SimplePeer.SignalData;
 }
 
-export class ClientSignaler extends AbstractSignal {
+export class ClientSignaler extends AbstractSignaler {
     private deliverSignal: (signalData: SimplePeer.SignalData) => void;
+
+    // NOTE: If these object get any more complicated, add to store
     private responseData: IResponseStore[];
     private offerData: SimplePeer.SignalData[];
 

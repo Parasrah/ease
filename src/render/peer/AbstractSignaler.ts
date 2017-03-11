@@ -17,7 +17,7 @@ export interface IResponseMessage {
     signalData: SignalData;
 }
 
-export abstract class AbstractSignal {
+export abstract class AbstractSignaler {
     protected socket: SocketIOClient.Socket;
     private state: IState;
     private storeWrapper: StoreWrapper;

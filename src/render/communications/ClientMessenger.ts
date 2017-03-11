@@ -1,13 +1,12 @@
 import { Instance } from "simple-peer";
 import { ClientMessageType, IControlMessage, ISeekMessage } from "../messages/ControlMessage";
-import { StoreWrapper } from "../redux/Store";
+import { AbstractMessenger } from "./AbstractMessenger";
 
-export class ClientMessenger {
+export class ClientMessenger extends AbstractMessenger {
     private peer: Instance;
-    private storeWrapper: StoreWrapper;
 
     constructor() {
-        this.storeWrapper = StoreWrapper.getInstance();
+        super();
     }
 
     public renewPeer(peer: Instance) {
@@ -30,7 +29,7 @@ export class ClientMessenger {
     }
 
     private sendMessage(message: object) {
-        if (this.storeWrapper.getState().clientPeerState.peerStatus) {
+        if (this.getClientPeerState().peerStatus) {
             this.peer.send(JSON.stringify(message));
         }
     }

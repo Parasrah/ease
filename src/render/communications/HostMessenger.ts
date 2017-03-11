@@ -1,6 +1,7 @@
 import { Instance } from "simple-peer";
 
 import { HostMessageType, IControlMessage, IDurationMessage, IPlayMessage, ITimeMessage } from "../messages/ControlMessage";
+import { AbstractMessenger } from "./AbstractMessenger";
 
 interface IConnection {
     peer: Instance;
@@ -8,11 +9,12 @@ interface IConnection {
     clientID: string;
 }
 
-export class HostMessenger {
+export class HostMessenger extends AbstractMessenger {
     private maxTime: number;
     private connections: IConnection[];
 
     constructor() {
+        super();
         this.maxTime = null;
         this.connections = [];
     }
