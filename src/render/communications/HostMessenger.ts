@@ -1,12 +1,12 @@
 import { Instance } from "simple-peer";
 
 import { HostMessageType, IControlMessage, IDurationMessage, IPlayMessage, ITimeMessage } from "../messages/ControlMessage";
+import { IEnhancedPeer } from "../peer/HostPeerManager";
 import { AbstractMessenger } from "./AbstractMessenger";
 
 interface IConnection {
-    peer: Instance;
+    peer: IEnhancedPeer;
     connected: boolean;
-    clientID: string;
 }
 
 export class HostMessenger extends AbstractMessenger {
@@ -19,12 +19,11 @@ export class HostMessenger extends AbstractMessenger {
         this.connections = [];
     }
 
-    public registerPeer(peer: Instance, clientID: string) {
+    public registerPeer(peer: IEnhancedPeer) {
 
         this.connections.push({
             peer,
             connected: false,
-            clientID,
         });
 
         peer.on("connect", () => {
@@ -43,7 +42,7 @@ export class HostMessenger extends AbstractMessenger {
 
     public deregisterPeer(clientID: string) {
         for (let i = 0; i < this.connections.length; i++) {
-            if (this.connections[i].clientID === clientID) {
+            if (this.connections[i].peer.clientID === clientID) {
                 this.connections.splice(i, 1);
 
                 return;

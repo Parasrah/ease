@@ -1,59 +1,73 @@
+import * as SimplePeer from "simple-peer";
+
+import { addHostSignalDataAction, clearClientSignalDataAction, clearHostSignalDataAction } from "../actions/HostPeerActions";
 import { IState } from "../redux/State";
-import { AbstractSignaler } from "./AbstractSignaler";
+import { IPeer } from "../utils/Definitions";
+import { AbstractSignaler, IOfferMessage, IResponseMessage } from "./AbstractSignaler";
 
 interface IInitMessage {
     id: string;
 }
 
+type deliverSignalData = (clientID: string, ...signalData: SimplePeer.SignalData[]) => void;
+
 export class HostSignaler extends AbstractSignaler {
+    private deliverSignalData: deliverSignalData;
 
     constructor() {
         super();
 
-        this.socket.on("offer", this.dealWithOffer);
+        this.deliverSignalData = null;
+        this.socket.on("offer", this.handleOffer);
+    }
+
+    /**
+     * Send signal data from the host peer to the appropriate location
+     */
+    public handleSignalData = (clientID: string, signalData: SimplePeer.SignalData) => {
+        if (this.getServerStatus()) {
+            this.respond(clientID, signalData);
+        }
+        else {
+            this.dispatch(addHostSignalDataAction(clientID, signalData));
+        }
+    }
+
+    public subscribe = (callback: deliverSignalData) => {
+        this.deliverSignalData = callback;
+        this.checkSignalStore(this.getHostState().hostPeers);
     }
 
     /**
      * Called when state changes
+
      * @param oldState - Previous value of state
      * @param nextState - New value of state
      */
     protected notify(oldState: IState, nextState: IState) {
-        if (!oldState.commonPeerState.serverStatus && nextState.commonPeerState.serverStatus) {
+        this.checkServerStatus(oldState.commonPeerState.serverStatus, nextState.commonPeerState.serverStatus);
+        this.checkSignalStore(nextState.hostPeerState.hostPeers);
+    }
+
+    private checkServerStatus(oldServerStatus, newServerStatus) {
+        if (!oldServerStatus && newServerStatus) {
             this.discover();
         }
+    }
 
-        // See if client signal data can be used (waiting for video or server)
-        nextState.hostPeerState.hostPeers.forEach((storePeer) => {
-            if (this.peers[storePeer.clientID]) {
-                if (storePeer.clientSignalData.length > 0) {
-                    for (const data of storePeer.clientSignalData) {
-                        this.peers[storePeer.clientID].signal(data); // TODO investigate this
-                    }
-                    this.dispatch(clearClientSignalDataAction(storePeer.clientID));
-                }
+    private checkSignalStore(hostPeers: IPeer[]) {
+        hostPeers.forEach((peer) => {
+            if (peer.clientSignalData.length && this.getVideoReady() && this.deliverSignalData) {
+                this.deliverSignalData(peer.clientID, ...peer.clientSignalData);
+                this.dispatch(clearClientSignalDataAction(peer.clientID));
             }
-            else if (storePeer.clientSignalData.length > 0 && nextState.videoState.videoReady) {
-                if (this.peers[storePeer.clientID] !== null) {
-                    this.peers[storePeer.clientID] = this.createPeer(storePeer.clientID, storePeer.clientSignalData);
+            if (peer.hostSignalData.length && this.getServerStatus()) {
+                for (let i = 0; i < peer.hostSignalData.length; i++) {
+                    this.respond(peer.clientID, peer.hostSignalData[i]);
                 }
-                this.dispatch(clearClientSignalDataAction(storePeer.clientID));
+                this.dispatch(clearHostSignalDataAction(peer.clientID));
             }
         });
-
-        // See if host signal data can be used (waiting on server)
-        if (this.getServerStatus()) {
-            this.getHostState().hostPeers.forEach((storePeer) => {
-                if (this.peers[storePeer.clientID] !== null && storePeer.hostSignalData.length > 0) {
-                    for (const data of storePeer.hostSignalData) {
-                        this.respond(storePeer.clientID, data);
-                    }
-                }
-                if (storePeer.hostSignalData.length > 0) {
-                    this.dispatch(clearHostSignalDataAction(storePeer.clientID));
-                }
-            });
-        }
     }
 
     private discover = () => {
@@ -63,69 +77,8 @@ export class HostSignaler extends AbstractSignaler {
         this.socket.emit("discover", initMessage);
     }
 
-    private dealWithOffer = (offer: IOfferMessage) => {
-        let storePeer: IPeer = null;
-        let signalData = [ offer.signalData ];
+    private handleOffer = (offer: IOfferMessage) => {
 
-        // Look for existing store peer
-        this.getHostState().hostPeers.forEach((peer) => {
-            if (peer.clientID === offer.clientID) {
-                // Discovered store peer
-                storePeer = peer;
-                signalData.push(...storePeer.clientSignalData);
-
-                // If not ready, store the data
-                if (!this.getVideoReady() || !this.getServerStatus()) {
-                    this.dispatch(addClientSignalDataAction(offer.clientID, offer.signalData));
-                }
-            }
-        });
-
-        // Deal with peer creation
-        if (!this.peers[offer.clientID] && this.getVideoReady() && this.getServerStatus()) {
-            // If store peer exists, check for store data
-            if (storePeer) {
-                this.peers[offer.clientID] = this.createPeer(offer.clientID, ...signalData);
-            } else {
-                // Else, use offer data
-                this.peers[offer.clientID] = this.createPeer(offer.clientID, ...signalData);
-            }
-            if (signalData.length > 1) {
-                this.dispatch(clearClientSignalDataAction(offer.clientID));
-            }
-            signalData = [];
-        }
-
-        else if (this.peers[offer.clientID] && this.getVideoReady() && this.getServerStatus()) {
-            const peer = this.peers[offer.clientID];
-            for (const data of signalData) {
-                peer.signal(data);
-            }
-            if (signalData.length > 1) {
-                this.dispatch(clearClientSignalDataAction(offer.clientID));
-            }
-            signalData = [];
-        }
-
-        // Create store peer if necessary
-        if (!storePeer) {
-            if (this.getServerStatus() && this.getVideoReady()) {
-                this.dispatch(createPeerAction(offer.clientID));
-            }
-            else {
-                this.dispatch(createPeerAction(offer.clientID, offer.signalData));
-            }
-        }
-    }
-
-    private tryToRespond = (clientID: string, signalData: SimplePeer.SignalData) => {
-        if (this.getServerStatus()) {
-            this.respond(clientID, signalData);
-        }
-        else {
-            // Put into the store
-            this.dispatch(addHostSignalDataAction(clientID, signalData));
-        }
     }
 
     private respond = (clientID: string, signalData: SimplePeer.SignalData) => {

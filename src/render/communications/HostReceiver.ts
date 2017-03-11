@@ -1,18 +1,13 @@
-import { Instance } from "simple-peer";
 import { ClientMessageType } from "../messages/ControlMessage";
+import { IEnhancedPeer } from "../peer/HostPeerManager";
 import { AbstractReceiver } from "./AbstractReceiver";
 
-interface IConnection {
-    peer: Instance;
-    clientID: string;
-}
-
 export class HostReceiver extends AbstractReceiver {
-    private connections: IConnection[];
+    private peers: IEnhancedPeer[];
 
     constructor() {
         super();
-        this.connections = [];
+        this.peers = [];
         for (const key of Object.keys(ClientMessageType)) {
             this.subs.push({
                 event: ClientMessageType[key],
@@ -21,19 +16,15 @@ export class HostReceiver extends AbstractReceiver {
         }
     }
 
-    public registerPeer(peer: Instance, clientID: string) {
-        this.connections.push({
-            peer,
-            clientID,
-        });
-
+    public registerPeer(peer: IEnhancedPeer) {
+        this.peers.push(peer);
         peer.on("data", this.handleMessage);
     }
 
     public deregisterPeer(clientID: string) {
-        for (let i = 0; i < this.connections.length; i++) {
-            if (this.connections[i].clientID === clientID) {
-                this.connections.splice(i, 1);
+        for (let i = 0; i < this.peers.length; i++) {
+            if (this.peers[i].clientID === clientID) {
+                this.peers.splice(i, 1);
 
                 return;
             }
