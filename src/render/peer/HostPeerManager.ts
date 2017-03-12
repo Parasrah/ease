@@ -69,7 +69,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      * @param clientID - Corresponding id of clientID
      * @param signalArray Optional signal data
      */
-    private createPeer(clientID: string, ...signalArray: SimplePeer.SignalData[]): void {
+    private createPeer = (clientID: string, ...signalArray: SimplePeer.SignalData[]): void => {
         // Create a normal SimplePeer instance
         const peer = new SimplePeer({
             initiator: false,
@@ -104,7 +104,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      *
      * @param peer - instance of EnhancedPeer to watch
      */
-    private watchPeer(peer: IEnhancedPeer) {
+    private watchPeer = (peer: IEnhancedPeer) => {
         peer.on("connect", () => this.storeWrapper.dispatch(setPeerStatusAction(peer.clientID, true)));
         peer.on("signal", (signalData) => this.signaler.handleSignalData(peer.clientID, signalData));
         peer.on("close", () => this.removePeer(peer));
@@ -116,7 +116,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      * @param peer - EnhancedPeer to remove
      * @throws Error - Peer doesn't exist in {@link HostPeerManager#peers}
      */
-    private removePeer(peer: IEnhancedPeer): void {
+    private removePeer = (peer: IEnhancedPeer): void => {
         let removed = false;
 
         this.getMessenger().deregisterPeer(peer.clientID);

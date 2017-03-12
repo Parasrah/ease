@@ -32,7 +32,16 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         if (this.peer) {
             this.peer.removeAllListeners();
             this.storeWrapper.dispatch(setPeerStatusAction(false));
-            this.peer.destroy(this.setupPeer);
+
+            if ((this.peer as any).connected === undefined) {
+                throw new Error("No `connected` status on simple-peer instance");
+            }
+            if ((this.peer as any).connected) {
+                this.peer.destroy(this.setupPeer);
+            }
+            else {
+                this.setupPeer();
+            }
         }
         else {
             this.setupPeer();
@@ -43,7 +52,7 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         return this.peer;
     }
 
-    public onStream(callback: (stream: MediaStream) => void) {
+    public onStream = (callback: (stream: MediaStream) => void) => {
         if (this.stream) {
             callback(this.stream);
         }
@@ -75,7 +84,7 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         this.getMessenger().renewPeer(this.peer);
         this.getReceiver().renewPeer(this.peer);
         this.peer.on("signal", this.signaler.sendSignal);
-        this.peer.on("close", this.setupPeer);
+        this.peer.on("close", this.reconnect);
         this.signaler.onResponse((signalData) => this.peer.signal(signalData));
     }
 }
