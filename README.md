@@ -35,6 +35,8 @@ In the future we aspire to building a web client, or perhaps some mobile apps, f
 - Run the setup script:
 
   - `npm run setup`
+
+- Note: Linux users may need to add `sudo` permissions
   
 ### Building
 

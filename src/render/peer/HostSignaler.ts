@@ -1,6 +1,6 @@
 import * as SimplePeer from "simple-peer";
 
-import { addHostSignalDataAction, clearClientSignalDataAction, clearHostSignalDataAction } from "../actions/HostPeerActions";
+import { addClientSignalDataAction, addHostSignalDataAction, clearClientSignalDataAction, clearHostSignalDataAction, createPeerAction } from "../actions/HostPeerActions";
 import { IState } from "../redux/State";
 import { IPeer } from "../utils/Definitions";
 import { AbstractSignaler, IOfferMessage, IResponseMessage } from "./AbstractSignaler";
@@ -11,7 +11,15 @@ interface IInitMessage {
 
 type deliverSignalData = (clientID: string, ...signalData: SimplePeer.SignalData[]) => void;
 
+/**
+ * Object to handle all socket.io interactions with signaling server.
+ */
 export class HostSignaler extends AbstractSignaler {
+    /**
+     * Callback through with to deliver signal data up the chain.
+     *
+     * **DO NOT** call this if the video is not ready.
+     */
     private deliverSignalData: deliverSignalData;
 
     constructor() {
@@ -77,8 +85,8 @@ export class HostSignaler extends AbstractSignaler {
     private checkSignalStore(hostPeers: IPeer[]) {
         hostPeers.forEach((peer) => {
             if (peer.clientSignalData.length && this.getVideoReady() && this.deliverSignalData) {
+                this.dispatch(clearClientSignalDataAction(peer.clientID)); // TODO check order of this
                 this.deliverSignalData(peer.clientID, ...peer.clientSignalData);
-                this.dispatch(clearClientSignalDataAction(peer.clientID));
             }
             if (peer.hostSignalData.length && this.getServerStatus()) {
                 for (let i = 0; i < peer.hostSignalData.length; i++) {
@@ -89,6 +97,9 @@ export class HostSignaler extends AbstractSignaler {
         });
     }
 
+    /**
+     * Send discovery message to the server
+     */
     private discover = () => {
         const initMessage: IInitMessage = {
             id: this.getID(),
@@ -96,10 +107,49 @@ export class HostSignaler extends AbstractSignaler {
         this.socket.emit("discover", initMessage);
     }
 
+    /**
+     * Handle offer message from a client
+     *
+     * @param offer - Offer message
+     */
     private handleOffer = (offer: IOfferMessage) => {
-        // TODO
+        // Check if peer exists in store
+        const hostPeers = this.getHostState().hostPeers;
+        let found: IPeer = null;
+        for (let i = 0; i < hostPeers.length; i++) {
+            if (hostPeers[i].clientID === offer.clientID) {
+                found = hostPeers[i];
+            }
+        }
+
+        // If no peer in store, create one
+        if (!found) {
+            const signalData = this.getVideoReady() ? [] : [ offer.signalData ];
+            this.dispatch(createPeerAction(offer.clientID, ...signalData));
+        }
+
+        // If video is ready, deliver signal data
+        if (this.getVideoReady()) {
+            const signalData = [ offer.signalData ];
+            if (found && found.clientSignalData.length) {
+                signalData.push(...found.clientSignalData);
+                this.dispatch(clearClientSignalDataAction(offer.clientID));
+            }
+            this.deliverSignalData(offer.clientID, ...signalData);
+        }
+
+        // If video is not ready, store signal data
+        else {
+            this.dispatch(addClientSignalDataAction(offer.clientID, offer.signalData));
+        }
     }
 
+    /**
+     * Send a response message to the server
+     *
+     * @param clientID - Intended client for message
+     * @param signalData - simple-peer signal data
+     */
     private respond = (clientID: string, signalData: SimplePeer.SignalData) => {
         const responseMessage: IResponseMessage = {
             signalData,

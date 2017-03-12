@@ -106,7 +106,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      */
     private watchPeer(peer: IEnhancedPeer) {
         peer.on("connect", () => this.storeWrapper.dispatch(setPeerStatusAction(peer.clientID, true)));
-        peer.on("signal", this.signaler.handleSignalData);
+        peer.on("signal", (signalData) => this.signaler.handleSignalData(peer.clientID, signalData));
         peer.on("close", () => this.removePeer(peer));
     }
 
@@ -119,6 +119,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
     private removePeer(peer: IEnhancedPeer): void {
         let removed = false;
 
+        this.getMessenger().deregisterPeer(peer.clientID);
         peer.removeAllListeners();
         for (let i = 0; i < this.peers.length; i++) {
             if (this.peers[i].clientID === peer.clientID) {
