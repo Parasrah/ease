@@ -1,86 +1,76 @@
 import * as SimplePeer from "simple-peer";
-import { addClientSignalDataAction, addHostSignalDataAction, clearSignalDataAction, createPeerAction, setPeerStatusAction } from "../actions/HostPeerActions";
+import { removePeerAction, setPeerStatusAction } from "../actions/HostPeerActions";
 import { HostMessenger } from "../communications/HostMessenger";
 import { HostReceiver } from "../communications/HostReceiver";
-import { IState } from "../redux/State";
-import { IPeer } from "../utils/Definitions";
-import { AbstractSignal, IOfferMessage, IResponseMessage } from "./AbstractSignal";
+import { StoreWrapper } from "../redux/Store";
+import { AbstractPeerManager } from "./AbstractPeerManager";
+import { HostSignaler } from "./HostSignaler";
 
-interface IInitMessage {
-    id: string;
+export interface IEnhancedPeer extends SimplePeer.Instance {
+    clientID: string;
 }
 
-export class HostPeerManager extends AbstractSignal {
-    private hostReceiver: HostReceiver;
-    private hostMessenger: HostMessenger;
-    private peers: SimplePeer.Instance[];
+/**
+ * Manage the peers connected to the host
+ *
+ * @since 2017-03-10
+ */
+export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMessenger, HostSignaler> {
+    /** List of enhanced peers maintained by HostPeerManager */
+    private peers: IEnhancedPeer[];
+    private storeWrapper: StoreWrapper;
     private stream: any;
 
     constructor() {
-        super();
+        super(
+            new HostReceiver(),
+            new HostMessenger(),
+            new HostSignaler(),
+        );
 
-        this.hostReceiver = new HostReceiver();
-        this.hostMessenger = new HostMessenger();
-        this.socket.on("offer", this.dealWithOffer);
+        this.storeWrapper = StoreWrapper.getInstance();
         this.peers = [];
+        this.signaler.subscribe(this.recieveSignalData);
     }
 
-    public getMessenger() {
-        return this.hostMessenger;
-    }
-
-    public getReceiver() {
-        return this.hostReceiver;
-    }
-
+    /**
+     * Register the video stream with the HostPeerManager
+     *
+     * @param stream - Video stream
+     */
     public registerStream(stream: MediaStream) {
         this.stream = stream;
     }
 
     /**
-     * Called when state changes
-     * @param oldState - Previous value of state
-     * @param nextState - New value of state
+     * Handle signal data returned from the host signaler
+     *
+     * @param clientID - ID of peer targeted by signal data
+     * @param signalData - simple-peer signal data
      */
-    protected notify(oldState: IState, nextState: IState) {
-        if (!oldState.commonPeerState.serverStatus && nextState.commonPeerState.serverStatus) {
-            this.discover();
+    private recieveSignalData = (clientID: string, ...signalData: SimplePeer.SignalData[]) => {
+        for (let i = 0; i < this.peers.length; i++) {
+            if (this.peers[i].clientID === clientID) {
+                for (let j = 0; j < signalData.length; j++) {
+                    this.peers[i].signal(signalData[j]);
+                }
+
+                return;
+            }
         }
 
-        // See if client signal data can be used (waiting for video or server)
-        nextState.hostPeerState.hostPeers.forEach((storePeer) => {
-            if (this.peers[storePeer.clientID]) {
-                if (storePeer.clientSignalData.length > 0) {
-                    for (const data of storePeer.clientSignalData) {
-                        this.peers[storePeer.clientID].signal(data); // TODO investigate this
-                    }
-                    this.dispatch(clearSignalDataAction(storePeer.clientID));
-                }
-            }
-            else if (storePeer.clientSignalData.length > 0 && nextState.videoState.videoReady) {
-                this.peers[storePeer.clientID] = this.createPeer(storePeer.clientID, storePeer.clientSignalData);
-                this.dispatch(clearSignalDataAction(storePeer.clientID));
-            }
-        });
-
-        // See if host signal data can be used (waiting on server)
-        if (this.getServerStatus()) {
-            this.getHostState().hostPeers.forEach((storePeer) => {
-                for (const data of storePeer.hostSignalData) {
-                    this.respond(storePeer.clientID, data);
-                }
-            });
-        }
+        // No peer already exists, create a new peer
+        this.createPeer(clientID, ...signalData);
     }
 
-    private discover = () => {
-        const initMessage: IInitMessage = {
-            id: this.getID(),
-        };
-        this.socket.emit("discover", initMessage);
-    }
-
-    private createPeer = (clientID: string, ...offerData: SimplePeer.SignalData[]): SimplePeer.Instance => {
+    /**
+     * Handle creation of a new IEnhancedPeer and add to {@link HostPeerManager#peers}
+     *
+     * @param clientID - Corresponding id of clientID
+     * @param signalArray Optional signal data
+     */
+    private createPeer = (clientID: string, ...signalArray: SimplePeer.SignalData[]): void => {
+        // Create a normal SimplePeer instance
         const peer = new SimplePeer({
             initiator: false,
             stream: this.stream,
@@ -91,75 +81,61 @@ export class HostPeerManager extends AbstractSignal {
             },
         });
 
-        this.hostReceiver.registerPeer(peer);
-        this.hostMessenger.registerPeer(peer);
+        // Convert to enhanced peer
+        const enhancedPeer = Object.assign(peer, {clientID});
 
-        peer.on("signal", (signalData: SimplePeer.SignalData) => {
-            this.tryToRespond(clientID, signalData);
-        });
+        // Register with communication managers
+        this.getMessenger().registerPeer(enhancedPeer);
+        this.getReceiver().registerPeer(enhancedPeer);
 
-        peer.on("connect", () => {
-            this.dispatch(setPeerStatusAction(clientID, true));
-        });
+        this.watchPeer(enhancedPeer);
 
-        peer.on("close", () => {
-            this.dispatch(setPeerStatusAction(clientID, false));
-        });
-
-        for (const data of offerData) {
-            peer.signal(data);
+        // Deal with signal data
+        for (let i = 0; i < signalArray.length; i++) {
+            enhancedPeer.signal(signalArray[i]);
         }
 
-        return peer;
+        // Add peer to list
+        this.peers.push(enhancedPeer);
     }
 
-    private dealWithOffer = (offer: IOfferMessage) => {
-        let storePeer: IPeer = null;
-        this.getHostState().hostPeers.forEach((peer) => {
-            if (peer.clientID === offer.clientID) {
-                storePeer = peer;
-                if (!this.getVideoReady() || !this.getServerStatus()) {
-                    this.dispatch(addClientSignalDataAction(offer.clientID, offer.signalData));
-                }
-            }
-        });
-
-        // Deal with peer creation
-        if (!this.peers[offer.clientID] && this.getVideoReady() && this.getServerStatus()) {
-            this.peers[offer.clientID] = this.createPeer(offer.clientID, (storePeer) ? storePeer.clientSignalData.concat(offer.signalData) : offer.signalData);
-            this.dispatch(clearSignalDataAction(offer.clientID));
-        }
-
-        else if (this.peers[offer.clientID] && this.getVideoReady() && this.getServerStatus()) {
-            this.peers[offer.clientID].signal(offer.signalData);
-        }
-
-        // Create store peer if necessary
-        if (!storePeer) {
-            if (this.getServerStatus() && this.getVideoReady()) {
-                this.dispatch(createPeerAction(offer.clientID));
-            }
-            else {
-                this.dispatch(createPeerAction(offer.clientID, offer.signalData));
-            }
-        }
+    /**
+     * Respond to events on the peer
+     *
+     * @param peer - instance of EnhancedPeer to watch
+     */
+    private watchPeer = (peer: IEnhancedPeer) => {
+        peer.on("connect", () => this.storeWrapper.dispatch(setPeerStatusAction(peer.clientID, true)));
+        peer.on("signal", (signalData) => this.signaler.handleSignalData(peer.clientID, signalData));
+        peer.on("close", () => this.removePeer(peer));
     }
 
-    private tryToRespond = (clientID: string, signalData: SimplePeer.SignalData) => {
-        if (this.getServerStatus()) {
-            this.respond(clientID, signalData);
-        }
-        else {
-            // Put into the store
-            this.dispatch(addHostSignalDataAction(clientID, signalData));
-        }
-    }
+    /**
+     * Deal with the deletion of the peer
+     *
+     * @param peer - EnhancedPeer to remove
+     * @throws Error - Peer doesn't exist in {@link HostPeerManager#peers}
+     */
+    private removePeer = (peer: IEnhancedPeer): void => {
+        let removed = false;
 
-    private respond = (clientID: string, signalData: SimplePeer.SignalData) => {
-        const responseMessage: IResponseMessage = {
-            signalData,
-            clientID,
-        };
-        this.socket.emit("respond", responseMessage);
+        this.getMessenger().deregisterPeer(peer.clientID);
+        peer.removeAllListeners();
+        for (let i = 0; i < this.peers.length; i++) {
+            if (this.peers[i].clientID === peer.clientID) {
+                this.peers.splice(i, 1);
+                removed = true;
+            }
+        }
+
+        if (!removed) {
+            console.error("Attempted to remove a peer that does not exist\nPeer: " + peer.clientID);
+        }
+
+        this.storeWrapper.dispatch(removePeerAction(peer.clientID));
+
+        if (!removed) {
+            throw new Error("Attempted to remove a peer that does not exist");
+        }
     }
 }

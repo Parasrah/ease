@@ -1,10 +1,15 @@
 import { Instance } from "simple-peer";
 import { ClientMessageType, IControlMessage, ISeekMessage } from "../messages/ControlMessage";
+import { AbstractMessenger } from "./AbstractMessenger";
 
-export class ClientMessenger {
+export class ClientMessenger extends AbstractMessenger {
     private peer: Instance;
 
-    constructor(peer: Instance) {
+    constructor() {
+        super();
+    }
+
+    public renewPeer(peer: Instance) {
         this.peer = peer;
     }
 
@@ -24,6 +29,8 @@ export class ClientMessenger {
     }
 
     private sendMessage(message: object) {
-        this.peer.send(JSON.stringify(message));
+        if (this.getClientPeerState().peerStatus) {
+            this.peer.send(JSON.stringify(message));
+        }
     }
 }

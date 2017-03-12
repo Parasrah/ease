@@ -6,7 +6,7 @@ import { AbstractReceiver } from "./AbstractReceiver";
 export class ClientReceiver extends AbstractReceiver {
     private peer;
 
-    constructor(peer: Instance) {
+    constructor() {
         super();
 
         // Setup subscriptions
@@ -16,11 +16,10 @@ export class ClientReceiver extends AbstractReceiver {
                 listeners: [],
             });
         }
+    }
 
-        // Setup peer
+    public renewPeer(peer: Instance) {
         this.peer = peer;
-        this.peer.on("data", (message) => {
-            this.handleMessage(JSON.parse(message));
-        });
+        this.peer.on("data", this.handleMessage);
     }
 }

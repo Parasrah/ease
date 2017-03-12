@@ -1,12 +1,12 @@
+import { clipboard } from "electron";
 import * as React from "react";
 
 import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
-import { VideoElement } from "../../components/VideoElement";
 import "../../style/video.less";
+import { UserType } from "../../utils/Definitions";
 
 export interface IVideoInputProps {
-    videoSource: string;
-    poster: string;
+
 }
 
 export interface IVideoStoreProps {
@@ -36,6 +36,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     protected video: HTMLVideoElement;
     protected videoWrapper: HTMLDivElement;
     protected timer: number;
+    protected type: UserType;
 
     constructor(props) {
         super(props);
@@ -47,6 +48,8 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             duration: 100,
             show: true,
         };
+
+        this.type = UserType.PENDING;
     }
 
     /************************ Methods ************************/
@@ -77,7 +80,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         });
     }
 
-    private toggleFullscreen = () => {
+    protected toggleFullscreen = () => {
         if (document.webkitIsFullScreen) {
             document.webkitExitFullscreen();
         } else {
@@ -85,21 +88,21 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         }
     }
 
-    private setVideo = (video: HTMLVideoElement) => {
+    protected setVideo = (video: HTMLVideoElement) => {
         this.video = video;
     }
 
-    private setVideoWrapper = (videoWrapper: HTMLDivElement) => {
+    protected setVideoWrapper = (videoWrapper: HTMLDivElement) => {
         this.videoWrapper = videoWrapper;
     }
 
-    private toggleVolume = () => {
+    protected toggleVolume = () => {
         this.setState({
             muted: !this.state.muted,
         });
     }
 
-    private onMouseMove = () => {
+    protected onMouseMove = () => {
         this.showControls();
         if (this.timer) {
             window.clearTimeout(this.timer);
@@ -107,7 +110,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.timer = window.setTimeout(this.hideControls, this.SHOW_CONTROLS_TIME);
     }
 
-    private onVideoWheel = (event: React.WheelEvent<HTMLVideoElement>) => {
+    protected onVideoWheel = (event: React.WheelEvent<HTMLVideoElement>) => {
         const newVolume = this.state.volume + ((event.deltaY > 0) ? -5 : 5);
         this.setVolume(newVolume);
     }
@@ -150,6 +153,10 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         });
     }
 
+    protected copyClick = () => {
+        clipboard.writeText(this.props.id);
+    }
+
     /******************** Abstract Methods *******************/
 
     protected abstract togglePlay: () => void;
@@ -166,31 +173,5 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.video.volume = nextState.muted ? 0 : (nextState.volume / 100);
     }
 
-    public render(): JSX.Element {
-        return (
-            <div className="video">
-                <b> ID: </b> {this.props.id}
-                <VideoElement
-                    poster={this.props.poster}
-                    videoSource={this.props.videoSource}
-                    setVideo={this.setVideo}
-                    setVideoWrapper={this.setVideoWrapper}
-                    onPlayPauseButton={this.togglePlay}
-                    onVolumeButton={this.toggleVolume}
-                    onCastButton={this.onCastButton}
-                    onFullscreenButton={this.toggleFullscreen}
-                    onSeek={this.seek}
-                    onVolumeChange={this.setVolume}
-                    duration={this.state.duration}
-                    time={this.state.time}
-                    volume={this.state.volume}
-                    play={this.props.play}
-                    show={this.state.show}
-                    onMouseMove={this.onMouseMove}
-                    onVideoWheel={this.onVideoWheel}
-                    onVideoClick={this.togglePlay}
-                />
-            </div>
-        );
-    }
+    public abstract render(): JSX.Element;
 }

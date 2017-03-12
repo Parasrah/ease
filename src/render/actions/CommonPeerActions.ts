@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { ActionType, ToAction } from "./Action";
+import { ActionType } from "./Action";
 
 /*************************************************************/
 /********************* Action Definitions ********************/
@@ -19,16 +19,16 @@ export interface ISetIDAction extends Action {
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const setIDAction = (id: string): ToAction<ISetIDAction> => {
+export const setIDAction = (id: string): ISetIDAction => {
     return {
         type: ActionType.commonPeerAction.setIDAction,
         id,
     };
 };
 
-export type setIDAction = (id: string) => ToAction<ISetIDAction>;
+export type setIDAction = (id: string) => ISetIDAction;
 
-const setServerStatusAction = (serverStatus: boolean): ToAction<ISetServerStatusAction> => {
+const setServerStatusAction = (serverStatus: boolean): ISetServerStatusAction => {
     return {
         type: ActionType.commonPeerAction.setServerStatusAction,
         serverStatus,
@@ -55,4 +55,4 @@ export const watchServerStatusAction = (socket: SocketIOClient.Socket) => {
     };
 };
 
-export type watchServerStatusAction = (socket: SocketIOClient.Socket) => ToAction<ISetServerStatusAction>;
+export type watchServerStatusAction = (socket: SocketIOClient.Socket) => ISetServerStatusAction;

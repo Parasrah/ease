@@ -1,22 +1,25 @@
 import { Instance } from "simple-peer";
 
 import { HostMessageType, IControlMessage, IDurationMessage, IPlayMessage, ITimeMessage } from "../messages/ControlMessage";
+import { IEnhancedPeer } from "../peer/HostPeerManager";
+import { AbstractMessenger } from "./AbstractMessenger";
 
 interface IConnection {
-    peer: Instance;
+    peer: IEnhancedPeer;
     connected: boolean;
 }
 
-export class HostMessenger {
+export class HostMessenger extends AbstractMessenger {
     private maxTime: number;
     private connections: IConnection[];
 
     constructor() {
+        super();
         this.maxTime = null;
         this.connections = [];
     }
 
-    public registerPeer(peer: Instance) {
+    public registerPeer(peer: IEnhancedPeer) {
 
         this.connections.push({
             peer,
@@ -35,14 +38,17 @@ export class HostMessenger {
                 }
             }
         });
+    }
 
-        peer.on("close", () => {
-            for (let i = 0; i < this.connections.length; i++) {
-                if (this.connections[i].peer === peer) {
-                    this.connections.splice(i, 1);
-                }
+    public deregisterPeer(clientID: string) {
+        for (let i = 0; i < this.connections.length; i++) {
+            if (this.connections[i].peer.clientID === clientID) {
+                this.connections.splice(i, 1);
+
+                return;
             }
-        });
+        }
+        throw new Error("No registered peer with id: " + clientID);
     }
 
     public publishDuration(duration: number) {
