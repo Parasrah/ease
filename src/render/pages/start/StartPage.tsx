@@ -20,6 +20,10 @@ interface IStartStoreProps {
 
 }
 
+interface IStartState {
+    startSelected: boolean, 
+    joinSelected: boolean,
+}
 interface IStartDispatchProps {
     setHostID?: (id: string) => void;
     changePage?: (page: Page) => void;
@@ -27,13 +31,17 @@ interface IStartDispatchProps {
 
 type IStartProps = IStartInputProps & IStartStoreProps & IStartDispatchProps;
 
-class StartPage extends React.Component<IStartProps, {}> {
+class StartPage extends React.Component<IStartProps, IStartState> {
     private idInput: HTMLInputElement;
 
     constructor(props) {
         super(props);
         this.idInput = null;
 
+        this.state = {
+            startSelected: false,
+            joinSelected: false,
+        }
         // Listen for file
         this.listen();
     }
@@ -82,29 +90,86 @@ class StartPage extends React.Component<IStartProps, {}> {
         this.idInput = input;
     }
 
+    private startSessionOnClick = () => {
+        this.setState({
+            startSelected: true,
+        });
+    }
+    private joinSessionOnClick = () => {
+        this.setState({
+            joinSelected: true,
+        });
+    }
     /********************* React Lifecycle ***********************/
 
     public render(): JSX.Element {
+        let options;
+        if (this.state.joinSelected || this.state.startSelected) {
+            options = (
+            <div className="options">
+                <div className={"animated fadeOutLeft"}>
+                    <div className="start">
+                        <button
+                            type="button"
+                             onClick={this.startSessionOnClick}
+                         >START SESSION
+                        </button>
+                    </div>
+                    <div className="join">
+                        <button
+                            type="button"
+                            onClick={this.joinSessionOnClick}
+                         >JOIN SESSION
+                         </button>
+                    </div>
+                </div>
+                <div className={this.state.joinSelected ? "animated  fadeInRight" : "none"}>
+                    <div className="join">
+                    <div className="optionsTitle">Join a Session</div>
+                          <input
+                        type="text"
+                        name="id"
+                        placeholder="Host ID"
+                        onKeyPress={this.onIdFieldKeyPress}
+                        ref={this.setIdInput}
+                    />
+                    <button
+                        type="button"
+                        className="pure-button pure-button-primary join-button"
+                        onClick={this.onIdButtonClick}
+                    >Join
+                    </button></div> </div>
+                        <div className={this.state.startSelected ? "animated  fadeInRight" : "none"}>
+                          <div className="host"><div className="optionsTitle">Start Session</div>
+                    <UploadBox onClick={this.onUploadClick} /> </div></div>
+            </div>
+            );
+        } else {
+            options = (<div className="options"><div className="start">
+                            <button
+                                type="button"
+                                onClick={this.startSessionOnClick}
+                            >START SESSION
+                            </button>
+                        </div>
+                        <div className="join">
+                            <button
+                                type="button"
+                                onClick={this.joinSessionOnClick}
+                            >JOIN SESSION
+                            </button>
+                        </div></div>);
+        }
+
+        
+        
         return (
             <div className="startPage">
                 <div className="logo">
                     ease
                 </div>
-                <div className="options">
-                <div className="start">
-                    <button
-                        type="button"
-                        onClick={this.onIdButtonClick}
-                    >START a SESSION
-                    </button>
-                </div>
-                <div className="join">
-                    <button
-                        type="button"
-                        onClick={this.onIdButtonClick}
-                    >JOIN a SESSION
-                    </button>
-                </div>
+                <div className="menu">
+                    {options}
                 </div>
             </div>
         );
