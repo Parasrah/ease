@@ -33,15 +33,15 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
             onMouseMove={props.onMouseMove}
         >
             <video
-                src={props.videoSource}
-                ref={props.setVideo}
-                poster={props.poster}
                 type="video/mp4"
                 width="100%"
                 height="100%"
-                autoPlay
+                src={props.videoSource}
+                ref={props.setVideo}
+                poster={props.poster}
                 onWheel={props.onVideoWheel}
                 onClick={props.onVideoClick}
+                autoPlay={true}
             />
             <Controls
                 show={props.show}
