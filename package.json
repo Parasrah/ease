@@ -46,8 +46,16 @@
   "author": "Brad Pfannmuller",
   "license": "MIT",
   "devDependencies": {
+    "@types/chai": "^3.4.35",
+    "@types/electron": "^1.4.33",
+    "@types/mocha": "^2.2.40",
+    "@types/node": "^7.0.8",
     "@types/react": "^15.0.7",
     "@types/react-dom": "^0.14.23",
+    "@types/react-redux": "^4.4.37",
+    "@types/redux-logger": "^2.6.34",
+    "@types/simple-peer": "^6.1.0",
+    "@types/socket.io-client": "^1.4.29",
     "awesome-typescript-loader": "^3.0.3",
     "chai": "^3.5.0",
     "concurrently": "^3.3.0",
@@ -67,7 +75,6 @@
     "tslint": "^4.5.1",
     "tslint-react": "^2.3.0",
     "typescript": "^2.2.1",
-    "typings": "^2.1.0",
     "webpack": "^2.2.1"
   },
   "dependencies": {

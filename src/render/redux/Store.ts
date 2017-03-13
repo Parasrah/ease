@@ -1,10 +1,9 @@
-import { applyMiddleware, createStore, Store } from "redux";
+import { Action, applyMiddleware, createStore, Store } from "redux";
 import * as createLogger from "redux-logger";
-import thunkMiddleware from "redux-thunk";
-import IState from "./State";
+import thunkMiddleware, { ThunkAction } from "redux-thunk";
 
-import { Action, ThunkAction } from "redux";
 import easeReducer from "../reducers/Reducer";
+import IState from "./State";
 
 const loggerMiddleware = createLogger();
 
