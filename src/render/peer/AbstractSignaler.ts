@@ -1,4 +1,5 @@
-import { Action, ThunkAction } from "redux";
+import { Action } from "redux";
+import { ThunkAction } from "redux-thunk";
 
 import { SignalData } from "simple-peer";
 import * as SocketIOClient from "socket.io-client";
