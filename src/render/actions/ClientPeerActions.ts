@@ -1,4 +1,5 @@
-import { Action, ThunkAction } from "redux";
+import { Action } from "redux";
+import { ThunkAction } from "redux-thunk";
 import { Instance } from "simple-peer";
 import { IState } from "../redux/State";
 import { ActionType } from "./Action";

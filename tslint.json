@@ -75,7 +75,7 @@
             false
         ],
         "only-arrow-functions": [
-            true
+            false
         ],
         "one-line": [
             true,
@@ -89,10 +89,6 @@
         "semicolon": [
             true,
             "always"
-        ],
-        "triple-equals": [
-            true,
-            "allow-null-check"
         ],
         "typedef-whitespace": [
             true,
@@ -117,7 +113,6 @@
             "check-type"
         ],
         "eofline": true,
-        "prefer-const": true,
         "switch-default": true,
         "no-console": [
             false
