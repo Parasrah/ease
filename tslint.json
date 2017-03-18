@@ -75,7 +75,7 @@
             false
         ],
         "only-arrow-functions": [
-            true
+            false
         ],
         "one-line": [
             true,
