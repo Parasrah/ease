@@ -144,6 +144,7 @@
         "object-literal-key-quotes": [
             true,
             "as-needed"
-        ]
+        ],
+        "no-shadowed-variable": false
     }
 }
