@@ -2,9 +2,9 @@
 import { assert } from "chai";
 import { Store } from "redux";
 
-import { addClientSignalDataAction, addHostSignalDataAction, clearClientSignalDataAction, clearHostSignalDataAction, createPeerAction, removePeerAction, setPeerStatusAction } from "../../../../src/render/actions/HostPeerActions";
-import { IState } from "../../../../src/render/redux/State";
-import { StoreWrapper } from "../../../../src/render/redux/Store";
+import { addClientSignalDataAction, addHostSignalDataAction, clearClientSignalDataAction, clearHostSignalDataAction, createPeerAction, removePeerAction, setPeerStatusAction } from "../../../../../src/render/actions/HostPeerActions";
+import { IState } from "../../../../../src/render/redux/State";
+import { StoreWrapper } from "../../../../../src/render/redux/Store";
 
 describe("Unit testing host peer reducer", function() {
     let store: Store<IState>;
