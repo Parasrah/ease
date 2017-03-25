@@ -14,7 +14,7 @@ For the more technical minded out there, Ease is using an experimental chromium 
 
 ### Future
 
-In the future we aspire to building a web client, or perhaps some mobile apps, for the peers (the host will unfortunately be constrained to electron). If you want to see more features, please open an issue with the `Feature Request` tag, and we will be happy to take a look :octocat:
+We are curently building a web-client for the peers (the host will unfortunately be constrained to electron). We also wish to create a chrome extension someday, that will allow you to capture content on the web as well. If you want to see more features, please open an issue with the `Feature Request` tag, and we will be happy to take a look :octocat:
 
 ## Getting Started Developing
 
@@ -43,10 +43,6 @@ In the future we aspire to building a web client, or perhaps some mobile apps, f
 - We have created an npm script to build Typescript and Webpack, simply run:
 
   - `npm run build` or `npm run rebuild` to rebuild
-
-- Ease also uses LESS CSS. We would recommend finding a plugin for your IDE/editor, but there is also a file watcher setup to help you out:
-
-  - `npm run watch:less`
   
 - There are also some other file watchers setup for your convenience. These commands are: 
 
@@ -66,32 +62,35 @@ In the future we aspire to building a web client, or perhaps some mobile apps, f
 
 - Electron applications run in two kinds of processes, the 'Main' and 'Render" processes. Each must be tested differently.
 
-  - To test main:
+  - We use colons `:` to separate packages, so it should be relatively intuitive running the various tests. For example, to run the peer unit tests in `./test/unit/render/peer`, the command is:
 
-    - `npm test:main`
+    - `npm run test:unit:render:peer`
 
-  - And to test the render process(es):
+  - You can also run a superset of the tests. For example to run **all** the unit tests, it's just a matter of running:
 
-    - `npm run test:render`
+    - `npm run test:unit`
 
-  - Some of the tests for the render process don't need to be run in an electron environment. These are run via:
+  - We greatly appreciate any effort to add tests to the project, but ask that you please follow this pattern :octocat:
 
-    - `npm run test:generic`
+### Debugging Tests
 
-  - To debug render process:
+- All the tests for each directory have a `debug` command as well. Simply append `-debug` to the end of the npm command. For example:
 
-    1) `npm run test:debug-render`
+  - `npm run test:unit:render:peer-debug`
 
-    2) Set your breakpoints using the console that is shown
+- We do not currently have scripts setup a superset of directories, such as `test/unit`, as we are not sure what this would accomplish anyways. 
 
-    3) Press `CTRL-R` to reload and run the tests again
+#### Main Process
 
-  - Debugging main process and generic tests
+- Tests run in the main process (which includes any structures that do not necessarily need a DOM to function, such as `src/render/peer/*`) can be debugged using the method above to run the tests in debug mode.
 
-    - If you are using vscode, you can find an example `launch.json` [here](https://gist.github.com/Right2Drive/b1812090383600cbf54d5d4c56c6a286)
+- If you are using vscode, you can find an example `launch.json` [here](https://gist.github.com/Right2Drive/b1812090383600cbf54d5d4c56c6a286) that should get you up and running. We will try to keep this updated
 
-    - If you are using some other editor/IDE, I'm afraid right now you'll have to figure it out for yourself. Feel free to share your configurations with us, and we can add links in the README :octocat:
+- If you are using some other editor/IDE, I'm afraid right now you'll have to figure it out for yourself. Feel free to share your configurations with us, and we can add links in the README :octocat:
 
+#### Render Process
+
+- Tests run in the render process (such as `src/render/pages/*`) are easier to debug. Simply run the debug command and an electron shell will open with the devtools open. Set your breakpoints where you'd like, and press `CTRL-r` to reload the page (which will also restart the tests).
 
 ### Issues
 

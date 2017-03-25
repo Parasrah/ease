@@ -11,7 +11,7 @@ describe("HostPeerManager Unit Tests", function() {
     let mockSignalArray: any[];
 
     before(function() {
-        clientID = "test-client-id";
+        clientID = Object.freeze("test-client-id");
         mockSignalData = Object.freeze({
             test: "This is mock signal data!",
         });
@@ -266,6 +266,17 @@ describe("HostPeerManager Unit Tests", function() {
 
             // Verify deregisterPeer invocation
             td.verify(stubDispatch(), { times: 1, ignoreExtraArgs: true });
+        });
+
+        it("Should remove all event listeners from peer", function() {
+            // Setup peer array
+            (subject as any).peers = [ targetPeer ];
+
+            // Call HostPeerManager#removePeer
+            (subject as any).removePeer(targetPeer);
+
+            // Verify deregisterPeer invocation
+            td.verify(targetPeer.removeAllListeners(), { times: 1, ignoreExtraArgs: true });
         });
 
     });
