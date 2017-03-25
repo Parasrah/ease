@@ -30,7 +30,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
 
         this.storeWrapper = StoreWrapper.getInstance();
         this.peers = [];
-        this.signaler.subscribe(this.recieveSignalData);
+        this.signaler.subscribe(this.receiveSignalData);
     }
 
     /**
@@ -48,7 +48,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      * @param clientID - ID of peer targeted by signal data
      * @param signalData - simple-peer signal data
      */
-    private recieveSignalData = (clientID: string, ...signalData: SimplePeer.SignalData[]) => {
+    private receiveSignalData = (clientID: string, ...signalData: SimplePeer.SignalData[]) => {
         for (let i = 0; i < this.peers.length; i++) {
             if (this.peers[i].clientID === clientID) {
                 for (let j = 0; j < signalData.length; j++) {
@@ -60,7 +60,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
         }
 
         // No peer already exists, create a new peer
-        this.createPeer(clientID, ...signalData);
+        this.setupPeer(clientID, ...signalData);
     }
 
     /**
@@ -69,17 +69,9 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      * @param clientID - Corresponding id of clientID
      * @param signalArray Optional signal data
      */
-    private createPeer = (clientID: string, ...signalArray: SimplePeer.SignalData[]): void => {
+    private setupPeer(clientID: string, ...signalArray: SimplePeer.SignalData[]): void {
         // Create a normal SimplePeer instance
-        const peer = new SimplePeer({
-            initiator: false,
-            stream: this.stream,
-            trickle: true,
-            answerConstraints: {
-                offerToReceiveVideo: false,
-                offerToReceiveAudio: false,
-            },
-        });
+        const peer = this.createPeer();
 
         // Convert to enhanced peer
         const enhancedPeer = Object.assign(peer, {clientID});
@@ -97,6 +89,21 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
 
         // Add peer to list
         this.peers.push(enhancedPeer);
+    }
+
+    /**
+     * Create and return new simple-peer instance
+     */
+    private createPeer() {
+        return new SimplePeer({
+            initiator: false,
+            stream: this.stream,
+            trickle: true,
+            answerConstraints: {
+                offerToReceiveVideo: false,
+                offerToReceiveAudio: false,
+            },
+        });
     }
 
     /**
