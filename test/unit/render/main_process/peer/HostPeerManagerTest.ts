@@ -272,7 +272,11 @@ describe("HostPeerManager Unit Tests", function() {
 
     /*********************** Helper Methods **************************/
 
-    // Add some peers with different clientID's
+    /**
+     * Create a peer
+     *
+     * @param clientID - clientID to use for generated peer
+     */
     function createPeer(clientID: string) {
         return Object.freeze({
             clientID,
@@ -280,6 +284,9 @@ describe("HostPeerManager Unit Tests", function() {
         });
     }
 
+    /**
+     * Create a peer using {@link #clientID}
+     */
     function createTargetPeer() {
         return createPeer(clientID);
     }
