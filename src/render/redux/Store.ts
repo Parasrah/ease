@@ -1,6 +1,6 @@
 import { Action, applyMiddleware, createStore, Store } from "redux";
 // tslint:disable-next-line:no-var-requires
-const createLogger = require("redux-logger").default;
+const createLogger = require("redux-logger");
 import thunkMiddleware, { ThunkAction } from "redux-thunk";
 
 import easeReducer from "../reducers/Reducer";
