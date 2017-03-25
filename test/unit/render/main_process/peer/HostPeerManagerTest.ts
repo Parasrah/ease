@@ -8,12 +8,20 @@ describe("HostPeerManager Unit Tests", function() {
     let clientID: string;
     let mockSignalData: any;
     let badClientIdList: string[];
+    let mockSignalArray: any[];
 
     before(function() {
         clientID = "test-client-id";
         mockSignalData = Object.freeze({
             test: "This is mock signal data!",
         });
+
+        mockSignalArray = [];
+        for (let i = 0; i < 10; i++) {
+            mockSignalArray.push(Object.assign({}, mockSignalData, {
+                id: i,
+            }));
+        }
 
         badClientIdList = [];
         badClientIdList.push(clientID + "_changed");
@@ -115,28 +123,12 @@ describe("HostPeerManager Unit Tests", function() {
             };
             (subject as any).peers.push(mockPeer);
 
-            const mockSignalArray = [];
-            for (let i = 0; i < 10; i++) {
-                mockSignalArray.push(Object.assign({}, mockSignalData, {
-                    id: i,
-                }));
-            }
-
             // Push mock signal data to host peer manager
             (subject as any).receiveSignalData(clientID, ...mockSignalArray);
 
             // Verify signal data was delivered to peer
             mockSignalArray.map((value) => td.verify(mockSignal(td.matchers.contains(value))));
         });
-
-        /*********************** Helper Methods **************************/
-
-        // Add some peers with different clientID's
-        function createPeer(clientID: string) {
-            return Object.freeze({
-                clientID,
-            });
-        }
 
     });
 
@@ -156,9 +148,7 @@ describe("HostPeerManager Unit Tests", function() {
         it("Should add a new peer to array when called w/o signal data", function() {
             // Call setupPeer
             (subject as any).setupPeer(clientID);
-            const peerList: IEnhancedPeer[] = (subject as any).peers;
-            Assert.equal(peerList.length, 1, "Should have been a single peer added");
-            Assert.equal(peerList[0].clientID, clientID, "Peer clientID should have `clientID`");
+            validatePeers((subject as any).peers);
         });
 
         it("Should add a new peer to array and signal it when calling with signalData", function() {
@@ -166,42 +156,149 @@ describe("HostPeerManager Unit Tests", function() {
             (subject as any).setupPeer(clientID, mockSignalData);
 
             // Verify peer creation
-            const peerList: IEnhancedPeer[] = (subject as any).peers;
-            Assert.equal(peerList.length, 1, "Should have been a single peer added");
-            Assert.equal(peerList[0].clientID, clientID, "Peer clientID should have `clientID`");
+            validatePeers((subject as any).peers);
 
             // Verify peer signaled
             td.verify(mockSignal(mockSignalData));
         });
 
         it("Should be capable of setting up peer with multiple instances of signal data", function() {
-            const mockSignalArray = [];
-            for (let i = 0; i < 10; i++) {
-                mockSignalArray.push(Object.assign({}, mockSignalData, {
-                    id: i,
-                }));
-            }
-
             // Call setupPeer
             (subject as any).setupPeer(clientID, ...mockSignalArray);
 
             // Verify peer creation
-            const peerList: IEnhancedPeer[] = (subject as any).peers;
-            Assert.equal(peerList.length, 1, "Should have been a single peer added");
-            Assert.equal(peerList[0].clientID, clientID, "Peer clientID should have `clientID`");
+            validatePeers((subject as any).peers);
 
             // Verify peer signaled
             mockSignalArray.map((value) => td.verify(mockSignal(td.matchers.contains(value))));
         });
 
+        /*********************** Helper Methods **************************/
+
+        /**
+         * Ensure that only one peer exists, and that it contains the correct clientID
+         */
+        function validatePeers(peers: IEnhancedPeer[]) {
+            Assert.equal(peers.length, 1, "Should have been a single peer added");
+            Assert.equal(peers[0].clientID, clientID, "Peer clientID should have `clientID`");
+        }
+
     });
 
     describe("#watchPeer", function() {
-        // Assert.fail("Not implemented");
+
+        it("Should setup peer listeners on peer", function() {
+            // Create stubs
+            const stubOn = td.function();
+            const mockPeer = Object.freeze({
+                on: stubOn,
+            });
+
+            // Call HostPeerManager#watchPeer
+            (subject as any).watchPeer(mockPeer);
+
+            // Verify invocations
+            td.verify(stubOn("connect"), { times: 1, ignoreExtraArgs: true });
+            td.verify(stubOn("signal"), { times: 1, ignoreExtraArgs: true });
+            td.verify(stubOn("close"), { times: 1, ignoreExtraArgs: true });
+        });
+
     });
 
     describe("#removePeer", function() {
-        // Assert.fail("Not implemented");
+        let targetPeer;
+        let stubDeregisterPeer;
+        let stubDispatch;
+
+        beforeEach(function() {
+            targetPeer = createTargetPeer();
+
+            stubDeregisterPeer = td.function();
+            stubDispatch = td.function();
+
+            (subject as any).getMessenger = td.when(td.function()()).thenReturn({ deregisterPeer: stubDeregisterPeer });
+            (subject as any).storeWrapper = {
+                dispatch: stubDispatch,
+            };
+        });
+
+        it("Should deregister peer from messenger", function() {
+            // Setup peer array
+            (subject as any).peers = [ targetPeer ];
+
+            // Call HostPeerManager#removePeer
+            (subject as any).removePeer(targetPeer);
+
+            // Verify deregisterPeer invocation
+            td.verify(stubDeregisterPeer(clientID), { times: 1 });
+        });
+
+        it("Should remove peer from peers array when length 1", function() {
+            // Setup peer array
+            (subject as any).peers = [ targetPeer ];
+
+            // Call HostPeerManager#removePeer
+            (subject as any).removePeer(targetPeer);
+
+            // Verify peer was removed
+            Assert.equal((subject as any).peers.length, 0, "Should have been zero peers remaining");
+            (subject as any).peers.map((peer) => Assert.notEqual(peer.clientID, clientID, "Peer should have been removed"));
+        });
+
+        it("Should remove peer from peers array when length n", function() {
+            // Setup peer array
+            (subject as any).peers = createPeerArray();
+
+            // Call HostPeerManager#removePeer
+            (subject as any).removePeer(targetPeer);
+
+            // Verify peer was removed
+            Assert.equal((subject as any).peers.length, peerArrayLength() - 1, "Should have been one less peer in array");
+            (subject as any).peers.map((peer) => Assert.notEqual(peer.clientID, clientID, "Peer should have been removed"));
+        });
+
+        it("Should remove peer from store", function() {
+            // Setup peer array
+            (subject as any).peers = [ targetPeer ];
+
+            // Call HostPeerManager#removePeer
+            (subject as any).removePeer(targetPeer);
+
+            // Verify deregisterPeer invocation
+            td.verify(stubDispatch(), { times: 1, ignoreExtraArgs: true });
+        });
+
     });
+
+    /*********************** Helper Methods **************************/
+
+    // Add some peers with different clientID's
+    function createPeer(clientID: string) {
+        return Object.freeze({
+            clientID,
+            removeAllListeners: td.function(),
+        });
+    }
+
+    function createTargetPeer() {
+        return createPeer(clientID);
+    }
+
+    /**
+     * Returns array of peers, one of which contains clientID: clientID
+     */
+    function createPeerArray() {
+        const mockPeerArray = badClientIdList.map((clientID) => createPeer(clientID));
+        mockPeerArray.push(createTargetPeer());
+
+        return mockPeerArray;
+    }
+
+    /**
+     * Returns the length of the peer array generated by {@link #createPeerArray}
+     */
+    function peerArrayLength() {
+        return badClientIdList.length + 1;
+    }
 
 });
