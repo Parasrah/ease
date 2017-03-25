@@ -86,7 +86,7 @@ We are curently building a web-client for the peers (the host will unfortunately
 
 - If you are using vscode, you can find an example `launch.json` [here](https://gist.github.com/Right2Drive/b1812090383600cbf54d5d4c56c6a286) that should get you up and running. We will try to keep this updated
 
-- If you are using some other editor/IDE, I'm afraid right now you'll have to figure it out for yourself. Feel free to share your configurations with us, and we can add links in the README :octocat:
+- If you are using some other editor/IDE, unfortunately right now you'll have to figure it out for yourself. Feel free to share your configurations with us, and we can add links in the README :octocat:
 
 #### Render Process
 
