@@ -25,9 +25,14 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         this.deliverStream = null;
         this.storeWrapper = StoreWrapper.getInstance();
         this.setupPeer();
+
+        this.setupPeer = this.setupPeer.bind(this);
+        this.reconnect = this.reconnect.bind(this);
+        this.onStream = this.onStream.bind(this);
+        this.resolveStream = this.resolveStream.bind(this);
     }
 
-    public reconnect = () => {
+    public reconnect() {
         this.storeWrapper.dispatch(setIDAction(Guid.raw()));
         if (this.peer) {
             this.peer.removeAllListeners();
@@ -52,7 +57,7 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         return this.peer;
     }
 
-    public onStream = (callback: (stream: MediaStream) => void) => {
+    public onStream(callback: (stream: MediaStream) => void) {
         if (this.stream) {
             callback(this.stream);
         }
@@ -70,14 +75,14 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         });
     }
 
-    private resolveStream = (stream: MediaStream) => {
+    private resolveStream(stream: MediaStream) {
         this.stream = stream;
         if (this.deliverStream) {
             this.deliverStream(stream);
         }
     }
 
-    private setupPeer = () => {
+    private setupPeer() {
         this.peer = this.createPeer();
         this.peer.on("stream", this.resolveStream);
         this.storeWrapper.dispatch(watchPeerStatusAction(this.peer));
