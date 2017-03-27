@@ -3,19 +3,26 @@ import * as td from "testdouble";
 
 import { ClientPeerManager } from "../../../../../src/render/peer/ClientPeerManager";
 
-describe("Test ClientPeerManager", function() {
+describe("ClientPeerManager", function() {
     let peer;
     let subject;
     let mockDispatch;
     let mockReconnect;
     let mockSetupPeer;
+    let mockRemoveAllListeners;
+    let mockDestroy;
 
     beforeEach(function() {
         mockDispatch = td.function();
         mockReconnect = td.function();
         mockSetupPeer = td.function();
+        mockRemoveAllListeners = td.function();
+        mockDestroy = td.function();
+
         peer = {
             connected: true,
+            removeAllListeners: mockRemoveAllListeners,
+            destroy: mockDestroy,
         };
         subject = {
             peer,
@@ -40,8 +47,13 @@ describe("Test ClientPeerManager", function() {
         });
 
         it("Should set new client-id", function() {
-            // TODO
             ClientPeerManager.prototype.reconnect.call(subject);
+            td.verify(mockDispatch(), { ignoreExtraArgs: true, times: 1 });
+        });
+
+        it("Should remove all listeners from existing peer", function() {
+            ClientPeerManager.prototype.reconnect.call(subject);
+            td.verify(mockRemoveAllListeners(), { times: 1 });
         });
 
     });
