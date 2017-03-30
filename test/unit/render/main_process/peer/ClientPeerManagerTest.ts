@@ -133,16 +133,41 @@ describe("ClientPeerManager", function() {
     });
 
     describe("#resolveStream", function() {
+        let stream;
+        let cb;
 
-        it("", function() {
+        beforeEach(function() {
+            stream = {
+                name: "stream",
+            };
+            cb = td.function();
+        });
 
+        it("Should set stream", function() {
+            (ClientPeerManager as any).prototype.resolveStream.call(subject, stream);
+            Assert.equal(subject.stream, stream, "Should have set stream");
+        });
+
+        it("Should deliver stream async if callback exists", function(done) {
+            subject.deliverStream = cb;
+            (ClientPeerManager as any).prototype.resolveStream.call(subject, stream);
+            td.verify(cb(), { ignoreExtraArgs: true, times: 0 });
+            setTimeout(function() {
+                td.verify(cb(stream), { times: 1 });
+                done();
+            }, 0);
         });
 
     });
 
     describe("#setupPeer", function() {
+        let mockCreatePeer: td.TestDouble;
 
-        it("", function() {
+        beforeEach(function() {
+            mockCreatePeer = mockMethod(subject, "createPeer");
+        });
+
+        it("Should assign new peer to peer", function() {
 
         });
 

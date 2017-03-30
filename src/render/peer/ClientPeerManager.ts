@@ -84,7 +84,9 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
     private resolveStream(stream: MediaStream) {
         this.stream = stream;
         if (this.deliverStream) {
-            this.deliverStream(stream);
+            setTimeout(() => {
+                this.deliverStream(stream);
+            }, 0);
         }
     }
 
