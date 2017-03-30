@@ -87,16 +87,47 @@ describe("ClientPeerManager", function() {
 
     describe("#getPeer", function() {
 
-        it("", function() {
-
+        it("Should return peer", function() {
+            const returnedPeer = ClientPeerManager.prototype.getPeer.call(subject);
+            Assert.equal(returnedPeer, subject.peer, "Should have returned peer");
         });
 
     });
 
     describe("#onStream", function() {
+        let cb: td.TestDouble;
 
-        it("", function() {
+        beforeEach(function() {
+            subject.stream = Object.freeze({
+                name: "stream",
+            });
+            cb = td.function();
+        });
 
+        it("Should call callback async if stream exists", function(done) {
+            ClientPeerManager.prototype.onStream.call(subject, cb);
+            td.verify(cb(subject.stream), { times: 0 });
+            setTimeout(function() {
+                td.verify(cb(subject.stream), { times: 1 });
+                done();
+            }, 0);
+        });
+
+        it("Should set deliverStream if stream exists", function() {
+            ClientPeerManager.prototype.onStream.call(subject, cb);
+            Assert.equal(subject.deliverStream, cb, "Should have saved callback");
+        });
+
+        it("Should set deliverStream if stream does not exist", function() {
+            subject.stream = false;
+            ClientPeerManager.prototype.onStream.call(subject, cb);
+            Assert.equal(subject.deliverStream, cb, "Should have saved callback");
+        });
+
+        it("Should not call callback if stream does not exist", function() {
+            subject.stream = false;
+            ClientPeerManager.prototype.onStream.call(subject, cb);
+            td.verify(cb(subject.stream), { times: 0 });
         });
 
     });

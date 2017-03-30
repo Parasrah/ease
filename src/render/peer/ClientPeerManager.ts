@@ -63,7 +63,9 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
 
     public onStream(callback: (stream: MediaStream) => void) {
         if (this.stream) {
-            callback(this.stream);
+            setTimeout(() => {
+                callback(this.stream);
+            }, 0);
         }
         this.deliverStream = callback;
     }

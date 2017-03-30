@@ -1,7 +1,7 @@
 import { assert as Assert } from "chai";
 import { AbstractPeerManager } from "../../../../../src/render/peer/AbstractPeerManager";
 
-describe("Test AbstractPeerManager", function() {
+describe("AbstractPeerManager", function() {
     let signaler: any;
     let messenger: any;
     let receiver: any;
