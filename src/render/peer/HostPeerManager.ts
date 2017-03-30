@@ -12,8 +12,6 @@ export interface IEnhancedPeer extends SimplePeer.Instance {
 
 /**
  * Manage the peers connected to the host
- *
- * @since 2017-03-10
  */
 export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMessenger, HostSignaler> {
     /** List of enhanced peers maintained by HostPeerManager */
@@ -27,6 +25,12 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
             new HostMessenger(),
             new HostSignaler(),
         );
+
+        // Bind functions
+        this.registerStream = this.registerStream.bind(this);
+        this.receiveSignalData = this.receiveSignalData.bind(this);
+        this.setupPeer = this.setupPeer.bind(this);
+        this.watchPeer = this.watchPeer.bind(this);
 
         this.storeWrapper = StoreWrapper.getInstance();
         this.peers = [];
@@ -48,7 +52,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      * @param clientID - ID of peer targeted by signal data
      * @param signalData - simple-peer signal data
      */
-    private receiveSignalData = (clientID: string, ...signalData: SimplePeer.SignalData[]) => {
+    private receiveSignalData(clientID: string, ...signalData: SimplePeer.SignalData[]) {
         for (let i = 0; i < this.peers.length; i++) {
             if (this.peers[i].clientID === clientID) {
                 for (let j = 0; j < signalData.length; j++) {
@@ -111,7 +115,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      *
      * @param peer - instance of EnhancedPeer to watch
      */
-    private watchPeer = (peer: IEnhancedPeer) => {
+    private watchPeer(peer: IEnhancedPeer) {
         peer.on("connect", () => this.storeWrapper.dispatch(setPeerStatusAction(peer.clientID, true)));
         peer.on("signal", (signalData) => this.signaler.handleSignalData(peer.clientID, signalData));
         peer.on("close", () => this.removePeer(peer));
@@ -123,7 +127,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      * @param peer - EnhancedPeer to remove
      * @throws Error - Peer doesn't exist in {@link HostPeerManager#peers}
      */
-    private removePeer = (peer: IEnhancedPeer): void => {
+    private removePeer(peer: IEnhancedPeer): void {
         let removed = false;
 
         this.getMessenger().deregisterPeer(peer.clientID);

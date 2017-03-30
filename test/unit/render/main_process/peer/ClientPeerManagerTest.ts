@@ -3,50 +3,55 @@ import * as td from "testdouble";
 
 import { ClientPeerManager } from "../../../../../src/render/peer/ClientPeerManager";
 
+interface IPeer {
+    connected: boolean;
+    [x: string]: any;
+}
+
+interface ISubject {
+    peer: IPeer;
+    storeWrapper: object;
+    [x: string]: any;
+}
+
 describe("ClientPeerManager", function() {
-    let peer;
-    let subject;
-    let mockDispatch;
-    let mockReconnect;
-    let mockSetupPeer;
-    let mockRemoveAllListeners;
-    let mockDestroy;
+    let subject: ISubject;
 
     beforeEach(function() {
-        mockDispatch = td.function();
-        mockReconnect = td.function();
-        mockSetupPeer = td.function();
-        mockRemoveAllListeners = td.function();
-        mockDestroy = td.function();
-
-        peer = {
+        const peer = {
             connected: true,
-            removeAllListeners: mockRemoveAllListeners,
-            destroy: mockDestroy,
         };
         subject = {
             peer,
-            storeWrapper: {
-                dispatch: mockDispatch,
-            },
+            storeWrapper: {},
         };
     });
 
     describe("#reconnect", function() {
+        let mockSetupPeer;
+        let mockDispatch;
+        let mockDestroy;
+        let mockRemoveAllListeners;
+        let mockReconnect;
 
         beforeEach(function() {
-            subject.setupPeer = mockSetupPeer;
+            mockSetupPeer = mockMethod(subject, "setupPeer");
+            mockDispatch = mockMethod(subject.storeWrapper, "dispatch");
+            mockDestroy = mockMethod(subject.peer, "destroy");
+            mockRemoveAllListeners = mockMethod(subject.peer, "removeAllListeners");
+            mockReconnect = mockMethod(subject, "reconnect");
         });
 
         it("Should throw error if there is no `connected` property on peer", function() {
-            peer.connected = undefined;
+            subject.peer.connected = undefined;
             Assert.throw(
-                ClientPeerManager.prototype.reconnect.call(subject),
+                function() { ClientPeerManager.prototype.reconnect.call(subject); },
                 Error,
             );
         });
 
         it("Should set new client-id", function() {
+            subject.peer = undefined;
             ClientPeerManager.prototype.reconnect.call(subject);
             td.verify(mockDispatch(), { ignoreExtraArgs: true, times: 1 });
         });
@@ -54,6 +59,28 @@ describe("ClientPeerManager", function() {
         it("Should remove all listeners from existing peer", function() {
             ClientPeerManager.prototype.reconnect.call(subject);
             td.verify(mockRemoveAllListeners(), { times: 1 });
+        });
+
+        it("Should update peer status", function() {
+            ClientPeerManager.prototype.reconnect.call(subject);
+            td.verify(mockDispatch(), { ignoreExtraArgs: true, times: 2 });
+        });
+
+        it("Should destroy peer if it is currently connected", function() {
+            ClientPeerManager.prototype.reconnect.call(subject);
+            td.verify(mockDestroy(mockSetupPeer));
+        });
+
+        it("Should call setupPeer if not currently connected", function() {
+            subject.peer.connected = false;
+            ClientPeerManager.prototype.reconnect.call(subject);
+            td.verify(mockSetupPeer(), { times: 1 });
+        });
+
+        it("Should call setupPeer if no peer exists", function() {
+            subject.peer = undefined;
+            ClientPeerManager.prototype.reconnect.call(subject);
+            td.verify(mockSetupPeer(), { times: 1 });
         });
 
     });
@@ -90,4 +117,12 @@ describe("ClientPeerManager", function() {
 
     });
 
+    // Helper Functions
+
+    function mockMethod(target: object, functionName: string): td.TestDouble {
+        const testDouble = td.function("." + functionName);
+        target[functionName] = testDouble;
+
+        return testDouble;
+    }
 });

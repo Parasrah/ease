@@ -25,6 +25,13 @@ export class HostSignaler extends AbstractSignaler {
     constructor() {
         super();
 
+        // Bind functions
+        this.handleSignalData = this.handleSignalData.bind(this);
+        this.subscribe = this.subscribe.bind(this);
+        this.discover = this.discover.bind(this);
+        this.handleOffer = this.handleOffer.bind(this);
+
+        // Finish setup
         this.deliverSignalData = null;
         this.socket.on("offer", this.handleOffer);
     }
@@ -35,7 +42,7 @@ export class HostSignaler extends AbstractSignaler {
      * @param clientID - Target of signal data
      * @param signalData - simple-peer signal data payload
      */
-    public handleSignalData = (clientID: string, signalData: SimplePeer.SignalData) => {
+    public handleSignalData(clientID: string, signalData: SimplePeer.SignalData) {
         if (this.getServerStatus()) {
             this.respond(clientID, signalData);
         }
@@ -49,7 +56,7 @@ export class HostSignaler extends AbstractSignaler {
      *
      * @param callback - callback through which to deliver signal data to subscriber
      */
-    public subscribe = (callback: deliverSignalData) => {
+    public subscribe(callback: deliverSignalData) {
         this.deliverSignalData = callback;
         this.checkSignalStore(this.getHostState().hostPeers);
     }
@@ -100,7 +107,7 @@ export class HostSignaler extends AbstractSignaler {
     /**
      * Send discovery message to the server
      */
-    private discover = () => {
+    private discover() {
         const initMessage: IInitMessage = {
             id: this.getID(),
         };
@@ -112,7 +119,7 @@ export class HostSignaler extends AbstractSignaler {
      *
      * @param offer - Offer message
      */
-    private handleOffer = (offer: IOfferMessage) => {
+    private handleOffer(offer: IOfferMessage) {
         // Check if peer exists in store
         const hostPeers = this.getHostState().hostPeers;
         let found: IPeer = null;
@@ -150,7 +157,7 @@ export class HostSignaler extends AbstractSignaler {
      * @param clientID - Intended client for message
      * @param signalData - simple-peer signal data
      */
-    private respond = (clientID: string, signalData: SimplePeer.SignalData) => {
+    private respond(clientID: string, signalData: SimplePeer.SignalData) {
         const responseMessage: IResponseMessage = {
             signalData,
             clientID,

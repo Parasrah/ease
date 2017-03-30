@@ -145,6 +145,7 @@
             true,
             "as-needed"
         ],
-        "no-shadowed-variable": false
+        "no-shadowed-variable": false,
+        "no-empty": false
     }
 }

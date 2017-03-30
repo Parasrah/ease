@@ -21,15 +21,19 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
             new ClientMessenger(),
             new ClientSignaler(),
         );
-        this.stream = null;
-        this.deliverStream = null;
-        this.storeWrapper = StoreWrapper.getInstance();
-        this.setupPeer();
 
+        // Bind functions
         this.setupPeer = this.setupPeer.bind(this);
         this.reconnect = this.reconnect.bind(this);
         this.onStream = this.onStream.bind(this);
         this.resolveStream = this.resolveStream.bind(this);
+        this.getPeer = this.getPeer.bind(this);
+
+        // Complete setup
+        this.stream = null;
+        this.deliverStream = null;
+        this.storeWrapper = StoreWrapper.getInstance();
+        this.setupPeer();
     }
 
     public reconnect() {
