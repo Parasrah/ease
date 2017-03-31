@@ -21,13 +21,22 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
             new ClientMessenger(),
             new ClientSignaler(),
         );
+
+        // Bind functions
+        this.setupPeer = this.setupPeer.bind(this);
+        this.reconnect = this.reconnect.bind(this);
+        this.onStream = this.onStream.bind(this);
+        this.resolveStream = this.resolveStream.bind(this);
+        this.getPeer = this.getPeer.bind(this);
+
+        // Complete setup
         this.stream = null;
         this.deliverStream = null;
         this.storeWrapper = StoreWrapper.getInstance();
         this.setupPeer();
     }
 
-    public reconnect = () => {
+    public reconnect() {
         this.storeWrapper.dispatch(setIDAction(Guid.raw()));
         if (this.peer) {
             this.peer.removeAllListeners();
@@ -52,9 +61,11 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         return this.peer;
     }
 
-    public onStream = (callback: (stream: MediaStream) => void) => {
+    public onStream(callback: (stream: MediaStream) => void) {
         if (this.stream) {
-            callback(this.stream);
+            setTimeout(() => {
+                callback(this.stream);
+            }, 0);
         }
         this.deliverStream = callback;
     }
@@ -70,14 +81,16 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         });
     }
 
-    private resolveStream = (stream: MediaStream) => {
+    private resolveStream(stream: MediaStream) {
         this.stream = stream;
         if (this.deliverStream) {
-            this.deliverStream(stream);
+            setTimeout(() => {
+                this.deliverStream(stream);
+            }, 0);
         }
     }
 
-    private setupPeer = () => {
+    private setupPeer() {
         this.peer = this.createPeer();
         this.peer.on("stream", this.resolveStream);
         this.storeWrapper.dispatch(watchPeerStatusAction(this.peer));
@@ -85,6 +98,6 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         this.getReceiver().renewPeer(this.peer);
         this.peer.on("signal", this.signaler.sendSignal);
         this.peer.on("close", this.reconnect);
-        this.signaler.onResponse((signalData) => this.peer.signal(signalData));
+        this.signaler.onResponse(this.peer.signal);
     }
 }

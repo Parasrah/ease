@@ -6,7 +6,7 @@ import { addClientSignalDataAction, addHostSignalDataAction, clearClientSignalDa
 import { IState } from "../../../../../src/render/redux/State";
 import { StoreWrapper } from "../../../../../src/render/redux/Store";
 
-describe("Unit testing host peer reducer", function() {
+describe("HostPeerReducer", function() {
     let store: Store<IState>;
     let initialState: IState;
     const CLIENT_IDS = [

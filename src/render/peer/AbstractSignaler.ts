@@ -24,6 +24,8 @@ export abstract class AbstractSignaler {
     private storeWrapper: StoreWrapper;
 
     constructor() {
+        this.notify = this.notify.bind(this);
+
         this.storeWrapper = StoreWrapper.getInstance();
         this.state = this.getState();
         this.socket = SocketIOClient.connect(this.state.settingsState.signalHost);

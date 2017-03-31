@@ -3,7 +3,7 @@ import * as td from "testdouble";
 
 import { HostPeerManager, IEnhancedPeer } from "../../../../../src/render/peer/HostPeerManager";
 
-describe("HostPeerManager Unit Tests", function() {
+describe("HostPeerManager", function() {
     let subject: HostPeerManager;
     let clientID: string;
     let mockSignalData: any;
