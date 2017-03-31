@@ -11,6 +11,7 @@ interface IPeer {
 interface ISubject {
     peer: IPeer;
     storeWrapper: object;
+    signaler: object;
     [x: string]: any;
 }
 
@@ -24,6 +25,7 @@ describe("ClientPeerManager", function() {
         subject = {
             peer,
             storeWrapper: {},
+            signaler: {},
         };
     });
 
@@ -162,13 +164,62 @@ describe("ClientPeerManager", function() {
 
     describe("#setupPeer", function() {
         let mockCreatePeer: td.TestDouble;
+        let mockOn: td.TestDouble;
+        let mockDispatch: td.TestDouble;
+        let mockGetMessenger: td.TestDouble;
+        let mockGetReceiver: td.TestDouble;
+        let mockRenewMessenger: td.TestDouble;
+        let mockRenewReceiver: td.TestDouble;
+        let mockOnResponse: td.TestDouble;
+        let mockPeer;
 
         beforeEach(function() {
+            mockPeer = {
+                name: "peer",
+                signal() {},
+            };
+
+            // Setup mocks
             mockCreatePeer = mockMethod(subject, "createPeer");
+            mockOn = mockMethod(mockPeer, "on");
+            mockDispatch = mockMethod(subject.storeWrapper, "dispatch");
+            mockGetMessenger = mockMethod(subject, "getMessenger");
+            mockGetReceiver = mockMethod(subject, "getReceiver");
+            mockOnResponse = mockMethod(subject.signaler, "onResponse");
+            mockRenewMessenger = td.function();
+            mockRenewReceiver = td.function();
+
+            // Setup return values
+            td.when(mockCreatePeer()).thenReturn(mockPeer);
+            td.when(mockGetMessenger()).thenReturn({
+                renewPeer: mockRenewMessenger,
+            });
+            td.when(mockGetReceiver()).thenReturn({
+                renewPeer: mockRenewReceiver,
+            });
         });
 
         it("Should assign new peer to peer", function() {
+            (ClientPeerManager as any).prototype.setupPeer.call(subject);
+            Assert.equal(subject.peer, mockPeer, "Should have assigned new peer");
+        });
 
+        it("Should setup peer listeners", function() {
+            (ClientPeerManager as any).prototype.setupPeer.call(subject);
+            td.verify(mockOn("stream"), { ignoreExtraArgs: true, times: 1 });
+            td.verify(mockOn("signal"), { ignoreExtraArgs: true, times: 1 });
+            td.verify(mockOn("close"), { ignoreExtraArgs: true, times: 1 });
+        });
+
+        it("Should renew peer for messenger and receiver", function() {
+            (ClientPeerManager as any).prototype.setupPeer.call(subject);
+            td.verify(mockRenewMessenger(mockPeer), { times: 1 });
+            td.verify(mockRenewReceiver(mockPeer), { times: 1 });
+        });
+
+        it("Should setup listener for signaler", function() {
+            (ClientPeerManager as any).prototype.setupPeer.call(subject);
+            td.verify(mockOnResponse(), { ignoreExtraArgs: true, times: 1 });
         });
 
     });
