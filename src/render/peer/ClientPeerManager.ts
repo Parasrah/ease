@@ -98,6 +98,6 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         this.getReceiver().renewPeer(this.peer);
         this.peer.on("signal", this.signaler.sendSignal);
         this.peer.on("close", this.reconnect);
-        this.signaler.onResponse(this.peer.signal);
+        this.signaler.onResponse((signalData) => this.peer.signal(signalData));
     }
 }
