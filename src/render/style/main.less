@@ -19,7 +19,7 @@
 @font-color: white;
 
 // Page dimensions
-@toolbar-height: 0px;
+@toolbar-height: 30px;
 
 #squarish(@length) {
     height: @length;
@@ -63,6 +63,12 @@ body {
         height: 100vh;
         width: 100%;
         margin: 0;
+        -webkit-app-region: no-drag;
+
+        .app-core {
+            height: 100%;
+            width: 100%;
+        }
     }
 
     > input [type='number'] {

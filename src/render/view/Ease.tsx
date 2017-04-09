@@ -7,6 +7,7 @@ import { setIDAction } from "../actions/CommonPeerActions";
 import { setFullscreenAction } from "../actions/VideoActions";
 import { IState } from "../redux/State";
 import { Page } from "../utils/Definitions";
+import { Toolbar } from "./components/Toolbar";
 import StartPageContainer from "./pages/start/StartPage";
 import VideoClientPageContainer from "./pages/video/VideoClientPage";
 import VideoHostPageContainer from "./pages/video/VideoHostPage";
@@ -27,7 +28,7 @@ export type IEaseProps = IEaseStoreProps & IEaseDispatchProps;
 export class Ease extends React.Component<IEaseProps, {}> {
     private videoPath: string;
     private hostID: string;
-    private renderedPage: JSX.Element;
+    private renderedPage: JSX.Element[];
 
     constructor(props) {
         super(props);
@@ -57,22 +58,26 @@ export class Ease extends React.Component<IEaseProps, {}> {
     }
 
     private mapPage(page: Page) {
+        this.renderedPage = [];
+        this.renderedPage.push(
+            <Toolbar />,
+        );
         switch (page) {
             case Page.START:
-                this.renderedPage = (
-                    <StartPageContainer filepathCallback={this.startVideo} />
+                this.renderedPage.push(
+                    <StartPageContainer filepathCallback={this.startVideo} />,
                 );
                 break;
 
             case Page.VIDEO_HOST:
-                this.renderedPage = (
-                    <VideoHostPageContainer videoSource={this.videoPath} />
+                this.renderedPage.push(
+                    <VideoHostPageContainer videoSource={this.videoPath} />,
                 );
                 break;
 
             case Page.VIDEO_CLIENT:
-                this.renderedPage = (
-                    <VideoClientPageContainer/>
+                this.renderedPage.push(
+                    <VideoClientPageContainer/>,
                 );
                 break;
 
@@ -94,7 +99,11 @@ export class Ease extends React.Component<IEaseProps, {}> {
     }
 
     public render(): JSX.Element {
-        return this.renderedPage;
+        return (
+            <div className="app-core">
+                {this.renderedPage}
+            </div>
+        );
     }
 
     /*********************** Redux ***************************/

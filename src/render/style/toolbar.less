@@ -1,0 +1,47 @@
+@import "main.less";
+
+#square(@length) {
+    height: @length;
+    width: @length;
+}
+
+.toolbar {
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: @toolbar-height;
+    background-color: @primary-color;
+    overflow: hidden;
+    -webkit-app-region: drag;
+    
+    .toolbar-button {
+        #square(@toolbar-height);
+
+        background-color: @primary-color;
+        position: relative;
+        display: inline-block;
+        border: none;
+        overflow: hidden;
+
+        i {
+            #square(@toolbar-height);
+
+            position: absolute;
+            top: 3px;
+            left: 0px;
+            color: white;
+        }
+
+        &.toolbar-right {
+            float: right;
+        }
+
+        &.minimize {
+            i {
+                top: 7px;
+            }
+        }
+    }
+}
