@@ -1,4 +1,5 @@
 import * as React from "react";
+import { IconButton, Spinner } from "react-mdl";
 import { connect } from "react-redux";
 
 import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
@@ -9,7 +10,7 @@ import { HostMessageType, IDurationMessage, IPlayMessage, ITimeMessage } from ".
 import { ClientPeerManager } from "../../peer/ClientPeerManager";
 import IState from "../../redux/State";
 import { UserType } from "../../utils/Definitions";
-import { IVideoDispatchProps, IVideoInputProps, IVideoStoreProps, VideoPage } from "./VideoPage";
+import { IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage } from "./VideoPage";
 
 interface IClientInputProps extends IVideoInputProps {
 
@@ -29,6 +30,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     private peerManager: ClientPeerManager;
     private messenger: ClientMessenger;
     private receiver: ClientReceiver;
+    private spinner: JSX.Element;
 
     constructor(props) {
         super(props);
@@ -63,6 +65,24 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         this.video.play();
     }
 
+    protected getSpinner(showVideo: boolean): JSX.Element {
+        switch (showVideo) {
+            case false:
+                return (
+                    <div className="spinner-wrapper">
+                        <Spinner className="spinner"/>
+                        <IconButton
+                            className="spinner-reconnect"
+                            name="cached"
+                            onClick={this.peerManager.reconnect}
+                        />
+                    </div>
+                );
+            default:
+                return <div className="hidden" />;
+        }
+    }
+
     /********************* Video Listeners ***********************/
 
     protected togglePlay = () => {
@@ -83,6 +103,13 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     /********************* React Lifecycle ***********************/
 
+    protected componentWillUpdate(nextProps: IClientProps, nextState: IVideoState) {
+        if (this.state.showVideo !== nextState.showVideo) {
+            this.spinner = this.getSpinner(nextState.showVideo);
+        }
+        super.componentWillUpdate(nextProps, nextState);
+    }
+
     public render(): JSX.Element {
         return (
             <div className="video">
@@ -102,10 +129,11 @@ export class VideoClientPage extends VideoPage<IClientProps> {
                     time={this.state.time}
                     volume={this.state.volume}
                     play={this.props.play}
-                    show={this.state.showVideo}
+                    hidden={!this.state.showVideo}
                     onMouseMove={this.onMouseMove}
                     onVideoWheel={this.onVideoWheel}
                     onVideoClick={this.togglePlay}
+                    showControls={this.state.showControls}
                 />
             </div>
         );

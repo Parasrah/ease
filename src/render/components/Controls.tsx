@@ -17,6 +17,7 @@ export interface IControlsProps {
     onSeek?(time: number): void;
     onVolumeChange?(volume: number): void;
     onReconnectButton?(): void;
+    onCopyButton?(): void;
 }
 
 export interface IControlsState {
@@ -27,6 +28,9 @@ export interface IControlsState {
 export class Controls extends React.Component<IControlsProps, IControlsState> {
     private formattedTime;
     private volumeSliderValue: number;
+    private renderReconnect: boolean;
+    private renderCopy: boolean;
+    private optionalButtons: JSX.Element[];
 
     constructor(props) {
         super(props);
@@ -47,6 +51,13 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
         // Initialization
         this.volumeSliderValue = 100;
         this.formattedTime = this.secondsToHms(this.state.time);
+
+        // Determine what buttons to render
+        this.renderReconnect = (this.props.onReconnectButton !== undefined);
+        this.renderCopy = (this.props.onCopyButton !== undefined);
+
+        // Generate optional buttons
+        this.generateOptionalButtons();
     }
 
     private secondsToHms(d: number): string {
@@ -114,6 +125,23 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
         }
     }
 
+    /**
+     * Generate the buttons depending on what callback props are passed in
+     */
+    private generateOptionalButtons() {
+        this.optionalButtons = [];
+        if (this.renderCopy) {
+            this.optionalButtons.push(
+                <IconButton className="copy-button" name="content_copy" onClick={this.onReconnectClick} />,
+            );
+        }
+        if (this.renderReconnect) {
+            this.optionalButtons.push(
+                <IconButton className="reconnect-button" name="cached" onClick={this.onReconnectClick} />,
+            );
+        }
+    }
+
     /********************* React Lifecycle ***********************/
 
     protected componentWillReceiveProps(nextProps: IControlsProps) {
@@ -164,7 +192,7 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                     </div>
                     <div className="bar-right">
                         <IconButton className="cast-button" name="cast" onClick={this.onCastButtonClick} />
-                        <IconButton className="reconnect-button" name="cached" onClick={this.onReconnectClick} />
+                        {this.optionalButtons}
                         <IconButton className="fullscreen-button" name="fullscreen" onClick={this.onFullscreenButtonClick} />
                     </div>
                 </div>

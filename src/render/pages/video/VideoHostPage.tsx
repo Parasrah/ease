@@ -125,7 +125,6 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     public render(): JSX.Element {
         return (
             <div className="video">
-                {this.spinner}
                 <VideoElement
                     poster=""
                     videoSource={this.props.videoSource}

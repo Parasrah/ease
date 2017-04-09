@@ -1,6 +1,5 @@
 import { clipboard } from "electron";
 import * as React from "react";
-import { IconButton, Spinner } from "react-mdl";
 
 import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
 import "../../style/video.less";
@@ -28,6 +27,7 @@ export interface IVideoState {
     muted: boolean;
     duration: number;
     showVideo: boolean;
+    showControls: boolean;
 }
 
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
@@ -38,7 +38,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     protected videoWrapper: HTMLDivElement;
     protected timer: number;
     protected type: UserType;
-    protected spinner: JSX.Element;
 
     constructor(props) {
         super(props);
@@ -49,6 +48,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             muted: false,
             duration: 100,
             showVideo: true,
+            showControls: true,
         };
 
         this.type = UserType.PENDING;
@@ -119,13 +119,13 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     private showControls = () => {
         this.setState({
-            show: true,
+            showControls: true,
         });
     }
 
     private hideControls = () => {
         this.setState({
-            show: false,
+            showControls: false,
         });
     }
 
@@ -159,24 +159,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         clipboard.writeText(this.props.id);
     }
 
-    protected getSpinner(showVideo: boolean): JSX.Element {
-        switch (showVideo) {
-            case false:
-                return (
-                    <div className="spinner-wrapper">
-                        <Spinner className="spinner"/>
-                        <IconButton
-                            className="spinner-reconnect"
-                            name="cached"
-                            onClick={this.peerManager.reconnect}
-                        />
-                    </div>
-                );
-            default:
-                return <div className="hidden" />;
-        }
-    }
-
     /******************** Abstract Methods *******************/
 
     protected abstract togglePlay: () => void;
@@ -191,10 +173,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     protected componentWillUpdate(nextProps: IVideoProps, nextState: IVideoState) {
         this.video.volume = nextState.muted ? 0 : (nextState.volume / 100);
-
-        if (this.state.showVideo != nextState.showVideo) {
-            this.spinner = this.getSpinner(nextState.showVideo);
-        }
     }
 
     public abstract render(): JSX.Element;

@@ -30,10 +30,7 @@
             true,
             "always"
         ],
-        "triple-equals": [
-            true,
-            "allow-null-check"
-        ],
+        "triple-equals": false,
         "variable-name": [
             true,
             "ban-keywords"
