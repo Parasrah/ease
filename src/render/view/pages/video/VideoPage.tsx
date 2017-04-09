@@ -1,9 +1,9 @@
 import { clipboard } from "electron";
 import * as React from "react";
 
-import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
-import "../../style/video.less";
-import { UserType } from "../../utils/Definitions";
+import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
+import "../../../style/video.less";
+import { UserType } from "../../../utils/Definitions";
 
 export interface IVideoInputProps {
 
@@ -33,7 +33,7 @@ export interface IVideoState {
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
 
 export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, IVideoState> {
-    private readonly SHOW_CONTROLS_TIME = 5000;
+    private readonly SHOW_CONTROLS_TIME = 3500;
     protected video: HTMLVideoElement;
     protected videoWrapper: HTMLDivElement;
     protected timer: number;
@@ -47,7 +47,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             volume: 100,
             muted: false,
             duration: 100,
-            showVideo: true,
+            showVideo: false,
             showControls: true,
         };
 
@@ -79,7 +79,9 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         }
         this.setState({
             volume: check,
+            muted: false,
         });
+        this.updateVideoVolume(check, false);
     }
 
     protected toggleFullscreen = () => {
@@ -102,6 +104,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.setState({
             muted: !this.state.muted,
         });
+        this.updateVideoVolume(undefined, !this.state.muted);
     }
 
     protected onMouseMove = () => {
@@ -159,6 +162,16 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         clipboard.writeText(this.props.id);
     }
 
+    protected updateVideoVolume(volume?: number, muted?: boolean) {
+        if (volume === undefined) {
+            volume = this.state.volume;
+        }
+        if (muted === undefined) {
+            muted = this.state.muted;
+        }
+        this.video.volume = muted ? 0 : (volume / 100);
+    }
+
     /******************** Abstract Methods *******************/
 
     protected abstract togglePlay: () => void;
@@ -169,10 +182,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     protected componentDidMount() {
         this.setupVideoShortcuts();
-    }
-
-    protected componentWillUpdate(nextProps: IVideoProps, nextState: IVideoState) {
-        this.video.volume = nextState.muted ? 0 : (nextState.volume / 100);
     }
 
     public abstract render(): JSX.Element;

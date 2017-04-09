@@ -1,14 +1,14 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
-import { HostMessenger } from "../../communications/HostMessenger";
-import { HostReceiver } from "../../communications/HostReceiver";
+import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
+import { HostMessenger } from "../../../communications/HostMessenger";
+import { HostReceiver } from "../../../communications/HostReceiver";
+import { ClientMessageType, ISeekMessage } from "../../../messages/ControlMessage";
+import { HostPeerManager } from "../../../peer/HostPeerManager";
+import IState from "../../../redux/State";
+import { UserType } from "../../../utils/Definitions";
 import { VideoElement } from "../../components/VideoElement";
-import { ClientMessageType, ISeekMessage } from "../../messages/ControlMessage";
-import { HostPeerManager } from "../../peer/HostPeerManager";
-import IState from "../../redux/State";
-import { UserType } from "../../utils/Definitions";
 import { IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage } from "./VideoPage";
 
 interface IHostInputProps extends IVideoInputProps {
@@ -38,6 +38,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         this.messenger = this.peerManager.getMessenger();
         this.receiver = this.peerManager.getReceiver();
         this.initialPlay = true;
+        (this.state as any).showVideo = true;
     }
 
     /************************ Methods ****************************/
@@ -101,8 +102,6 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     /********************* React Lifecycle ***********************/
 
     protected componentWillUpdate(nextProps: IHostProps, nextState: IVideoState) {
-        super.componentWillUpdate(nextProps, nextState);
-
         if (this.state.time !== nextState.time) {
             this.messenger.publishTime(nextState.time);
         }
@@ -144,6 +143,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
                     onMouseMove={this.onMouseMove}
                     onVideoWheel={this.onVideoWheel}
                     onVideoClick={this.togglePlay}
+                    onCopyButton={this.copyClick}
                     hidden={!this.state.showVideo}
                 />
             </div>

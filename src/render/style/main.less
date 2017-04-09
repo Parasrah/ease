@@ -18,7 +18,8 @@
 @accent-color: black;
 @font-color: white;
 
-/* TODO find name */
+// Page dimensions
+@toolbar-height: 0px;
 
 #squarish(@length) {
     height: @length;
@@ -57,6 +58,12 @@ body {
     #indie-flower;
 
     background-color: @background-color;
+
+    #app {
+        height: 100vh;
+        width: 100%;
+        margin: 0;
+    }
 
     > input [type='number'] {
         -moz-appearance: textfield;

@@ -3,14 +3,14 @@ import * as Guid from "guid";
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../constants/Channels";
-import { UploadCommand } from "../../../constants/Commands";
-import { changePageAction } from "../../actions/AppActions";
-import { setHostIDAction } from "../../actions/ClientPeerActions";
+import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../../constants/Channels";
+import { UploadCommand } from "../../../../constants/Commands";
+import { changePageAction } from "../../../actions/AppActions";
+import { setHostIDAction } from "../../../actions/ClientPeerActions";
+import { IState } from "../../../redux/State";
+import "../../../style/start.less";
+import { Page } from "../../../utils/Definitions";
 import { UploadBox } from "../../components/UploadBox";
-import { IState } from "../../redux/State";
-import "../../style/start.less";
-import { Page } from "../../utils/Definitions";
 
 interface IStartInputProps {
     filepathCallback(file: string): void;
