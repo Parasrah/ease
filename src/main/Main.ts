@@ -25,7 +25,14 @@ export default class Main {
     }
 
     private static onReady() {
-        Main.mainWindow = new Main.BrowserWindow({width: Constants.DEFAULT_WIDTH, height: Constants.DEFAULT_HEIGHT, webPreferences: { experimentalFeatures: true }});
+        Main.mainWindow = new Main.BrowserWindow({
+            width: Constants.DEFAULT_WIDTH,
+            height: Constants.DEFAULT_HEIGHT,
+            frame: false,
+            webPreferences: {
+                experimentalFeatures: true,
+            },
+        });
         Main.mainWindow.loadURL("file://" + __dirname + "/../../../src/render/index.html");
         ListenerUtils.listen();
         Main.mainWindow.on("closed", Main.onClose);

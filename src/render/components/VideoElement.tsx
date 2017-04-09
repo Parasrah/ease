@@ -8,7 +8,8 @@ interface IVideoElementProps {
     time: number;
     volume: number;
     play: boolean;
-    show: boolean;
+    showControls: boolean;
+    hidden: boolean;
 
     setVideo(video: HTMLVideoElement): void;
     setVideoWrapper(videoWrapper: HTMLDivElement): void;
@@ -22,13 +23,14 @@ interface IVideoElementProps {
     onVolumeChange(volume: number): void;
     onMouseMove(): void;
     onVideoClick(): void;
+    onReconnectButton?(): void;
 }
 
 export const VideoElement = (props: IVideoElementProps): JSX.Element => {
 
     return (
         <div
-            className={"react-video-wrapper " + (props.show ? "show-cursor" : "hide-cursor")}
+            className={"react-video-wrapper " + (props.showControls ? "show-cursor" : "hide-cursor")}
             ref={props.setVideoWrapper}
             onMouseMove={props.onMouseMove}
         >
@@ -44,7 +46,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
                 autoPlay={true}
             />
             <Controls
-                show={props.show}
+                show={props.showControls}
                 duration={props.duration}
                 onPlayPauseButton={props.onPlayPauseButton}
                 onVolumeButton={props.onVolumeButton}

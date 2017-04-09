@@ -86,9 +86,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     public render(): JSX.Element {
         return (
             <div className="video">
-                <b> ID: </b> {this.props.id}
-                <button onClick={this.copyClick}>copy</button>
-                <button onClick={this.peerManager.reconnect}>reconnect</button>
+                {this.spinner}
                 <VideoElement
                     poster=""
                     videoSource=""
@@ -104,7 +102,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
                     time={this.state.time}
                     volume={this.state.volume}
                     play={this.props.play}
-                    show={this.state.show}
+                    show={this.state.showVideo}
                     onMouseMove={this.onMouseMove}
                     onVideoWheel={this.onVideoWheel}
                     onVideoClick={this.togglePlay}

@@ -125,8 +125,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     public render(): JSX.Element {
         return (
             <div className="video">
-                <b> ID: </b> {this.props.id}
-                <button onClick={this.copyClick}>copy</button>
+                {this.spinner}
                 <VideoElement
                     poster=""
                     videoSource={this.props.videoSource}
@@ -142,10 +141,11 @@ export class VideoHostPage extends VideoPage<IHostProps> {
                     time={this.state.time}
                     volume={this.state.volume}
                     play={this.props.play}
-                    show={this.state.show}
+                    showControls={this.state.showVideo}
                     onMouseMove={this.onMouseMove}
                     onVideoWheel={this.onVideoWheel}
                     onVideoClick={this.togglePlay}
+                    hidden={!this.state.showVideo}
                 />
             </div>
         );
