@@ -1,5 +1,8 @@
+import { ipcRenderer } from "electron";
 import * as React from "React";
 
+import { WindowChannelAction } from "../../../constants/ChannelActions";
+import { MainChannel } from "../../../constants/Channels";
 import "../../style/toolbar.less";
 
 interface IToolbarProps {
@@ -32,21 +35,21 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     /************************ Listeners **********************/
 
     private onCloseClick() {
-
+        ipcRenderer.send(MainChannel.windowChannel, WindowChannelAction.close);
     }
 
     private onWindowClick() {
         this.setState({
             windowed: !this.state.windowed,
         });
+        ipcRenderer.send(MainChannel.windowChannel, WindowChannelAction.maximize);
     }
 
     private onMinimizeClick() {
-
+        ipcRenderer.send(MainChannel.windowChannel, WindowChannelAction.minimize);
     }
 
     private onHomeClick() {
-
     }
 
     /********************* React Lifecycle *******************/
