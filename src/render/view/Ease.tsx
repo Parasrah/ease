@@ -60,24 +60,24 @@ export class Ease extends React.Component<IEaseProps, {}> {
     private mapPage(page: Page) {
         this.renderedPage = [];
         this.renderedPage.push(
-            <Toolbar />,
+            <Toolbar key="toolbar" />,
         );
         switch (page) {
             case Page.START:
                 this.renderedPage.push(
-                    <StartPageContainer filepathCallback={this.startVideo} />,
+                    <StartPageContainer key="start-page" filepathCallback={this.startVideo} />,
                 );
                 break;
 
             case Page.VIDEO_HOST:
                 this.renderedPage.push(
-                    <VideoHostPageContainer videoSource={this.videoPath} />,
+                    <VideoHostPageContainer key="video-host" videoSource={this.videoPath} />,
                 );
                 break;
 
             case Page.VIDEO_CLIENT:
                 this.renderedPage.push(
-                    <VideoClientPageContainer/>,
+                    <VideoClientPageContainer key="video-client"/>,
                 );
                 break;
 

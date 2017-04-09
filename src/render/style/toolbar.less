@@ -24,6 +24,17 @@
         display: inline-block;
         border: none;
         overflow: hidden;
+        cursor: pointer;
+        -webkit-app-region: no-drag;
+        outline: none;
+
+        &:hover {
+            background-color: @hover;
+        }
+
+        &:active {
+            background-color: @click;
+        }
 
         i {
             #square(@toolbar-height);
