@@ -143,6 +143,7 @@
             "as-needed"
         ],
         "no-shadowed-variable": false,
-        "no-empty": false
+        "no-empty": false,
+        "ban-types": false
     }
 }

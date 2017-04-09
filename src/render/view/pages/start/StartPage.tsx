@@ -3,8 +3,7 @@ import * as Guid from "guid";
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../../constants/Channels";
-import { UploadCommand } from "../../../../constants/Commands";
+import { MainChannel, RenderChannel } from "../../../../constants/Channels";
 import { changePageAction } from "../../../actions/AppActions";
 import { setHostIDAction } from "../../../actions/ClientPeerActions";
 import { IState } from "../../../redux/State";
@@ -55,13 +54,13 @@ class StartPage extends React.Component<IStartProps, {}> {
     }
 
     private listen = () => {
-        ipcRenderer.on(UPLOAD_RESPONSE, (event, payload: string) => {
+        ipcRenderer.on(RenderChannel.uploadResponseChannel, (event, payload: string) => {
             this.props.filepathCallback(payload);
         });
     }
 
     private onUploadClick = () => {
-        ipcRenderer.send(UPLOAD_REQUEST, UploadCommand.CLICK);
+        ipcRenderer.send(MainChannel.uploadChannel);
     }
 
     private onIdButtonClick = () => {

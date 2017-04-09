@@ -6,7 +6,7 @@
 
 import { BrowserWindow } from "electron";
 import * as Constants from "../constants/Constants";
-import { ListenerUtils } from "./utils/ListenerUtils";
+import { listen } from "./ipc/Listener";
 
 export default class Main {
     private static mainWindow: Electron.BrowserWindow;
@@ -34,8 +34,10 @@ export default class Main {
             },
         });
         Main.mainWindow.loadURL("file://" + __dirname + "/../../../src/render/index.html");
-        ListenerUtils.listen();
         Main.mainWindow.on("closed", Main.onClose);
+
+        // Listen for ipc messages
+        listen(Main.mainWindow);
     }
 
     private static onFileOpen(event: Event) {
