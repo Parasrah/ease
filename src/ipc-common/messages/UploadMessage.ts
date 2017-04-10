@@ -1,4 +1,4 @@
-import { ChannelAction } from "../constants/ChannelActions";
+import { ChannelAction } from "../../constants/ChannelActions";
 import { IMessage } from "./Message";
 
 // Message Definitions

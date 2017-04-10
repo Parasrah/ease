@@ -2,7 +2,7 @@ import { dialog } from "electron";
 
 import { ChannelAction } from "../../constants/ChannelActions";
 import { RenderChannel } from "../../constants/Channels";
-import { UploadMessage } from "../../messages/UploadMessage";
+import { UploadMessage } from "../../ipc-common/messages/UploadMessage";
 
 export function uploadController(event: Electron.IpcMainEvent, message: UploadMessage) {
     const type = ChannelAction.uploadChannelAction;

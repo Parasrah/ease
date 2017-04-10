@@ -1,8 +1,8 @@
 import { ipcMain } from "electron";
 
 import { MainChannel, RenderChannel } from "../../constants/Channels";
-import { createMaximizeMessage, createUnmaximizeMessage } from "../../messages/WindowMessage";
-import { curry } from "./Currier";
+import { curry } from "../../ipc-common/Currier";
+import { createMaximizeMessage, createUnmaximizeMessage } from "../../ipc-common/messages/WindowMessage";
 import { uploadController } from "./UploadController";
 import { windowController } from "./WindowController";
 
