@@ -1,9 +1,9 @@
 import * as SimplePeer from "simple-peer";
 import { removePeerAction, setPeerStatusAction } from "../actions/HostPeerActions";
-import { HostMessenger } from "../communications/HostMessenger";
-import { HostReceiver } from "../communications/HostReceiver";
 import { StoreWrapper } from "../redux/Store";
 import { AbstractPeerManager } from "./AbstractPeerManager";
+import { HostMessenger } from "./communications/HostMessenger";
+import { HostReceiver } from "./communications/HostReceiver";
 import { HostSignaler } from "./HostSignaler";
 
 export interface IEnhancedPeer extends SimplePeer.Instance {

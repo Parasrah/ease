@@ -3,11 +3,11 @@ import * as SimplePeer from "simple-peer";
 
 import { setPeerStatusAction, watchPeerStatusAction } from "../actions/ClientPeerActions";
 import { setIDAction } from "../actions/CommonPeerActions";
-import { ClientMessenger } from "../communications/ClientMessenger";
-import { ClientReceiver } from "../communications/ClientReceiver";
 import { StoreWrapper } from "../redux/Store";
 import { AbstractPeerManager } from "./AbstractPeerManager";
 import { ClientSignaler } from "./ClientSignaler";
+import { ClientMessenger } from "./communications/ClientMessenger";
+import { ClientReceiver } from "./communications/ClientReceiver";
 
 export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, ClientMessenger, ClientSignaler> {
     private peer: SimplePeer.Instance;

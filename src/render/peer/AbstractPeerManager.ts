@@ -1,6 +1,6 @@
-import { AbstractMessenger } from "../communications/AbstractMessenger";
-import { AbstractReceiver } from "../communications/AbstractReceiver";
 import { AbstractSignaler } from "./AbstractSignaler";
+import { AbstractMessenger } from "./communications/AbstractMessenger";
+import { AbstractReceiver } from "./communications/AbstractReceiver";
 
 export abstract class AbstractPeerManager<R extends AbstractReceiver, M extends AbstractMessenger, S extends AbstractSignaler> {
     private receiver: R;

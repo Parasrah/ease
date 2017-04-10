@@ -2,10 +2,10 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
-import { HostMessenger } from "../../../communications/HostMessenger";
-import { HostReceiver } from "../../../communications/HostReceiver";
-import { ClientMessageType, ISeekMessage } from "../../../messages/ControlMessage";
+import { HostMessenger } from "../../../peer/communications/HostMessenger";
+import { HostReceiver } from "../../../peer/communications/HostReceiver";
 import { HostPeerManager } from "../../../peer/HostPeerManager";
+import { ClientMessageType, ISeekMessage } from "../../../peer/messages/ControlMessage";
 import IState from "../../../redux/State";
 import { UserType } from "../../../utils/Definitions";
 import { VideoElement } from "../../components/VideoElement";
@@ -158,6 +158,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             videoReady: state.videoState.videoReady,
             fullscreen: state.videoState.fullscreen,
             play: state.videoState.play,
+            maximized: state.windowState.maximized,
         });
     }
 

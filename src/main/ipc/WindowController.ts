@@ -1,7 +1,8 @@
-import { WindowChannelAction as type } from "../../constants/ChannelActions";
+import { ChannelAction } from "../../constants/ChannelActions";
 import { IResizeMessage, WindowMessage } from "../../messages/WindowMessage";
 
 export function windowController(window: Electron.BrowserWindow, event: Electron.IpcMainEvent, message: WindowMessage) {
+    const type = ChannelAction.windowChannelAction;
     switch (message.type) {
         case type.close:
             window.close();

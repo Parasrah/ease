@@ -2,8 +2,8 @@ import { ResizeSensor } from "css-element-queries";
 import { clipboard, ipcRenderer } from "electron";
 import * as React from "react";
 
-import { WindowChannelAction } from "../../../../constants/ChannelActions";
 import { MainChannel } from "../../../../constants/Channels";
+import { createResizeMessage } from "../../../../messages/WindowMessage";
 import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
 import "../../../style/video.less";
 import { UserType } from "../../../utils/Definitions";
@@ -17,6 +17,7 @@ export interface IVideoStoreProps {
     readonly videoReady: boolean;
     readonly fullscreen: boolean;
     readonly play: boolean;
+    readonly maximized: boolean;
 }
 
 export interface IVideoDispatchProps {
@@ -181,7 +182,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     private resizePage(width: number, height: number) {
         // TODO Should only perform if the window is not maximized
         // TODO should update page size in store
-        ipcRenderer.send(MainChannel.windowMainChannel, WindowChannelAction.resize, width, height);
+        ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(width, height));
     }
 
     private calculatePageHeight(videoHeight: number) {

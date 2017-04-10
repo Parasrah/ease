@@ -3,10 +3,10 @@ import { IconButton, Spinner } from "react-mdl";
 import { connect } from "react-redux";
 
 import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
-import { ClientMessenger } from "../../../communications/ClientMessenger";
-import { ClientReceiver } from "../../../communications/ClientReceiver";
-import { HostMessageType, IDurationMessage, IPlayMessage, ITimeMessage } from "../../../messages/ControlMessage";
 import { ClientPeerManager } from "../../../peer/ClientPeerManager";
+import { ClientMessenger } from "../../../peer/communications/ClientMessenger";
+import { ClientReceiver } from "../../../peer/communications/ClientReceiver";
+import { HostMessageType, IDurationMessage, IPlayMessage, ITimeMessage } from "../../../peer/messages/ControlMessage";
 import IState from "../../../redux/State";
 import { UserType } from "../../../utils/Definitions";
 import { VideoElement } from "../../components/VideoElement";
@@ -156,6 +156,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             peerStatus: state.clientPeerState.peerStatus,
             fullscreen: state.videoState.fullscreen,
             play: state.videoState.play,
+            maximized: state.windowState.maximized,
         });
     }
 

@@ -1,9 +1,9 @@
-import { WindowChannelAction } from "../constants/ChannelActions";
+import { ChannelAction } from "../constants/ChannelActions";
 import { IMessage } from "./Message";
 
 // Message Definitions
 
-export type WindowMessage = ICloseMessage | IMaximizeMessage | IMinimizeMessage | IResizeMessage;
+export type WindowMessage = ICloseMessage | IMaximizeMessage | IMinimizeMessage | IResizeMessage | IUnmaximizeMessage;
 
 export interface ICloseMessage extends IMessage {}
 
@@ -22,31 +22,31 @@ export interface IResizeMessage extends IMessage {
 
 export function createCloseMessage(): ICloseMessage {
     return {
-        type: WindowChannelAction.close,
+        type: ChannelAction.windowChannelAction.close,
     };
 }
 
 export function createMaximizeMessage(): IMaximizeMessage {
     return {
-        type: WindowChannelAction.maximize,
+        type: ChannelAction.windowChannelAction.maximize,
     };
 }
 
 export function createUnmaximizeMessage(): IUnmaximizeMessage {
     return {
-        type: WindowChannelAction.unmaximize,
+        type: ChannelAction.windowChannelAction.unmaximize,
     };
 }
 
 export function createMinimizeMessage(): IMinimizeMessage {
     return {
-        type: WindowChannelAction.minimize,
+        type: ChannelAction.windowChannelAction.minimize,
     };
 }
 
 export function createResizeMessage(width: number, height: number): IResizeMessage {
     return {
-        type: WindowChannelAction.resize,
+        type: ChannelAction.windowChannelAction.resize,
         width,
         height,
     };

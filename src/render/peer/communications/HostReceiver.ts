@@ -1,5 +1,5 @@
+import { IEnhancedPeer } from "../../peer/HostPeerManager";
 import { ClientMessageType } from "../messages/ControlMessage";
-import { IEnhancedPeer } from "../peer/HostPeerManager";
 import { AbstractReceiver } from "./AbstractReceiver";
 
 export class HostReceiver extends AbstractReceiver {
