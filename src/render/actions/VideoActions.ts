@@ -19,6 +19,10 @@ export interface ISetVideoReadyAction extends Action {
     readonly videoReady: boolean;
 }
 
+export interface ISetPathAction extends Action {
+    readonly path: string;
+}
+
 /*************************************************************/
 /*********************** Action Creators *********************/
 /*************************************************************/
@@ -50,3 +54,12 @@ export const setVideoReadyAction = (videoReady: boolean): ISetVideoReadyAction =
 };
 
 export type setVideoReadyAction = (videoReady: boolean) => ISetVideoReadyAction;
+
+export function setPathAction(path: string): ISetPathAction {
+    return {
+        type: ActionType.videoAction.setVideoPathAction,
+        path,
+    };
+}
+
+export type setPathAction = (path: string) => ISetPathAction;

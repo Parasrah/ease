@@ -8,6 +8,7 @@ const windowChannelAction = {
 
 const uploadChannelAction = {
     openDialog: "OPEN_DIALOG",
+    returnPath: "RETURN_PATH",
 };
 
 export const ChannelAction = {

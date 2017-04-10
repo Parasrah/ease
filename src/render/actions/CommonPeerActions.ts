@@ -19,14 +19,14 @@ export interface ISetIDAction extends Action {
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const setIDAction = (id: string): ISetIDAction => {
+export const setIdAction = (id: string): ISetIDAction => {
     return {
         type: ActionType.commonPeerAction.setIDAction,
         id,
     };
 };
 
-export type setIDAction = (id: string) => ISetIDAction;
+export type setIdAction = (id: string) => ISetIDAction;
 
 const setServerStatusAction = (serverStatus: boolean): ISetServerStatusAction => {
     return {

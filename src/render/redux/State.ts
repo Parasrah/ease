@@ -27,6 +27,7 @@ export interface IVideoState {
     jumpToTime: null;
     controlStatus: null;
     volume: null;
+    path: string;
 }
 
 export interface ICommonPeerState {

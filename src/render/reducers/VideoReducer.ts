@@ -10,6 +10,7 @@ const initialVideoState: IVideoState = {
     controlStatus: null,
     volume: null,
     videoReady: false,
+    path: "",
 };
 
 const videoState = (state: IVideoState = initialVideoState, action: VideoAction): IVideoState => {

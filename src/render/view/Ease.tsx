@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { changePageAction } from "../actions/AppActions";
-import { setIDAction } from "../actions/CommonPeerActions";
+import { setIdAction } from "../actions/CommonPeerActions";
 import { setFullscreenAction } from "../actions/VideoActions";
 import { IState } from "../redux/State";
 import { Page } from "../utils/Definitions";
@@ -15,19 +15,18 @@ import VideoHostPageContainer from "./pages/video/VideoHostPage";
 interface IEaseStoreProps {
     id: string;
     page: Page;
+    path: string;
 }
 
 interface IEaseDispatchProps {
     changePageDispatch: changePageAction;
-    setIDDispatch: setIDAction;
+    setIdDispatch: setIdAction;
     setFullscreenDispatch: setFullscreenAction;
 }
 
 export type IEaseProps = IEaseStoreProps & IEaseDispatchProps;
 
 export class Ease extends React.Component<IEaseProps, {}> {
-    private videoPath: string;
-    private hostID: string;
     private renderedPage: JSX.Element[];
 
     constructor(props) {
@@ -36,22 +35,14 @@ export class Ease extends React.Component<IEaseProps, {}> {
         // Bindings
         this.onHomeClick = this.onHomeClick.bind(this);
 
-        this.videoPath = null;
-        this.hostID = null;
-        this.props.setIDDispatch(Guid.raw());
+        this.props.setIdDispatch(Guid.raw());
         this.watchFullscreen();
     }
 
     /*********************** Methods *************************/
 
     public startVideo = (filepath: string) => {
-        this.videoPath = filepath;
         this.props.changePageDispatch(Page.VIDEO_HOST);
-    }
-
-    public connectHost = (id: string) => {
-        this.hostID = id;
-        this.props.changePageDispatch(Page.VIDEO_CLIENT);
     }
 
     private watchFullscreen = () => {
@@ -82,7 +73,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
             case Page.VIDEO_HOST:
                 this.renderedPage.push(
-                    <VideoHostPageContainer key="video-host" videoSource={this.videoPath} />,
+                    <VideoHostPageContainer key="video-host" videoSource={this.props.path} />,
                 );
                 break;
 
@@ -107,6 +98,9 @@ export class Ease extends React.Component<IEaseProps, {}> {
         if (this.props.page !== nextProps.page) {
             this.mapPage(nextProps.page);
         }
+        if (this.props.path !== nextProps.path) {
+            this.props.changePageDispatch(Page.VIDEO_HOST);
+        }
     }
 
     public render(): JSX.Element {
@@ -123,13 +117,14 @@ export class Ease extends React.Component<IEaseProps, {}> {
         return Object.assign({}, {
             id: state.commonPeerState.id,
             page: state.appState.page,
+            path: state.videoState.path,
         });
     }
 
     public static mapDispatchToProps = (dispatch): IEaseDispatchProps => {
         return {
             changePageDispatch: (page) => dispatch(changePageAction(page)),
-            setIDDispatch: (id) => dispatch(setIDAction(id)),
+            setIdDispatch: (id) => dispatch(setIdAction(id)),
             setFullscreenDispatch: (fullscreen) => dispatch(setFullscreenAction(fullscreen)),
         };
     }

@@ -3,9 +3,9 @@ import * as Guid from "guid";
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { MainChannel, RenderChannel } from "../../../../constants/Channels";
+import { MainChannel } from "../../../../constants/Channels";
 import { changePageAction } from "../../../actions/AppActions";
-import { setHostIDAction } from "../../../actions/ClientPeerActions";
+import { setHostIdAction } from "../../../actions/ClientPeerActions";
 import { IState } from "../../../redux/State";
 import "../../../style/start.less";
 import { Page } from "../../../utils/Definitions";
@@ -32,9 +32,6 @@ class StartPage extends React.Component<IStartProps, {}> {
     constructor(props) {
         super(props);
         this.idInput = null;
-
-        // Listen for file
-        this.listen();
     }
 
     /********************* Methods ***********************/
@@ -51,12 +48,6 @@ class StartPage extends React.Component<IStartProps, {}> {
             this.props.setHostID(guid);
             this.props.changePage(Page.VIDEO_CLIENT);
         }
-    }
-
-    private listen = () => {
-        ipcRenderer.on(RenderChannel.uploadResponseChannel, (event, payload: string) => {
-            this.props.filepathCallback(payload);
-        });
     }
 
     private onUploadClick = () => {
@@ -125,7 +116,7 @@ class StartPage extends React.Component<IStartProps, {}> {
     public static mapDispatchToProps = (dispatch): IStartDispatchProps => {
         return {
             changePage: (page) => { dispatch(changePageAction(page)); },
-            setHostID: (hostID) => { dispatch(setHostIDAction(hostID)); },
+            setHostID: (hostID) => { dispatch(setHostIdAction(hostID)); },
         };
     }
 }

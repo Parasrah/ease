@@ -2,7 +2,7 @@ import * as Guid from "guid";
 import * as SimplePeer from "simple-peer";
 
 import { setPeerStatusAction, watchPeerStatusAction } from "../actions/ClientPeerActions";
-import { setIDAction } from "../actions/CommonPeerActions";
+import { setIdAction } from "../actions/CommonPeerActions";
 import { StoreWrapper } from "../redux/Store";
 import { AbstractPeerManager } from "./AbstractPeerManager";
 import { ClientSignaler } from "./ClientSignaler";
@@ -37,7 +37,7 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
     }
 
     public reconnect() {
-        this.storeWrapper.dispatch(setIDAction(Guid.raw()));
+        this.storeWrapper.dispatch(setIdAction(Guid.raw()));
         if (this.peer) {
             this.peer.removeAllListeners();
             this.storeWrapper.dispatch(setPeerStatusAction(false));
