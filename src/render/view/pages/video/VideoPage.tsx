@@ -1,6 +1,9 @@
-import { clipboard } from "electron";
+import { ResizeSensor } from "css-element-queries";
+import { clipboard, ipcRenderer } from "electron";
 import * as React from "react";
 
+import { WindowChannelAction } from "../../../../constants/ChannelActions";
+import { MainChannel } from "../../../../constants/Channels";
 import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
 import "../../../style/video.less";
 import { UserType } from "../../../utils/Definitions";
@@ -33,7 +36,10 @@ export interface IVideoState {
 export type IVideoProps = IVideoInputProps & IVideoStoreProps & IVideoDispatchProps;
 
 export abstract class VideoPage<P extends IVideoProps> extends React.Component<P, IVideoState> {
-    private readonly SHOW_CONTROLS_TIME = 3500;
+    /** Timeout to hide controls and cursor */
+    private static readonly SHOW_CONTROLS_TIME = 3500;
+    /** Height of the toolbar in pixels */
+    private static readonly TOOLBAR_HEIGHT = 30;
     protected video: HTMLVideoElement;
     protected videoWrapper: HTMLDivElement;
     protected timer: number;
@@ -112,7 +118,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         if (this.timer) {
             window.clearTimeout(this.timer);
         }
-        this.timer = window.setTimeout(this.hideControls, this.SHOW_CONTROLS_TIME);
+        this.timer = window.setTimeout(this.hideControls, VideoPage.SHOW_CONTROLS_TIME);
     }
 
     protected onVideoWheel = (event: React.WheelEvent<HTMLVideoElement>) => {
@@ -172,6 +178,18 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.video.volume = muted ? 0 : (volume / 100);
     }
 
+    private resizePage(width: number, height: number) {
+        ipcRenderer.send(MainChannel.windowChannel, WindowChannelAction.resize, width, height);
+    }
+
+    private calculatePageHeight(videoHeight: number) {
+        return videoHeight + VideoPage.TOOLBAR_HEIGHT;
+    }
+
+    private getVideoHeight(): number {
+        return this.videoWrapper.clientHeight;
+    }
+
     /******************** Abstract Methods *******************/
 
     protected abstract togglePlay: () => void;
@@ -182,6 +200,10 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     protected componentDidMount() {
         this.setupVideoShortcuts();
+        ResizeSensor(this.videoWrapper, () => {
+            const height = this.calculatePageHeight(this.getVideoHeight());
+            this.resizePage(-1, height);
+        });
     }
 
     public abstract render(): JSX.Element;
