@@ -37,18 +37,18 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     /************************ Listeners **********************/
 
     private onCloseClick() {
-        ipcRenderer.send(MainChannel.windowChannel, WindowChannelAction.close);
+        ipcRenderer.send(MainChannel.windowMainChannel, WindowChannelAction.close);
     }
 
     private onWindowClick() {
         this.setState({
             windowed: !this.state.windowed,
         });
-        ipcRenderer.send(MainChannel.windowChannel, WindowChannelAction.maximize);
+        ipcRenderer.send(MainChannel.windowMainChannel, WindowChannelAction.maximize);
     }
 
     private onMinimizeClick() {
-        ipcRenderer.send(MainChannel.windowChannel, WindowChannelAction.minimize);
+        ipcRenderer.send(MainChannel.windowMainChannel, WindowChannelAction.minimize);
     }
 
     private onHomeClick() {

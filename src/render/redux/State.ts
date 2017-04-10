@@ -16,8 +16,7 @@ export interface IAppState {
 }
 
 export interface IWindowState {
-    height: number;
-    width: number;
+    maximized: boolean;
 }
 
 export interface IVideoState {

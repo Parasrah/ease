@@ -3,7 +3,8 @@ export const ActionType = {
         changePageAction: "CHANGE_PAGE",
     },
     windowAction: {
-        resizePageAction: "RESIZE_PAGE",
+        maximizeAction: "MAXIMIZE_ACTION",
+        unmaximizeAction: "UNMAXIMIZE_ACTION",
     },
     videoAction: {
         setPlayStatusAction: "PLAY_PAUSE",

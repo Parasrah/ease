@@ -1,22 +1,33 @@
 import { ipcMain } from "electron";
 
-import { MainChannel } from "../../constants/Channels";
-import { dispatch } from "./Dispatcher";
+import { MainChannel, RenderChannel } from "../../constants/Channels";
+import { createMaximizeMessage, createUnmaximizeMessage } from "../../messages/WindowMessage";
+import { curry } from "./Currier";
 import { uploadController } from "./UploadController";
 import { windowController } from "./WindowController";
 
 export function listen(window: Electron.BrowserWindow) {
+    listenToIpc(window);
+    listenToWindow(window);
+}
+
+function listenToIpc(window: Electron.BrowserWindow) {
     Object.keys(MainChannel).map(function(key) {
         const channel = MainChannel[key];
         switch (channel) {
             case MainChannel.uploadChannel:
-                ipcMain.on(channel, dispatch(uploadController));
+                ipcMain.on(channel, curry(uploadController));
                 break;
-            case MainChannel.windowChannel:
-                ipcMain.on(channel, dispatch(windowController, window));
+            case MainChannel.windowMainChannel:
+                ipcMain.on(channel, curry(windowController, window));
                 break;
             default:
                 console.error("Unhandled channel type: " + channel);
         }
     });
+}
+
+function listenToWindow(window: Electron.BrowserWindow) {
+    window.on("maximize", () => ipcMain.emit(RenderChannel.windowRenderChannel, createMaximizeMessage()));
+    window.on("unmaximize", () => ipcMain.emit(RenderChannel.windowRenderChannel, createUnmaximizeMessage()));
 }

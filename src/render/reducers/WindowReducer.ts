@@ -1,10 +1,9 @@
 import { ActionType } from "../actions/Action";
-import { IResizePageAction, WindowAction } from "../actions/WindowActions";
+import { WindowAction } from "../actions/WindowActions";
 import { IWindowState } from "../redux/State";
 
 const initialWindowState: IWindowState = {
-    height: 600,
-    width: 800,
+    maximized: false,
 };
 
 const windowState = (state: IWindowState = initialWindowState, action: WindowAction): IWindowState => {
@@ -12,10 +11,14 @@ const windowState = (state: IWindowState = initialWindowState, action: WindowAct
 
     switch (action.type) {
 
-        case types.resizePageAction:
+        case types.maximizeAction:
             return Object.assign({}, state, {
-                height: (action as IResizePageAction).height,
-                width: (action as IResizePageAction).width,
+                maximized: true,
+            });
+
+        case types.unmaximizeAction:
+            return Object.assign({}, state, {
+                maximized: false,
             });
 
         default:
