@@ -8,13 +8,19 @@ In sync... what does this really mean for you? Well, if you click pause, it paus
 
 If you are looking for a similar experience for remote content (youtube etc), we suggest looking at Gaze or Rabb.it, both are great products!
 
+### Web Client
+
+We have developed a web application for Ease, but unfortunately is only available for the client. If you're hosting, we are afraid you are stuck with the electron app for now.
+
+You can use the web application [here](https://ease-web.mybluemix.net/)
+
 ### Technical
 
 For the more technical minded out there, Ease is using an experimental chromium feature to extract a stream from an HTML5 video element, and stream it to the viewers via WebRTC. All controls will be synced via this WebRTC connection as well, ensuring you stay off the grid! Normally you can't count on all viewers using experimental features, but thanks to Electron we can control how you use the application while still offering a native, cross-platform experience.
 
-### Future
+### Feature Request
 
-We are curently building a web-client for the peers (the host will unfortunately be constrained to electron). We also wish to create a chrome extension someday, that will allow you to capture content on the web as well. If you want to see more features, please open an issue with the `Feature Request` tag, and we will be happy to take a look :octocat:
+If you want to see more features, please open an issue with the `Feature Request` tag, and we will be happy to take a look :octocat:
 
 ## Getting Started Developing
 
