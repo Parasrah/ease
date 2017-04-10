@@ -179,6 +179,8 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     }
 
     private resizePage(width: number, height: number) {
+        // TODO Should only perform if the window is not maximized
+        // TODO should update page size in store
         ipcRenderer.send(MainChannel.windowChannel, WindowChannelAction.resize, width, height);
     }
 

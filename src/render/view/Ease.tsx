@@ -32,10 +32,13 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     constructor(props) {
         super(props);
+
+        // Bindings
+        this.onHomeClick = this.onHomeClick.bind(this);
+
         this.videoPath = null;
         this.hostID = null;
         this.props.setIDDispatch(Guid.raw());
-
         this.watchFullscreen();
     }
 
@@ -57,10 +60,18 @@ export class Ease extends React.Component<IEaseProps, {}> {
         };
     }
 
+    private onHomeClick() {
+        this.props.changePageDispatch(Page.START);
+    }
+
     private mapPage(page: Page) {
         this.renderedPage = [];
         this.renderedPage.push(
-            <Toolbar key="toolbar" />,
+            <Toolbar
+                key="toolbar"
+                page={this.props.page}
+                onHomeClick={this.onHomeClick}
+            />,
         );
         switch (page) {
             case Page.START:

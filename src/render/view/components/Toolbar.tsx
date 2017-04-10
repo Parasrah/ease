@@ -4,9 +4,11 @@ import * as React from "React";
 import { WindowChannelAction } from "../../../constants/ChannelActions";
 import { MainChannel } from "../../../constants/Channels";
 import "../../style/toolbar.less";
+import { Page } from "../../utils/Definitions";
 
 interface IToolbarProps {
-
+    onHomeClick(): void;
+    page: Page;
 }
 
 interface IToolbarState {
@@ -50,6 +52,27 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     }
 
     private onHomeClick() {
+        if (this.props.onHomeClick) {
+            this.props.onHomeClick();
+        }
+    }
+
+    // TODO Should refactor this
+    private HomeButton(props) {
+        const page = props.page;
+        if (page === Page.START) {
+            return null;
+        }
+        else {
+            return (
+                <button
+                    className="toolbar-button home"
+                    onClick={this.onHomeClick}
+                >
+                    <i className="material-icons">home</i>
+                </button>
+            );
+        }
     }
 
     /********************* React Lifecycle *******************/
@@ -57,12 +80,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     public render(): JSX.Element {
         return (
             <div className="toolbar">
-                <button
-                    className="toolbar-button home"
-                    onClick={this.onHomeClick}
-                >
-                    <i className="material-icons">home</i>
-                </button>
+                <this.HomeButton page={this.props.page} />
                 <button
                     className="toolbar-button toolbar-right close"
                     onClick={this.onCloseClick}
