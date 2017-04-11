@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { changePageAction } from "../actions/AppActions";
 import { setIdAction } from "../actions/CommonPeerActions";
 import { setFullscreenAction } from "../actions/VideoActions";
+import { listen } from "../ipc/Listener";
 import { IState } from "../redux/State";
 import { Page } from "../utils/Definitions";
 import { Toolbar } from "./components/Toolbar";
@@ -34,6 +35,11 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
         // Bindings
         this.onHomeClick = this.onHomeClick.bind(this);
+
+        // Listen for incoming messages
+        setTimeout(function() {
+            listen();
+        }, 0);
 
         this.props.setIdDispatch(Guid.raw());
         this.watchFullscreen();

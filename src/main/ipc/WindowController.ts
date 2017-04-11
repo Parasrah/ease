@@ -28,6 +28,6 @@ export function windowController(window: Electron.BrowserWindow, event: Electron
             break;
 
         default:
-            console.error("No such message type: " + message.type);
+            throw new Error("No such message type: " + message.type);
     }
 }

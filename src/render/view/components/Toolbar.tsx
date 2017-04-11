@@ -1,8 +1,8 @@
 import { ipcRenderer } from "electron";
 import * as React from "React";
 
-import { ChannelAction } from "../../../constants/ChannelActions";
 import { MainChannel } from "../../../constants/Channels";
+import { createCloseMessage, createMaximizeMessage, createMinimizeMessage } from "../../../ipc-common/messages/WindowMessage";
 import "../../style/toolbar.less";
 import { Page } from "../../utils/Definitions";
 
@@ -37,18 +37,18 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     /************************ Listeners **********************/
 
     private onCloseClick() {
-        ipcRenderer.send(MainChannel.windowMainChannel, ChannelAction.windowChannelAction.close);
+        ipcRenderer.send(MainChannel.windowMainChannel, createCloseMessage());
     }
 
     private onWindowClick() {
         this.setState({
             windowed: !this.state.windowed,
         });
-        ipcRenderer.send(MainChannel.windowMainChannel, ChannelAction.windowChannelAction.maximize);
+        ipcRenderer.send(MainChannel.windowMainChannel, createMaximizeMessage());
     }
 
     private onMinimizeClick() {
-        ipcRenderer.send(MainChannel.windowMainChannel, ChannelAction.windowChannelAction.minimize);
+        ipcRenderer.send(MainChannel.windowMainChannel, createMinimizeMessage());
     }
 
     private onHomeClick() {
@@ -57,30 +57,19 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
         }
     }
 
-    // TODO Should refactor this
-    private HomeButton(props) {
-        const page = props.page;
-        if (page === Page.START) {
-            return null;
-        }
-        else {
-            return (
-                <button
-                    className="toolbar-button home"
-                    onClick={this.onHomeClick}
-                >
-                    <i className="material-icons">home</i>
-                </button>
-            );
-        }
-    }
-
     /********************* React Lifecycle *******************/
 
     public render(): JSX.Element {
         return (
             <div className="toolbar">
-                <this.HomeButton page={this.props.page} />
+                {this.props.page !== Page.START && (
+                    <button
+                        className="toolbar-button home"
+                        onClick={this.onHomeClick}
+                    >
+                        <i className="material-icons">home</i>
+                    </button>
+                )}
                 <button
                     className="toolbar-button toolbar-right close"
                     onClick={this.onCloseClick}

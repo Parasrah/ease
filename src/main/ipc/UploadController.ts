@@ -2,7 +2,7 @@ import { dialog } from "electron";
 
 import { ChannelAction } from "../../constants/ChannelActions";
 import { RenderChannel } from "../../constants/Channels";
-import { UploadMessage } from "../../ipc-common/messages/UploadMessage";
+import { createReturnPathAction, UploadMessage } from "../../ipc-common/messages/UploadMessage";
 
 export function uploadController(event: Electron.IpcMainEvent, message: UploadMessage) {
     const type = ChannelAction.uploadChannelAction;
@@ -23,12 +23,12 @@ export function uploadController(event: Electron.IpcMainEvent, message: UploadMe
                     throw new Error("Too many files");
                 }
                 else {
-                    event.sender.send(RenderChannel.uploadResponseChannel, fileNames[0]);
+                    event.sender.send(RenderChannel.uploadResponseChannel, createReturnPathAction(fileNames[0]));
                 }
             });
             break;
 
         default:
-            console.error("No such message type: " + message.type);
+            throw new Error("No such message type: " + message.type);
     }
 }

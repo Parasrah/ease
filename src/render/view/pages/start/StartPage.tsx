@@ -4,6 +4,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { MainChannel } from "../../../../constants/Channels";
+import { createOpenDialogAction } from "../../../../ipc-common/messages/UploadMessage";
 import { changePageAction } from "../../../actions/AppActions";
 import { setHostIdAction } from "../../../actions/ClientPeerActions";
 import { IState } from "../../../redux/State";
@@ -16,7 +17,7 @@ interface IStartInputProps {
 }
 
 interface IStartStoreProps {
-
+    path: string;
 }
 
 interface IStartDispatchProps {
@@ -31,12 +32,21 @@ class StartPage extends React.Component<IStartProps, {}> {
 
     constructor(props) {
         super(props);
+
+        // Bindings
+        this.onUploadClick = this.onUploadClick.bind(this);
+        this.onIdButtonClick = this.onIdButtonClick.bind(this);
+        this.onIdFieldKeyPress = this.onIdFieldKeyPress.bind(this);
+        this.setIdInput = this.setIdInput.bind(this);
+        this.useHostID = this.useHostID.bind(this);
+
+        // Initialization
         this.idInput = null;
     }
 
     /********************* Methods ***********************/
 
-    private useHostID = () => {
+    private useHostID() {
         const guid = this.idInput.value;
         if (guid === "") {
             // TODO warning message
@@ -50,25 +60,31 @@ class StartPage extends React.Component<IStartProps, {}> {
         }
     }
 
-    private onUploadClick = () => {
-        ipcRenderer.send(MainChannel.uploadChannel);
+    private onUploadClick() {
+        ipcRenderer.send(MainChannel.uploadChannel, createOpenDialogAction());
     }
 
-    private onIdButtonClick = () => {
+    private onIdButtonClick() {
         this.useHostID();
     }
 
-    private onIdFieldKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    private onIdFieldKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.keyCode === 13) {
             this.useHostID();
         }
     }
 
-    private setIdInput = (input: HTMLInputElement) => {
+    private setIdInput(input: HTMLInputElement) {
         this.idInput = input;
     }
 
     /********************* React Lifecycle ***********************/
+
+    protected componentWillReceiveProps(nextProps: IStartProps) {
+        if (this.props.path !== nextProps.path) {
+            this.props.changePage(Page.VIDEO_HOST);
+        }
+    }
 
     public render(): JSX.Element {
         return (
@@ -110,6 +126,7 @@ class StartPage extends React.Component<IStartProps, {}> {
         return Object.assign({}, ownProps, {
             id: state.commonPeerState.id,
             page: state.appState.page,
+            path: state.videoState.path,
         });
     }
 

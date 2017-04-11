@@ -5,7 +5,7 @@ import { ActionType } from "./Action";
 /********************* Action Definitions ********************/
 /*************************************************************/
 
-export type VideoAction = IPlayPauseAction | IFullscreenAction | ISetVideoReadyAction;
+export type VideoAction = IPlayPauseAction | IFullscreenAction | ISetVideoReadyAction | ISetPathAction;
 
 export interface IPlayPauseAction extends Action {
     readonly play: boolean;

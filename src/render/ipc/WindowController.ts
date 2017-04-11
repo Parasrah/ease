@@ -1,6 +1,6 @@
 import { ChannelAction } from "../../constants/ChannelActions";
 import { WindowMessage } from "../../ipc-common/messages/WindowMessage";
-import { createMaximizeAction, createUnmaximizeAction } from "../actions/WindowActions";
+import { maximizeAction, unmaximizeAction } from "../actions/WindowActions";
 import { StoreWrapper } from "../redux/Store";
 
 export function windowController(event: Electron.IpcRendererEvent, message: WindowMessage) {
@@ -8,11 +8,11 @@ export function windowController(event: Electron.IpcRendererEvent, message: Wind
 
     switch (message.type) {
         case type.maximize:
-            StoreWrapper.getInstance().dispatch(createMaximizeAction());
+            StoreWrapper.getInstance().dispatch(maximizeAction());
             break;
 
         case type.unmaximize:
-            StoreWrapper.getInstance().dispatch(createUnmaximizeAction());
+            StoreWrapper.getInstance().dispatch(unmaximizeAction());
             break;
 
         default:

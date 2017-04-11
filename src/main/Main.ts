@@ -36,7 +36,7 @@ export default class Main {
         Main.mainWindow.loadURL("file://" + __dirname + "/../../../src/render/index.html");
         Main.mainWindow.on("closed", Main.onClose);
 
-        // Listen for ipc messages
+        // Listen for ipc messages and window changes
         listen(Main.mainWindow);
     }
 

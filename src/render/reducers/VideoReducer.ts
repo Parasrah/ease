@@ -1,5 +1,5 @@
 import { ActionType } from "../actions/Action";
-import { IFullscreenAction, IPlayPauseAction, ISetVideoReadyAction, VideoAction } from "../actions/VideoActions";
+import { IFullscreenAction, IPlayPauseAction, ISetPathAction, ISetVideoReadyAction, VideoAction } from "../actions/VideoActions";
 import { IVideoState } from "../redux/State";
 
 const initialVideoState: IVideoState = {
@@ -30,6 +30,11 @@ const videoState = (state: IVideoState = initialVideoState, action: VideoAction)
         case types.setVideoReadyAction:
             return Object.assign({}, state, {
                 videoReady: (action as ISetVideoReadyAction).videoReady,
+            });
+
+        case types.setVideoPathAction:
+            return Object.assign({}, state, {
+                path: (action as ISetPathAction).path,
             });
 
         default:
