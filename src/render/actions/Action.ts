@@ -5,7 +5,6 @@ export const ActionType = {
     windowAction: {
         maximizeAction: "MAXIMIZE",
         unmaximizeAction: "UNMAXIMIZE",
-        blockResizeAction: "BLOCK_RESIZE",
     },
     videoAction: {
         setPlayStatusAction: "PLAY_PAUSE",

@@ -17,11 +17,22 @@ export function windowController(window: Electron.BrowserWindow, event: Electron
             break;
 
         case type.resize:
+            // If window is maximized, should not resize page
+            if (window.isMaximized()) {
+                break;
+            }
+            // Get current window dimensions
             const dimensions = window.getSize();
+
+            // Get message dimensions
             let width = (message as IResizeMessage).width;
-            width = (width == -1) ? dimensions[0] : width;
             let height = (message as IResizeMessage).height;
+
+            // Determine which to use
+            width = (width == -1) ? dimensions[0] : width;
             height = (height == -1) ? dimensions[1] : height;
+
+            // Determine whether a page resize is necessary
             if (width != dimensions[0] || height != dimensions[1]) {
                 window.setSize(width, height);
             }

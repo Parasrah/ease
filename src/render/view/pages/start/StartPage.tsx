@@ -13,7 +13,6 @@ import { Page } from "../../../utils/Definitions";
 import { UploadBox } from "../../components/UploadBox";
 
 interface IStartInputProps {
-    filepathCallback(file: string): void;
 }
 
 interface IStartStoreProps {

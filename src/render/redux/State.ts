@@ -17,7 +17,6 @@ export interface IAppState {
 
 export interface IWindowState {
     maximized: boolean;
-    blockResize: boolean;
 }
 
 export interface IVideoState {

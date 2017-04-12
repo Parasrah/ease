@@ -1,11 +1,15 @@
+import { ipcRenderer } from "electron";
 import * as Guid from "guid";
 import * as React from "react";
 import { connect } from "react-redux";
 
+import { MainChannel } from "../../constants/Channels";
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from "../../constants/Constants";
+import { createResizeMessage } from "../../ipc-common/messages/WindowMessage";
 import { changePageAction } from "../actions/AppActions";
 import { setIdAction } from "../actions/CommonPeerActions";
-import { setFullscreenAction } from "../actions/VideoActions";
-import { maximizeAction, unmaximizeAction, blockResizeAction } from "../actions/WindowActions";
+import { setFullscreenAction, setPathAction } from "../actions/VideoActions";
+import { maximizeAction, unmaximizeAction } from "../actions/WindowActions";
 import { listen } from "../ipc/Listener";
 import { IState } from "../redux/State";
 import { Page } from "../utils/Definitions";
@@ -27,7 +31,7 @@ interface IEaseDispatchProps {
     setFullscreenDispatch: setFullscreenAction;
     maximizeDispatch: maximizeAction;
     unmaximizeDispatch: unmaximizeAction;
-    blockResizeDispatch: blockResizeAction;
+    setPathDispatch: setPathAction;
 }
 
 export type IEaseProps = IEaseStoreProps & IEaseDispatchProps;
@@ -41,7 +45,6 @@ export class Ease extends React.Component<IEaseProps, {}> {
         // Bindings
         this.onHomeClick = this.onHomeClick.bind(this);
         this.onMaximizeClick = this.onMaximizeClick.bind(this);
-        this.toolbarDragStart = this.toolbarDragStart.bind(this);
 
         // Listen for incoming messages
         setTimeout(function() {
@@ -65,6 +68,8 @@ export class Ease extends React.Component<IEaseProps, {}> {
     }
 
     private onHomeClick() {
+        ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        this.props.setPathDispatch("");
         this.props.changePageDispatch(Page.START);
     }
 
@@ -72,10 +77,6 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.props.maximized ?
         this.props.unmaximizeDispatch() :
         this.props.maximizeDispatch();
-    }
-
-    private toolbarDragStart() {
-        this.props.blockResizeDispatch(true);
     }
 
     private mapPage(page: Page) {
@@ -87,13 +88,12 @@ export class Ease extends React.Component<IEaseProps, {}> {
                 maximized={this.props.maximized}
                 onMaximizeClick={this.onMaximizeClick}
                 onHomeClick={this.onHomeClick}
-                blockResize={this.toolbarDragStart}
             />,
         );
         switch (page) {
             case Page.START:
                 this.renderedPage.push(
-                    <StartPageContainer key="start-page" filepathCallback={this.startVideo} />,
+                    <StartPageContainer key="start-page" />,
                 );
                 break;
 
@@ -124,7 +124,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
         if (this.props.page !== nextProps.page) {
             this.mapPage(nextProps.page);
         }
-        if (this.props.path !== nextProps.path) {
+        if (this.props.path !== nextProps.path && nextProps.path) {
             this.props.changePageDispatch(Page.VIDEO_HOST);
         }
     }
@@ -155,7 +155,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
             setFullscreenDispatch: (fullscreen) => dispatch(setFullscreenAction(fullscreen)),
             maximizeDispatch: () => dispatch(maximizeAction()),
             unmaximizeDispatch: () => dispatch(unmaximizeAction()),
-            blockResizeDispatch: (block) => dispatch(blockResizeAction(block)),
+            setPathDispatch: (filepath) => dispatch(setPathAction(filepath)),
         };
     }
 }
