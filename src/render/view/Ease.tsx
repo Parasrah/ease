@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { changePageAction } from "../actions/AppActions";
 import { setIdAction } from "../actions/CommonPeerActions";
 import { setFullscreenAction } from "../actions/VideoActions";
+import { maximizeAction, unmaximizeAction } from "../actions/WindowActions";
 import { listen } from "../ipc/Listener";
 import { IState } from "../redux/State";
 import { Page } from "../utils/Definitions";
@@ -17,12 +18,15 @@ interface IEaseStoreProps {
     id: string;
     page: Page;
     path: string;
+    maximized: boolean;
 }
 
 interface IEaseDispatchProps {
     changePageDispatch: changePageAction;
     setIdDispatch: setIdAction;
     setFullscreenDispatch: setFullscreenAction;
+    maximizeDispatch: maximizeAction;
+    unmaximizeDispatch: unmaximizeAction;
 }
 
 export type IEaseProps = IEaseStoreProps & IEaseDispatchProps;
@@ -35,6 +39,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
         // Bindings
         this.onHomeClick = this.onHomeClick.bind(this);
+        this.onMaximizeClick = this.onMaximizeClick.bind(this);
 
         // Listen for incoming messages
         setTimeout(function() {
@@ -61,12 +66,20 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.props.changePageDispatch(Page.START);
     }
 
+    private onMaximizeClick() {
+        this.props.maximized ?
+        this.props.unmaximizeDispatch() :
+        this.props.maximizeDispatch();
+    }
+
     private mapPage(page: Page) {
         this.renderedPage = [];
         this.renderedPage.push(
             <Toolbar
                 key="toolbar"
                 page={this.props.page}
+                maximized={this.props.maximized}
+                onMaximizeClick={this.onMaximizeClick}
                 onHomeClick={this.onHomeClick}
             />,
         );
@@ -124,6 +137,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
             id: state.commonPeerState.id,
             page: state.appState.page,
             path: state.videoState.path,
+            maximized: state.windowState.maximized,
         });
     }
 
@@ -132,6 +146,8 @@ export class Ease extends React.Component<IEaseProps, {}> {
             changePageDispatch: (page) => dispatch(changePageAction(page)),
             setIdDispatch: (id) => dispatch(setIdAction(id)),
             setFullscreenDispatch: (fullscreen) => dispatch(setFullscreenAction(fullscreen)),
+            maximizeDispatch: () => dispatch(maximizeAction()),
+            unmaximizeDispatch: () => dispatch(unmaximizeAction()),
         };
     }
 }

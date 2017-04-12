@@ -2,28 +2,23 @@ import { ipcRenderer } from "electron";
 import * as React from "React";
 
 import { MainChannel } from "../../../constants/Channels";
-import { createCloseMessage, createMaximizeMessage, createMinimizeMessage } from "../../../ipc-common/messages/WindowMessage";
+import { createCloseMessage, createMaximizeMessage, createMinimizeMessage, createUnmaximizeMessage } from "../../../ipc-common/messages/WindowMessage";
 import "../../style/toolbar.less";
 import { Page } from "../../utils/Definitions";
 
 interface IToolbarProps {
     onHomeClick(): void;
+    onMaximizeClick(): void;
     page: Page;
+    maximized: boolean;
 }
 
-interface IToolbarState {
-    windowed: boolean;
-}
+interface IToolbarState {}
 
 export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 
     constructor(props: IToolbarProps) {
         super(props);
-
-        // Initialize State
-        this.state = {
-            windowed: true,
-        };
 
         // Bind listeners
         this.onCloseClick = this.onCloseClick.bind(this);
@@ -41,9 +36,9 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     }
 
     private onWindowClick() {
-        this.setState({
-            windowed: !this.state.windowed,
-        });
+        this.props.onMaximizeClick();
+        this.props.maximized ?
+        ipcRenderer.send(MainChannel.windowMainChannel, createUnmaximizeMessage()) :
         ipcRenderer.send(MainChannel.windowMainChannel, createMaximizeMessage());
     }
 
@@ -80,7 +75,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
                     className="toolbar-button toolbar-right window"
                     onClick={this.onWindowClick}
                 >
-                    <i className="material-icons">{(this.state.windowed ? "fullscreen" : "fullscreen_exit")}</i>
+                    <i className="material-icons">{(this.props.maximized ? "fullscreen_exit" : "fullscreen")}</i>
                 </button>
                 <button
                     className="toolbar-button toolbar-right minimize"
