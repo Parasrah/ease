@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { changePageAction } from "../actions/AppActions";
 import { setIdAction } from "../actions/CommonPeerActions";
 import { setFullscreenAction } from "../actions/VideoActions";
-import { maximizeAction, unmaximizeAction } from "../actions/WindowActions";
+import { maximizeAction, unmaximizeAction, blockResizeAction } from "../actions/WindowActions";
 import { listen } from "../ipc/Listener";
 import { IState } from "../redux/State";
 import { Page } from "../utils/Definitions";
@@ -27,6 +27,7 @@ interface IEaseDispatchProps {
     setFullscreenDispatch: setFullscreenAction;
     maximizeDispatch: maximizeAction;
     unmaximizeDispatch: unmaximizeAction;
+    blockResizeDispatch: blockResizeAction;
 }
 
 export type IEaseProps = IEaseStoreProps & IEaseDispatchProps;
@@ -40,6 +41,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
         // Bindings
         this.onHomeClick = this.onHomeClick.bind(this);
         this.onMaximizeClick = this.onMaximizeClick.bind(this);
+        this.toolbarDragStart = this.toolbarDragStart.bind(this);
 
         // Listen for incoming messages
         setTimeout(function() {
@@ -72,6 +74,10 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.props.maximizeDispatch();
     }
 
+    private toolbarDragStart() {
+        this.props.blockResizeDispatch(true);
+    }
+
     private mapPage(page: Page) {
         this.renderedPage = [];
         this.renderedPage.push(
@@ -81,6 +87,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
                 maximized={this.props.maximized}
                 onMaximizeClick={this.onMaximizeClick}
                 onHomeClick={this.onHomeClick}
+                blockResize={this.toolbarDragStart}
             />,
         );
         switch (page) {
@@ -148,6 +155,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
             setFullscreenDispatch: (fullscreen) => dispatch(setFullscreenAction(fullscreen)),
             maximizeDispatch: () => dispatch(maximizeAction()),
             unmaximizeDispatch: () => dispatch(unmaximizeAction()),
+            blockResizeDispatch: (block) => dispatch(blockResizeAction(block)),
         };
     }
 }

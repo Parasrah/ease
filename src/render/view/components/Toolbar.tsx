@@ -9,6 +9,7 @@ import { Page } from "../../utils/Definitions";
 interface IToolbarProps {
     onHomeClick(): void;
     onMaximizeClick(): void;
+    blockResize(): void;
     page: Page;
     maximized: boolean;
 }
@@ -56,7 +57,10 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 
     public render(): JSX.Element {
         return (
-            <div className="toolbar">
+            <div
+                className="toolbar"
+                onClick={this.props.blockResize}
+            >
                 {this.props.page !== Page.START && (
                     <button
                         className="toolbar-button home"

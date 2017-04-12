@@ -18,6 +18,7 @@ export interface IVideoStoreProps {
     readonly fullscreen: boolean;
     readonly play: boolean;
     readonly maximized: boolean;
+    readonly blockResize: boolean;
 }
 
 export interface IVideoDispatchProps {
@@ -180,7 +181,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     }
 
     private resizePage(width: number, height: number) {
-        if (!this.props.maximized) {
+        if (!this.props.maximized && !this.props.blockResize) {
             ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(width, height));
         }
     }

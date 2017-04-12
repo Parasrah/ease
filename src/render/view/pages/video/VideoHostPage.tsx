@@ -159,6 +159,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             fullscreen: state.videoState.fullscreen,
             play: state.videoState.play,
             maximized: state.windowState.maximized,
+            blockResize: state.windowState.blockResize,
         });
     }
 
