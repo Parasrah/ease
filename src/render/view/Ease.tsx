@@ -77,7 +77,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.renderedPage.push(
             <Toolbar
                 key="toolbar"
-                page={this.props.page}
+                page={page}
                 maximized={this.props.maximized}
                 onMaximizeClick={this.onMaximizeClick}
                 onHomeClick={this.onHomeClick}
