@@ -79,13 +79,13 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.props.maximizeDispatch();
     }
 
-    private mapPage(page: Page) {
+    private mapPage(page: Page, maximized?: boolean) {
         this.renderedPage = [];
         this.renderedPage.push(
             <Toolbar
                 key="toolbar"
                 page={page}
-                maximized={this.props.maximized}
+                maximized={maximized ? maximized : this.props.maximized}
                 onMaximizeClick={this.onMaximizeClick}
                 onHomeClick={this.onHomeClick}
             />,
@@ -123,6 +123,9 @@ export class Ease extends React.Component<IEaseProps, {}> {
     public componentWillReceiveProps = (nextProps: IEaseStoreProps) => {
         if (this.props.page !== nextProps.page) {
             this.mapPage(nextProps.page);
+        }
+        else if (this.props.maximized !== nextProps.maximized) {
+            this.mapPage(nextProps.page, nextProps.maximized);
         }
         if (this.props.path !== nextProps.path && nextProps.path) {
             this.props.changePageDispatch(Page.VIDEO_HOST);

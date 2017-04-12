@@ -42,7 +42,6 @@ export default class Main {
 
     private static onFileOpen(event: Event) {
         event.preventDefault();
-        console.log("File open");
     }
 
     public static main(app: Electron.App, browserWindow: typeof BrowserWindow) {

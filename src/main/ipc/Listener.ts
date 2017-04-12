@@ -28,6 +28,6 @@ function listenToIpc(window: Electron.BrowserWindow) {
 }
 
 function listenToWindow(window: Electron.BrowserWindow) {
-    window.on("maximize", () => ipcMain.emit(RenderChannel.windowRenderChannel, createMaximizeMessage()));
-    window.on("unmaximize", () => ipcMain.emit(RenderChannel.windowRenderChannel, createUnmaximizeMessage()));
+    window.on("maximize", () => window.webContents.send(RenderChannel.windowRenderChannel, createMaximizeMessage()));
+    window.on("unmaximize", () => window.webContents.send(RenderChannel.windowRenderChannel, createUnmaximizeMessage()));
 }

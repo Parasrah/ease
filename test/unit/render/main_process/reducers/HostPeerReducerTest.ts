@@ -19,7 +19,6 @@ describe("HostPeerReducer", function() {
     const DEFAULT_HOST_SIGNAL = "default-host-signal-data";
 
     before(function() {
-        console.log("Running");
         const storeWrapper = StoreWrapper.getInstance();
         const state = storeWrapper.getState();
         Object.assign(state.hostPeerState, {

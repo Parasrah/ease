@@ -2,7 +2,7 @@ import { ipcRenderer } from "electron";
 import * as React from "React";
 
 import { MainChannel } from "../../../constants/Channels";
-import { createCloseMessage, createMaximizeMessage, createMinimizeMessage, createUnmaximizeMessage } from "../../../ipc-common/messages/WindowMessage";
+import { createCloseMessage, createMaximizeMessage, createMinimizeMessage } from "../../../ipc-common/messages/WindowMessage";
 import "../../style/toolbar.less";
 import { Page } from "../../utils/Definitions";
 
@@ -36,9 +36,6 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     }
 
     private onWindowClick() {
-        this.props.onMaximizeClick();
-        this.props.maximized ?
-        ipcRenderer.send(MainChannel.windowMainChannel, createUnmaximizeMessage()) :
         ipcRenderer.send(MainChannel.windowMainChannel, createMaximizeMessage());
     }
 
