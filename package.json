@@ -2,6 +2,9 @@
   "name": "ease",
   "version": "0.1.0",
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
+  "engines": {
+    "node": "6.10.2"
+  },
   "main": "dist/src/main/App.js",
   "scripts": {
     "setup": "npm install && npm prune && npm run rebuild",
@@ -90,7 +93,7 @@
     "testdouble": "^2.0.2",
     "tslint": "^4.5.1",
     "tslint-react": "^2.3.0",
-    "typescript": "^2.2.1",
+    "typescript": "^2.2.2",
     "webpack": "^2.2.1"
   },
   "dependencies": {
