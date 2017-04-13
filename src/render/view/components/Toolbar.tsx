@@ -20,6 +20,8 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     constructor(props: IToolbarProps) {
         super(props);
 
+        this.state = {};
+
         // Bind listeners
         this.onCloseClick = this.onCloseClick.bind(this);
         this.onWindowClick = this.onWindowClick.bind(this);
