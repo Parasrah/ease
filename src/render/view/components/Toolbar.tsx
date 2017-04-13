@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron";
-import * as React from "React";
+import * as React from "react";
 
 import { MainChannel } from "../../../constants/Channels";
 import { createCloseMessage, createMaximizeMessage, createMinimizeMessage } from "../../../ipc-common/messages/WindowMessage";
