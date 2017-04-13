@@ -34,8 +34,9 @@
     "lint:src-fix": "tslint \"src/**/*.ts?(x)\" --fix --project ./tslint.json",
     "lint:test": "tslint \"test/**/*.ts?(x)\" --project ./tslint.json",
     "lint:test-fix": "tslint \"test/**/*.ts?(x)\" --fix --project ./tslint.json",
-    "package:linux:x64": "npm prune && npm install && npm run rebuild  && electron-packager . ease --platform=linux --arch=x64",
-    "package:windows:x64": "npm prune && npm install && npm run rebuild  && electron-packager . ease --platform=win32 --arch=x64"
+    "package:linux:x64": "npm run setup -- && electron-packager . ease --platform=linux --arch=x64",
+    "package:windows:x64": "npm run setup -- && electron-packager . ease --platform=win32 --arch=x64",
+    "package:mac:x64": "npm run setup -- && electron-packager . ease --platform=darwin --arch=x64"
   },
   "config": {
     "debug": "--debug",
