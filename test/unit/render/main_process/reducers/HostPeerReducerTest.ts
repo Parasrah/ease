@@ -55,16 +55,16 @@ describe("HostPeerReducer", function() {
                 assert.equal(hostPeers[i].peerStatus, false, "Expected status to be false");
                 assert.equal(hostPeers[i].hostSignalData.length, 1, "Expected single instance of host signal data for orignal peers");
                 assert.equal(hostPeers[i].clientSignalData.length, 1, "Expected single instance of client signal data for orignal peers");
-                assert.equal(hostPeers[i].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
-                assert.equal(hostPeers[i].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
             }
 
             assert.equal(hostPeers.length, 3, "Expected three host peers");
             assert.equal(hostPeers[1].clientSignalData.length, 2, "Expected two instances of signal data");
-            assert.equal(hostPeers[1].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Default signal data should persist");
-            assert.equal(hostPeers[1].clientSignalData[1], SIGNAL_DATA, "Signal data should have been added");
+            assert.equal((hostPeers[1].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Default signal data should persist");
+            assert.equal((hostPeers[1].clientSignalData[1] as any), SIGNAL_DATA, "Signal data should have been added");
             assert.equal(hostPeers[1].hostSignalData.length, 1, "Expected host signal data to persist");
-            assert.equal(hostPeers[1].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected host signal data to persist");
+            assert.equal((hostPeers[1].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected host signal data to persist");
             assert.equal(hostPeers[1].clientID, CLIENT_IDS[1], "Client ID should persist");
         });
     });
@@ -86,16 +86,16 @@ describe("HostPeerReducer", function() {
                 assert.equal(hostPeers[i].peerStatus, false, "Expected status to be false");
                 assert.equal(hostPeers[i].hostSignalData.length, 1, "Expected single instance of host signal data for orignal peers");
                 assert.equal(hostPeers[i].clientSignalData.length, 1, "Expected single instance of client signal data for orignal peers");
-                assert.equal(hostPeers[i].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
-                assert.equal(hostPeers[i].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
             }
 
             assert.equal(hostPeers.length, 3, "Expected three host peers");
             assert.equal(hostPeers[1].clientSignalData.length, 1, "Expected single instance of client signal data");
-            assert.equal(hostPeers[1].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Default client signal data should persist");
+            assert.equal((hostPeers[1].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Default client signal data should persist");
             assert.equal(hostPeers[1].hostSignalData.length, 2, "Expected two instances of host signal data");
-            assert.equal(hostPeers[1].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected host signal data to persist");
-            assert.equal(hostPeers[1].hostSignalData[1], SIGNAL_DATA, "Signal data should have been added");
+            assert.equal((hostPeers[1].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected host signal data to persist");
+            assert.equal((hostPeers[1].hostSignalData[1] as any), SIGNAL_DATA, "Signal data should have been added");
             assert.equal(hostPeers[1].clientID, CLIENT_IDS[1], "Client ID should persist");
         });
     });
@@ -118,8 +118,8 @@ describe("HostPeerReducer", function() {
                 assert.equal(hostPeers[i].peerStatus, false, "Expected status to be false");
                 assert.equal(hostPeers[i].hostSignalData.length, 1, "Expected single instance of host signal data for orignal peers");
                 assert.equal(hostPeers[i].clientSignalData.length, 1, "Expected single instance of client signal data for orignal peers");
-                assert.equal(hostPeers[i].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
-                assert.equal(hostPeers[i].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
             }
         });
     });
@@ -134,14 +134,14 @@ describe("HostPeerReducer", function() {
             for (let i = 0; i < CLIENT_IDS.length; i++) {
                 assert.equal(hostPeers[i].clientID, CLIENT_IDS[i], "Expected original client id's to persist");
                 assert.equal(hostPeers[i].hostSignalData.length, 1, "Expected single instance of host signal data for orignal peers");
-                assert.equal(hostPeers[i].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
                 assert.equal(hostPeers[i].peerStatus, false, "Expected status to be false");
                 if (i === 1) {
                     assert.equal(hostPeers[i].clientSignalData.length, 0, "Expected no signal data present");
                 }
                 else {
                     assert.equal(hostPeers[i].clientSignalData.length, 1, "Expected single instance of client signal data for orignal peers");
-                    assert.equal(hostPeers[i].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
+                    assert.equal((hostPeers[i].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
                 }
             }
         });
@@ -157,14 +157,14 @@ describe("HostPeerReducer", function() {
             for (let i = 0; i < CLIENT_IDS.length; i++) {
                 assert.equal(hostPeers[i].clientID, CLIENT_IDS[i], "Expected original client id's to persist");
                 assert.equal(hostPeers[i].clientSignalData.length, 1, "Expected single instance of client signal data for orignal peers");
-                assert.equal(hostPeers[i].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
                 assert.equal(hostPeers[i].peerStatus, false, "Expected status to be false");
                 if (i === 1) {
                     assert.equal(hostPeers[i].hostSignalData.length, 0, "Expected no signal data present");
                 }
                 else {
                     assert.equal(hostPeers[i].hostSignalData.length, 1, "Expected single instance of host signal data for orignal peers");
-                    assert.equal(hostPeers[i].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
+                    assert.equal((hostPeers[i].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
                 }
             }
         });
@@ -183,8 +183,8 @@ describe("HostPeerReducer", function() {
                 assert.equal(hostPeers[i].peerStatus, (i === 1), "Expected status to be " + (i === 1));
                 assert.equal(hostPeers[i].hostSignalData.length, 1, "Expected single instance of host signal data for orignal peers");
                 assert.equal(hostPeers[i].clientSignalData.length, 1, "Expected single instance of client signal data for orignal peers");
-                assert.equal(hostPeers[i].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
-                assert.equal(hostPeers[i].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
             }
         });
 
@@ -207,8 +207,8 @@ describe("HostPeerReducer", function() {
                 else {
                     assert.equal(hostPeers[i].hostSignalData.length, 1, "Expected single instance of host signal data for orignal peers");
                     assert.equal(hostPeers[i].clientSignalData.length, 1, "Expected single instance of client signal data for orignal peers");
-                    assert.equal(hostPeers[i].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
-                    assert.equal(hostPeers[i].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
+                    assert.equal((hostPeers[i].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
+                    assert.equal((hostPeers[i].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
                 }
             }
         });
@@ -230,8 +230,8 @@ describe("HostPeerReducer", function() {
                 assert.equal(hostPeers[i].peerStatus, false, "Expected status to be false");
                 assert.equal(hostPeers[i].hostSignalData.length, 1, "Expected single instance of host signal data for orignal peers");
                 assert.equal(hostPeers[i].clientSignalData.length, 1, "Expected single instance of client signal data for orignal peers");
-                assert.equal(hostPeers[i].hostSignalData[0], DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
-                assert.equal(hostPeers[i].clientSignalData[0], DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].hostSignalData[0] as any), DEFAULT_HOST_SIGNAL, "Expected original signal data to persist");
+                assert.equal((hostPeers[i].clientSignalData[0] as any), DEFAULT_CLIENT_SIGNAL, "Expected original signal data to persist");
             }
         });
     });
