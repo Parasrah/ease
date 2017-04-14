@@ -5,7 +5,7 @@ import { ActionType } from "./Action";
 /********************* Action Definitions ********************/
 /*************************************************************/
 
-export type VideoAction = IPlayPauseAction | IFullscreenAction | ISetVideoReadyAction;
+export type VideoAction = IPlayPauseAction | IFullscreenAction | ISetVideoReadyAction | ISetPathAction;
 
 export interface IPlayPauseAction extends Action {
     readonly play: boolean;
@@ -17,6 +17,10 @@ export interface IFullscreenAction extends Action {
 
 export interface ISetVideoReadyAction extends Action {
     readonly videoReady: boolean;
+}
+
+export interface ISetPathAction extends Action {
+    readonly path: string;
 }
 
 /*************************************************************/
@@ -50,3 +54,12 @@ export const setVideoReadyAction = (videoReady: boolean): ISetVideoReadyAction =
 };
 
 export type setVideoReadyAction = (videoReady: boolean) => ISetVideoReadyAction;
+
+export function setPathAction(path: string): ISetPathAction {
+    return {
+        type: ActionType.videoAction.setVideoPathAction,
+        path,
+    };
+}
+
+export type setPathAction = (path: string) => ISetPathAction;

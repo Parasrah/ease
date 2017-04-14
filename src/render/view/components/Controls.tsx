@@ -1,6 +1,6 @@
 import * as React from "react";
 import { IconButton, Slider } from "react-mdl";
-import "../style/controls.less";
+import "../../style/controls.less";
 
 export interface IControlsProps {
     show?: boolean;
@@ -16,6 +16,8 @@ export interface IControlsProps {
     onFullscreenButton?(): void;
     onSeek?(time: number): void;
     onVolumeChange?(volume: number): void;
+    onReconnectButton?(): void;
+    onCopyButton?(): void;
 }
 
 export interface IControlsState {
@@ -25,6 +27,7 @@ export interface IControlsState {
 
 export class Controls extends React.Component<IControlsProps, IControlsState> {
     private formattedTime;
+    private volumeSliderValue: number;
 
     constructor(props) {
         super(props);
@@ -33,6 +36,17 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
             mute: false,
         };
 
+        // Setup bindings
+        this.onVolumeButtonClick = this.onVolumeButtonClick.bind(this);
+        this.onCastButtonClick = this.onCastButtonClick.bind(this);
+        this.onFullscreenButtonClick = this.onFullscreenButtonClick.bind(this);
+        this.onReconnectClick = this.onReconnectClick.bind(this);
+        this.onPlayPauseClick = this.onPlayPauseClick.bind(this);
+        this.onVolumeChange = this.onVolumeChange.bind(this);
+        this.onPlaybackChange = this.onPlaybackChange.bind(this);
+
+        // Initialization
+        this.volumeSliderValue = 100;
         this.formattedTime = this.secondsToHms(this.state.time);
     }
 
@@ -46,20 +60,25 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
 
     /********************* Callbacks *************************/
 
-    private onPlayPauseClick: React.EventHandler<React.MouseEvent<HTMLElement>> = (event) => {
+    private onPlayPauseClick(event: React.MouseEvent<HTMLElement>) {
         if (this.props.onPlayPauseButton) {
             this.props.onPlayPauseButton();
         }
     }
 
-    private onVolumeChange: React.EventHandler<React.FormEvent<Slider>> = (event) => {
+    private onVolumeChange(event: React.FormEvent<Slider>) {
         const volume = (event.target as any).valueAsNumber;
         if (this.props.onVolumeChange) {
             this.props.onVolumeChange(volume);
         }
+        setTimeout(function() {
+            this.setState({
+                mute: false,
+            });
+        }.bind(this), 0);
     }
 
-    private onPlaybackChange: React.EventHandler<React.FormEvent<Slider>> = (event) => {
+    private onPlaybackChange(event: React.FormEvent<Slider>) {
         const currTime = (event.target as any).valueAsNumber;
         this.setState({
             time: currTime,
@@ -69,7 +88,7 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
         }
     }
 
-    private onVolumeButtonClick = () => {
+    private onVolumeButtonClick() {
         this.setState({
             mute: !this.state.mute,
         });
@@ -78,15 +97,21 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
         }
     }
 
-    private onCastButtonClick = () => {
+    private onCastButtonClick() {
         if (this.props.onCastButton) {
             this.props.onCastButton();
         }
     }
 
-    private onFullscreenButtonClick = () => {
+    private onFullscreenButtonClick() {
         if (this.props.onFullscreenButton) {
             this.props.onFullscreenButton();
+        }
+    }
+
+    private onReconnectClick() {
+        if (this.props.onReconnectButton) {
+            this.props.onReconnectButton();
         }
     }
 
@@ -98,6 +123,16 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
             this.setState({
                 time: nextProps.time,
             });
+        }
+    }
+
+    protected componentWillUpdate(nextProps: IControlsProps, nextState: IControlsState) {
+        // Calucalte value for volume slider
+        if (nextState.mute) {
+            this.volumeSliderValue = 0;
+        }
+        else {
+            this.volumeSliderValue = (this.props.volume !== undefined) ? this.props.volume : 100;
         }
     }
 
@@ -119,7 +154,7 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                         <IconButton className="volume-button" name={(this.state.mute) ? "volume_mute" : "volume_up"} onClick={this.onVolumeButtonClick} />
                         <Slider
                             className="volume-slider"
-                            value={(this.props.volume !== undefined) ? this.props.volume : 100}
+                            value={this.volumeSliderValue}
                             min={0}
                             max={100}
                             onChange={this.onVolumeChange}
@@ -130,6 +165,14 @@ export class Controls extends React.Component<IControlsProps, IControlsState> {
                     </div>
                     <div className="bar-right">
                         <IconButton className="cast-button" name="cast" onClick={this.onCastButtonClick} />
+                        {
+                            (this.props.onCopyButton !== undefined) &&
+                            <IconButton className="copy-button" name="content_copy" onClick={this.props.onCopyButton} />
+                        }
+                        {
+                            (this.props.onReconnectButton !== undefined) &&
+                            <IconButton className="reconnect-button" name="cached" onClick={this.onReconnectClick} />
+                        }
                         <IconButton className="fullscreen-button" name="fullscreen" onClick={this.onFullscreenButtonClick} />
                     </div>
                 </div>

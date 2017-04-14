@@ -3,21 +3,20 @@ import * as Guid from "guid";
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { UPLOAD_REQUEST, UPLOAD_RESPONSE } from "../../../constants/Channels";
-import { UploadCommand } from "../../../constants/Commands";
-import { changePageAction } from "../../actions/AppActions";
-import { setHostIDAction } from "../../actions/ClientPeerActions";
+import { MainChannel } from "../../../../constants/Channels";
+import { createOpenDialogAction } from "../../../../ipc-common/messages/UploadMessage";
+import { changePageAction } from "../../../actions/AppActions";
+import { setHostIdAction } from "../../../actions/ClientPeerActions";
+import { IState } from "../../../redux/State";
+import "../../../style/start.less";
+import { Page } from "../../../utils/Definitions";
 import { UploadBox } from "../../components/UploadBox";
-import { IState } from "../../redux/State";
-import "../../style/start.less";
-import { Page } from "../../utils/Definitions";
 
 interface IStartInputProps {
-    filepathCallback(file: string): void;
 }
 
 interface IStartStoreProps {
-
+    path: string;
 }
 
 interface IStartDispatchProps {
@@ -32,15 +31,21 @@ class StartPage extends React.Component<IStartProps, {}> {
 
     constructor(props) {
         super(props);
-        this.idInput = null;
 
-        // Listen for file
-        this.listen();
+        // Bindings
+        this.onUploadClick = this.onUploadClick.bind(this);
+        this.onIdButtonClick = this.onIdButtonClick.bind(this);
+        this.onIdFieldKeyPress = this.onIdFieldKeyPress.bind(this);
+        this.setIdInput = this.setIdInput.bind(this);
+        this.useHostID = this.useHostID.bind(this);
+
+        // Initialization
+        this.idInput = null;
     }
 
     /********************* Methods ***********************/
 
-    private useHostID = () => {
+    private useHostID() {
         const guid = this.idInput.value;
         if (guid === "") {
             // TODO warning message
@@ -54,31 +59,31 @@ class StartPage extends React.Component<IStartProps, {}> {
         }
     }
 
-    private listen = () => {
-        ipcRenderer.on(UPLOAD_RESPONSE, (event, payload: string) => {
-            this.props.filepathCallback(payload);
-        });
+    private onUploadClick() {
+        ipcRenderer.send(MainChannel.uploadChannel, createOpenDialogAction());
     }
 
-    private onUploadClick = () => {
-        ipcRenderer.send(UPLOAD_REQUEST, UploadCommand.CLICK);
-    }
-
-    private onIdButtonClick = () => {
+    private onIdButtonClick() {
         this.useHostID();
     }
 
-    private onIdFieldKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    private onIdFieldKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.keyCode === 13) {
             this.useHostID();
         }
     }
 
-    private setIdInput = (input: HTMLInputElement) => {
+    private setIdInput(input: HTMLInputElement) {
         this.idInput = input;
     }
 
     /********************* React Lifecycle ***********************/
+
+    protected componentWillReceiveProps(nextProps: IStartProps) {
+        if (this.props.path !== nextProps.path) {
+            this.props.changePage(Page.VIDEO_HOST);
+        }
+    }
 
     public render(): JSX.Element {
         return (
@@ -120,13 +125,14 @@ class StartPage extends React.Component<IStartProps, {}> {
         return Object.assign({}, ownProps, {
             id: state.commonPeerState.id,
             page: state.appState.page,
+            path: state.videoState.path,
         });
     }
 
     public static mapDispatchToProps = (dispatch): IStartDispatchProps => {
         return {
             changePage: (page) => { dispatch(changePageAction(page)); },
-            setHostID: (hostID) => { dispatch(setHostIDAction(hostID)); },
+            setHostID: (hostID) => { dispatch(setHostIdAction(hostID)); },
         };
     }
 }

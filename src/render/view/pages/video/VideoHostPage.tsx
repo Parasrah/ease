@@ -1,14 +1,14 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
-import { HostMessenger } from "../../communications/HostMessenger";
-import { HostReceiver } from "../../communications/HostReceiver";
+import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
+import { HostMessenger } from "../../../peer/communications/HostMessenger";
+import { HostReceiver } from "../../../peer/communications/HostReceiver";
+import { HostPeerManager } from "../../../peer/HostPeerManager";
+import { ClientMessageType, ISeekMessage } from "../../../peer/messages/ControlMessage";
+import IState from "../../../redux/State";
+import { UserType } from "../../../utils/Definitions";
 import { VideoElement } from "../../components/VideoElement";
-import { ClientMessageType, ISeekMessage } from "../../messages/ControlMessage";
-import { HostPeerManager } from "../../peer/HostPeerManager";
-import IState from "../../redux/State";
-import { UserType } from "../../utils/Definitions";
 import { IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage } from "./VideoPage";
 
 interface IHostInputProps extends IVideoInputProps {
@@ -32,7 +32,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     private peerManager: HostPeerManager;
 
     constructor(props) {
-        super(props);
+        super(props, true);
         this.type = UserType.HOST;
         this.peerManager = new HostPeerManager();
         this.messenger = this.peerManager.getMessenger();
@@ -101,8 +101,6 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     /********************* React Lifecycle ***********************/
 
     protected componentWillUpdate(nextProps: IHostProps, nextState: IVideoState) {
-        super.componentWillUpdate(nextProps, nextState);
-
         if (this.state.time !== nextState.time) {
             this.messenger.publishTime(nextState.time);
         }
@@ -125,8 +123,6 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     public render(): JSX.Element {
         return (
             <div className="video">
-                <b> ID: </b> {this.props.id}
-                <button onClick={this.copyClick}>copy</button>
                 <VideoElement
                     poster=""
                     videoSource={this.props.videoSource}
@@ -142,10 +138,12 @@ export class VideoHostPage extends VideoPage<IHostProps> {
                     time={this.state.time}
                     volume={this.state.volume}
                     play={this.props.play}
-                    show={this.state.show}
+                    showControls={this.state.showVideo}
                     onMouseMove={this.onMouseMove}
                     onVideoWheel={this.onVideoWheel}
                     onVideoClick={this.togglePlay}
+                    onCopyButton={this.copyClick}
+                    hidden={!this.state.showVideo}
                 />
             </div>
         );

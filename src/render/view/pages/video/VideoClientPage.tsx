@@ -1,15 +1,16 @@
 import * as React from "react";
+import { IconButton, Spinner } from "react-mdl";
 import { connect } from "react-redux";
 
-import { setPlayStatusAction, setVideoReadyAction } from "../../actions/VideoActions";
-import { ClientMessenger } from "../../communications/ClientMessenger";
-import { ClientReceiver } from "../../communications/ClientReceiver";
+import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
+import { ClientPeerManager } from "../../../peer/ClientPeerManager";
+import { ClientMessenger } from "../../../peer/communications/ClientMessenger";
+import { ClientReceiver } from "../../../peer/communications/ClientReceiver";
+import { HostMessageType, IDurationMessage, IPlayMessage, ITimeMessage } from "../../../peer/messages/ControlMessage";
+import IState from "../../../redux/State";
+import { UserType } from "../../../utils/Definitions";
 import { VideoElement } from "../../components/VideoElement";
-import { HostMessageType, IDurationMessage, IPlayMessage, ITimeMessage } from "../../messages/ControlMessage";
-import { ClientPeerManager } from "../../peer/ClientPeerManager";
-import IState from "../../redux/State";
-import { UserType } from "../../utils/Definitions";
-import { IVideoDispatchProps, IVideoInputProps, IVideoStoreProps, VideoPage } from "./VideoPage";
+import { IVideoDispatchProps, IVideoInputProps, IVideoState, IVideoStoreProps, VideoPage } from "./VideoPage";
 
 interface IClientInputProps extends IVideoInputProps {
 
@@ -29,15 +30,17 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     private peerManager: ClientPeerManager;
     private messenger: ClientMessenger;
     private receiver: ClientReceiver;
+    private spinner: JSX.Element;
 
     constructor(props) {
-        super(props);
+        super(props, false);
         this.type = UserType.CLIENT;
         this.peerManager = new ClientPeerManager();
         this.messenger = this.peerManager.getMessenger();
         this.receiver = this.peerManager.getReceiver();
         this.peerManager.onStream(this.stream);
         this.setupReceiver();
+        this.spinner = this.getSpinner(this.state.showVideo);
     }
 
     private setupReceiver = () => {
@@ -61,6 +64,31 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     private stream = (stream: MediaStream) => {
         this.video.srcObject = stream;
         this.video.play();
+        this.showVideo();
+    }
+
+    protected getSpinner(showVideo: boolean): JSX.Element {
+        switch (showVideo) {
+            case false:
+                return (
+                    <div className="spinner-wrapper">
+                        <Spinner className="spinner"/>
+                        <IconButton
+                            className="spinner-reconnect"
+                            name="cached"
+                            onClick={this.peerManager.reconnect}
+                        />
+                    </div>
+                );
+            default:
+                return <div className="hidden" />;
+        }
+    }
+
+    private showVideo() {
+        this.setState({
+            showVideo: true,
+        });
     }
 
     /********************* Video Listeners ***********************/
@@ -83,12 +111,16 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     /********************* React Lifecycle ***********************/
 
+    protected componentWillUpdate(nextProps: IClientProps, nextState: IVideoState) {
+        if (this.state.showVideo !== nextState.showVideo) {
+            this.spinner = this.getSpinner(nextState.showVideo);
+        }
+    }
+
     public render(): JSX.Element {
         return (
             <div className="video">
-                <b> ID: </b> {this.props.id}
-                <button onClick={this.copyClick}>copy</button>
-                <button onClick={this.peerManager.reconnect}>reconnect</button>
+                {this.spinner}
                 <VideoElement
                     poster=""
                     videoSource=""
@@ -104,10 +136,12 @@ export class VideoClientPage extends VideoPage<IClientProps> {
                     time={this.state.time}
                     volume={this.state.volume}
                     play={this.props.play}
-                    show={this.state.show}
+                    hidden={!this.state.showVideo}
                     onMouseMove={this.onMouseMove}
                     onVideoWheel={this.onVideoWheel}
                     onVideoClick={this.togglePlay}
+                    showControls={this.state.showControls}
+                    onReconnectButton={this.peerManager.reconnect}
                 />
             </div>
         );

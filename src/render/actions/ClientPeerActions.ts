@@ -22,14 +22,14 @@ export interface ISetPeerStatusAction extends Action {
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const setHostIDAction = (hostID: string): ISetHostIDAction => {
+export const setHostIdAction = (hostID: string): ISetHostIDAction => {
     return {
         type: ActionType.clientPeerAction.setHostIDAction,
         hostID,
     };
 };
 
-export type setHostIDAction = (hostID: string) => ISetHostIDAction;
+export type setHostIdAction = (hostID: string) => ISetHostIDAction;
 
 export const setPeerStatusAction: setPeerStatusAction = (peerStatus) => {
     return {

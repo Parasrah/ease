@@ -3,13 +3,15 @@ export const ActionType = {
         changePageAction: "CHANGE_PAGE",
     },
     windowAction: {
-        resizePageAction: "RESIZE_PAGE",
+        maximizeAction: "MAXIMIZE",
+        unmaximizeAction: "UNMAXIMIZE",
     },
     videoAction: {
         setPlayStatusAction: "PLAY_PAUSE",
         jumpToTimeAction: "JUMP_TO_TIME",
         fullscreenAction: "FULLSCREEN",
         setVideoReadyAction: "SET_VIDEO_STATUS",
+        setVideoPathAction: "SET_VIDEO_PATH",
     },
     commonPeerAction: {
         setServerStatusAction: "SET_SERVER_STATUS",

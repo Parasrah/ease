@@ -5,23 +5,28 @@ import { ActionType } from "./Action";
 /********************* Action Definitions ********************/
 /*************************************************************/
 
-export type WindowAction = IResizePageAction;
+export type WindowAction = IMaximizeAction | IUnmaximizeAction;
 
-export interface IResizePageAction extends Action {
-    readonly height: number;
-    readonly width: number;
-}
+export interface IMaximizeAction extends Action {}
+
+export interface IUnmaximizeAction extends Action {}
 
 /*************************************************************/
 /*********************** Action Creators *********************/
 /*************************************************************/
 
-export const resizePageAction = (width: number, height: number): IResizePageAction => {
+export function maximizeAction(): IMaximizeAction {
     return {
-        type: ActionType.windowAction.resizePageAction,
-        width,
-        height,
+        type: ActionType.windowAction.maximizeAction,
     };
-};
+}
 
-export type resizePageAction = (width: number, height: number) => IResizePageAction ;
+export type maximizeAction = () => IMaximizeAction;
+
+export function unmaximizeAction(): IUnmaximizeAction {
+    return {
+        type: ActionType.windowAction.unmaximizeAction,
+    };
+}
+
+export type unmaximizeAction = () => IUnmaximizeAction;

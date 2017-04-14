@@ -1,4 +1,4 @@
-import { StoreWrapper } from "../redux/Store";
+import { StoreWrapper } from "../../redux/Store";
 
 export abstract class AbstractMessenger {
     private storeWrapper: StoreWrapper;

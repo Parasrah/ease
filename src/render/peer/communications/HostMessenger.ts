@@ -1,7 +1,7 @@
 import { Instance } from "simple-peer";
 
+import { IEnhancedPeer } from "../../peer/HostPeerManager";
 import { HostMessageType, IControlMessage, IDurationMessage, IPlayMessage, ITimeMessage } from "../messages/ControlMessage";
-import { IEnhancedPeer } from "../peer/HostPeerManager";
 import { AbstractMessenger } from "./AbstractMessenger";
 
 interface IConnection {

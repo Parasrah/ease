@@ -2,6 +2,9 @@
   "name": "ease",
   "version": "0.1.0",
   "description": "Sync local video between yourself and your loved ones for a more intimate experience",
+  "engines": {
+    "node": "6.10.2"
+  },
   "main": "dist/src/main/App.js",
   "scripts": {
     "setup": "npm install && npm prune && npm run rebuild",
@@ -31,8 +34,9 @@
     "lint:src-fix": "tslint \"src/**/*.ts?(x)\" --fix --project ./tslint.json",
     "lint:test": "tslint \"test/**/*.ts?(x)\" --project ./tslint.json",
     "lint:test-fix": "tslint \"test/**/*.ts?(x)\" --fix --project ./tslint.json",
-    "package:linux:x64": "npm prune && npm install && npm run rebuild  && electron-packager . ease --platform=linux --arch=x64",
-    "package:windows:x64": "npm prune && npm install && npm run rebuild  && electron-packager . ease --platform=win32 --arch=x64"
+    "package:linux:x64": "npm run setup -- && electron-packager . ease --platform=linux --arch=x64",
+    "package:windows:x64": "npm run setup -- && electron-packager . ease --platform=win32 --arch=x64",
+    "package:mac:x64": "npm run setup -- && electron-packager . ease --platform=darwin --arch=x64"
   },
   "config": {
     "debug": "--debug",
@@ -67,7 +71,7 @@
     "@types/react-mdl": "^1.7.20",
     "@types/react-redux": "^4.4.37",
     "@types/redux-logger": "^2.10.0",
-    "@types/simple-peer": "^6.1.0",
+    "@types/simple-peer": "^6.1.1",
     "@types/sinon": "^1.16.36",
     "@types/socket.io-client": "^1.4.29",
     "awesome-typescript-loader": "^3.0.3",
@@ -90,10 +94,11 @@
     "testdouble": "^2.0.2",
     "tslint": "^4.5.1",
     "tslint-react": "^2.3.0",
-    "typescript": "^2.2.1",
+    "typescript": "^2.2.2",
     "webpack": "^2.2.1"
   },
   "dependencies": {
+    "css-element-queries": "^0.4.0",
     "guid": "0.0.12",
     "material-design-lite": "^1.3.0",
     "react": "^15.4.2",
@@ -103,7 +108,7 @@
     "redux": "^3.6.0",
     "redux-logger": "^2.10.2",
     "redux-thunk": "^2.2.0",
-    "simple-peer": "^6.4.3",
+    "simple-peer": "^6.4.4",
     "socket.io-client": "^1.7.2"
   }
 }

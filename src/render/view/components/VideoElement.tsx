@@ -8,7 +8,8 @@ interface IVideoElementProps {
     time: number;
     volume: number;
     play: boolean;
-    show: boolean;
+    showControls: boolean;
+    hidden: boolean;
 
     setVideo(video: HTMLVideoElement): void;
     setVideoWrapper(videoWrapper: HTMLDivElement): void;
@@ -22,20 +23,20 @@ interface IVideoElementProps {
     onVolumeChange(volume: number): void;
     onMouseMove(): void;
     onVideoClick(): void;
+    onReconnectButton?(): void;
+    onCopyButton?(): void;
 }
 
 export const VideoElement = (props: IVideoElementProps): JSX.Element => {
 
     return (
         <div
-            className={"react-video-wrapper " + (props.show ? "show-cursor" : "hide-cursor")}
+            className={"react-video-wrapper " + (props.showControls ? "show-cursor" : "hide-cursor") + " " + (props.hidden ? "hidden" : "visible")}
             ref={props.setVideoWrapper}
             onMouseMove={props.onMouseMove}
         >
             <video
                 type="video/mp4"
-                width="100%"
-                height="100%"
                 src={props.videoSource}
                 ref={props.setVideo}
                 poster={props.poster}
@@ -44,12 +45,14 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
                 autoPlay={true}
             />
             <Controls
-                show={props.show}
+                show={props.showControls}
                 duration={props.duration}
                 onPlayPauseButton={props.onPlayPauseButton}
                 onVolumeButton={props.onVolumeButton}
                 onCastButton={props.onCastButton}
                 onFullscreenButton={props.onFullscreenButton}
+                onReconnectButton={props.onReconnectButton}
+                onCopyButton={props.onCopyButton}
                 onSeek={props.onSeek}
                 onVolumeChange={props.onVolumeChange}
                 time={props.time}

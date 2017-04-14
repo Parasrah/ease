@@ -6,7 +6,7 @@
 
 import { BrowserWindow } from "electron";
 import * as Constants from "../constants/Constants";
-import { ListenerUtils } from "./utils/ListenerUtils";
+import { listen } from "./ipc/Listener";
 
 export default class Main {
     private static mainWindow: Electron.BrowserWindow;
@@ -25,15 +25,25 @@ export default class Main {
     }
 
     private static onReady() {
-        Main.mainWindow = new Main.BrowserWindow({width: Constants.DEFAULT_WIDTH, height: Constants.DEFAULT_HEIGHT, webPreferences: { experimentalFeatures: true }});
+        Main.mainWindow = new Main.BrowserWindow({
+            width: Constants.DEFAULT_WIDTH,
+            height: Constants.DEFAULT_HEIGHT,
+            minHeight: Constants.MINIMUM_HEIGHT,
+            minWidth: Constants.MINIMUM_WIDTH,
+            frame: false,
+            webPreferences: {
+                experimentalFeatures: true,
+            },
+        });
         Main.mainWindow.loadURL("file://" + __dirname + "/../../../src/render/index.html");
-        ListenerUtils.listen();
         Main.mainWindow.on("closed", Main.onClose);
+
+        // Listen for ipc messages and window changes
+        listen(Main.mainWindow);
     }
 
     private static onFileOpen(event: Event) {
         event.preventDefault();
-        console.log("File open");
     }
 
     public static main(app: Electron.App, browserWindow: typeof BrowserWindow) {

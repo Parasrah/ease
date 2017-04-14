@@ -1,2 +1,9 @@
-export const UPLOAD_REQUEST = "upload-request";
-export const UPLOAD_RESPONSE = "upload-response";
+export const MainChannel = {
+    uploadChannel: "UPLOAD",
+    windowMainChannel: "WINDOW_MAIN",
+};
+
+export const RenderChannel = {
+    uploadResponseChannel: "UPLOAD_RESPONSE",
+    windowRenderChannel: "WINDOW_RENDER",
+};

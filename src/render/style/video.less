@@ -1,7 +1,49 @@
-.react-video-wrapper {
-    width: 100%;
+@import "main.less";
 
-    &.hide-cursor {
-        cursor: none;
+#center {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    flex-flow: column;
+}
+
+.video {
+    #center;
+
+    position: absolute;
+    top: @toolbar-height;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+ 
+    .react-video-wrapper {
+        position: relative;
+        background-color: black;
+
+        video {
+            width: 100%;
+        }
     }
+
+    .spinner-wrapper {
+        position: relative;
+        height: 80px;
+        width: 80px;
+
+        .spinner {
+            height: 100%;
+            width: 100%;
+        }
+
+        .spinner-reconnect {
+            position: absolute;
+            color: white;
+            top: 25px;
+            left: 25px;
+        }
+    }    
 }
