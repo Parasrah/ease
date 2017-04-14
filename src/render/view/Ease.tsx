@@ -37,7 +37,6 @@ interface IEaseDispatchProps {
 export type IEaseProps = IEaseStoreProps & IEaseDispatchProps;
 
 export class Ease extends React.Component<IEaseProps, {}> {
-    private renderedPage: JSX.Element[];
 
     constructor(props) {
         super(props);
@@ -79,54 +78,9 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.props.maximizeDispatch();
     }
 
-    private mapPage(page: Page, maximized?: boolean) {
-        this.renderedPage = [];
-        this.renderedPage.push(
-            <Toolbar
-                key="toolbar"
-                page={page}
-                maximized={maximized ? maximized : this.props.maximized}
-                onMaximizeClick={this.onMaximizeClick}
-                onHomeClick={this.onHomeClick}
-            />,
-        );
-        switch (page) {
-            case Page.START:
-                this.renderedPage.push(
-                    <StartPageContainer key="start-page" />,
-                );
-                break;
-
-            case Page.VIDEO_HOST:
-                this.renderedPage.push(
-                    <VideoHostPageContainer key="video-host" videoSource={this.props.path} />,
-                );
-                break;
-
-            case Page.VIDEO_CLIENT:
-                this.renderedPage.push(
-                    <VideoClientPageContainer key="video-client"/>,
-                );
-                break;
-
-            default:
-                throw new Error("NoSuchEnum");
-        }
-    }
-
     /*********************** Lifecycle ***********************/
 
-    public componentWillMount() {
-        this.mapPage(this.props.page);
-    }
-
     public componentWillReceiveProps = (nextProps: IEaseStoreProps) => {
-        if (this.props.page !== nextProps.page) {
-            this.mapPage(nextProps.page);
-        }
-        else if (this.props.maximized !== nextProps.maximized) {
-            this.mapPage(nextProps.page, nextProps.maximized);
-        }
         if (this.props.path !== nextProps.path && nextProps.path) {
             this.props.changePageDispatch(Page.VIDEO_HOST);
         }
@@ -135,7 +89,25 @@ export class Ease extends React.Component<IEaseProps, {}> {
     public render(): JSX.Element {
         return (
             <div className="app-core">
-                {this.renderedPage}
+                <Toolbar
+                    key="toolbar"
+                    page={this.props.page}
+                    maximized={this.props.maximized}
+                    onMaximizeClick={this.onMaximizeClick}
+                    onHomeClick={this.onHomeClick}
+                />
+                {
+                    (this.props.page === Page.START) &&
+                    <StartPageContainer />
+                }
+                {
+                    (this.props.page === Page.VIDEO_HOST) &&
+                    <VideoHostPageContainer videoSource={this.props.path} />
+                }
+                {
+                    (this.props.page === Page.VIDEO_CLIENT) &&
+                    <VideoClientPageContainer />
+                }
             </div>
         );
     }
