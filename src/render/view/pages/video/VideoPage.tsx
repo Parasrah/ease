@@ -3,7 +3,7 @@ import { clipboard, ipcRenderer } from "electron";
 import * as React from "react";
 
 import { MainChannel } from "../../../../constants/Channels";
-import { createResizeMessage, createMinimumSizeMessage } from "../../../../ipc-common/messages/WindowMessage";
+import { createMinimumSizeMessage, createResizeMessage } from "../../../../ipc-common/messages/WindowMessage";
 import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
 import "../../../style/video.less";
 import { UserType } from "../../../utils/Definitions";

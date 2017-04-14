@@ -1,5 +1,5 @@
 import { ChannelAction } from "../../constants/ChannelActions";
-import { IResizeMessage, WindowMessage, IMinimumSizeMessage } from "../../ipc-common/messages/WindowMessage";
+import { IMinimumSizeMessage, IResizeMessage, WindowMessage } from "../../ipc-common/messages/WindowMessage";
 
 export function windowController(window: Electron.BrowserWindow, event: Electron.IpcMainEvent, message: WindowMessage) {
     const type = ChannelAction.windowChannelAction;
