@@ -52,6 +52,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
                 onCastButton={props.onCastButton}
                 onFullscreenButton={props.onFullscreenButton}
                 onReconnectButton={props.onReconnectButton}
+                onCopyButton={props.onCopyButton}
                 onSeek={props.onSeek}
                 onVolumeChange={props.onVolumeChange}
                 time={props.time}

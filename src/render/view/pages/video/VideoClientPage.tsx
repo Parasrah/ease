@@ -33,7 +33,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     private spinner: JSX.Element;
 
     constructor(props) {
-        super(props);
+        super(props, false);
         this.type = UserType.CLIENT;
         this.peerManager = new ClientPeerManager();
         this.messenger = this.peerManager.getMessenger();

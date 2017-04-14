@@ -45,7 +45,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     protected timer: number;
     protected type: UserType;
 
-    constructor(props) {
+    constructor(props, showVideo: boolean) {
         super(props);
 
         this.state = {
@@ -53,8 +53,8 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             volume: 100,
             muted: false,
             duration: 100,
-            showVideo: false,
             showControls: true,
+            showVideo,
         };
 
         this.type = UserType.PENDING;

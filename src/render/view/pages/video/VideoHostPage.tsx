@@ -32,13 +32,12 @@ export class VideoHostPage extends VideoPage<IHostProps> {
     private peerManager: HostPeerManager;
 
     constructor(props) {
-        super(props);
+        super(props, true);
         this.type = UserType.HOST;
         this.peerManager = new HostPeerManager();
         this.messenger = this.peerManager.getMessenger();
         this.receiver = this.peerManager.getReceiver();
         this.initialPlay = true;
-        (this.state as any).showVideo = true;
     }
 
     /************************ Methods ****************************/
