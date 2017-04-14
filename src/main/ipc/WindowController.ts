@@ -27,6 +27,7 @@ export function windowController(window: Electron.BrowserWindow, event: Electron
             // Get message dimensions
             let width = (message as IResizeMessage).width;
             let height = (message as IResizeMessage).height;
+            console.log("Requesting resize to\nwidth: " + width + "\nheight: " + height);
 
             // Determine which to use
             width = (width == -1) ? dimensions[0] : width;
