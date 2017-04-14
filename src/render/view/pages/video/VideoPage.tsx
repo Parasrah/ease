@@ -3,7 +3,7 @@ import { clipboard, ipcRenderer } from "electron";
 import * as React from "react";
 
 import { MainChannel } from "../../../../constants/Channels";
-import { createResizeMessage } from "../../../../ipc-common/messages/WindowMessage";
+import { createResizeMessage, createMinimumSizeMessage } from "../../../../ipc-common/messages/WindowMessage";
 import { setPlayStatusAction, setVideoReadyAction } from "../../../actions/VideoActions";
 import "../../../style/video.less";
 import { UserType } from "../../../utils/Definitions";
@@ -178,10 +178,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.video.volume = muted ? 0 : (volume / 100);
     }
 
-    private resizePage(width: number, height: number) {
-        ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(width, height));
-    }
-
     private calculatePageHeight(videoHeight: number) {
         return videoHeight + VideoPage.TOOLBAR_HEIGHT;
     }
@@ -202,7 +198,8 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.setupVideoShortcuts();
         ResizeSensor(this.videoWrapper, () => {
             const height = this.calculatePageHeight(this.getVideoHeight());
-            this.resizePage(-1, height);
+            ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(-1, height));
+            ipcRenderer.send(MainChannel.windowMainChannel, createMinimumSizeMessage(0, height));
         });
     }
 

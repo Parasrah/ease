@@ -1,5 +1,5 @@
 import { ChannelAction } from "../../constants/ChannelActions";
-import { IResizeMessage, WindowMessage } from "../../ipc-common/messages/WindowMessage";
+import { IResizeMessage, WindowMessage, IMinimumSizeMessage } from "../../ipc-common/messages/WindowMessage";
 
 export function windowController(window: Electron.BrowserWindow, event: Electron.IpcMainEvent, message: WindowMessage) {
     const type = ChannelAction.windowChannelAction;
@@ -21,22 +21,31 @@ export function windowController(window: Electron.BrowserWindow, event: Electron
             if (window.isMaximized()) {
                 break;
             }
-            // Get current window dimensions
-            const dimensions = window.getSize();
+            (function() {
+                // Get current window dimensions
+                const dimensions = window.getSize();
 
-            // Get message dimensions
-            let width = (message as IResizeMessage).width;
-            let height = (message as IResizeMessage).height;
-            console.log("Requesting resize to\nwidth: " + width + "\nheight: " + height);
+                // Get message dimensions
+                let width = (message as IResizeMessage).width;
+                let height = (message as IResizeMessage).height;
 
-            // Determine which to use
-            width = (width == -1) ? dimensions[0] : width;
-            height = (height == -1) ? dimensions[1] : height;
+                // Determine which to use
+                width = (width == -1) ? dimensions[0] : width;
+                height = (height == -1) ? dimensions[1] : height;
 
-            // Determine whether a page resize is necessary
-            if (width != dimensions[0] || height != dimensions[1]) {
-                window.setSize(width, height);
-            }
+                // Determine whether a page resize is necessary
+                if (width != dimensions[0] || height != dimensions[1]) {
+                    window.setSize(width, height);
+                }
+            })();
+            break;
+
+        case type.minimumSize:
+            (function() {
+                const width = (message as IMinimumSizeMessage).width;
+                const height = (message as IMinimumSizeMessage).height;
+                window.setMinimumSize(width, height);
+            })();
             break;
 
         default:

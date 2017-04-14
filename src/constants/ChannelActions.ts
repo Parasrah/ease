@@ -4,6 +4,7 @@ const windowChannelAction = {
     minimize: "MINIMIZE",
     close: "CLOSE",
     resize: "RESIZE",
+    minimumSize: "MINIMUM_SIZE",
 };
 
 const uploadChannelAction = {

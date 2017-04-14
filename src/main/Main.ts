@@ -28,6 +28,8 @@ export default class Main {
         Main.mainWindow = new Main.BrowserWindow({
             width: Constants.DEFAULT_WIDTH,
             height: Constants.DEFAULT_HEIGHT,
+            minHeight: Constants.MINIMUM_HEIGHT,
+            minWidth: Constants.MINIMUM_WIDTH,
             frame: false,
             webPreferences: {
                 experimentalFeatures: true,

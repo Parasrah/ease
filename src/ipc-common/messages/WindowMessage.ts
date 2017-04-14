@@ -18,6 +18,11 @@ export interface IResizeMessage extends IMessage {
     height: number;
 }
 
+export interface IMinimumSizeMessage extends IMessage {
+    width: number;
+    height: number;
+}
+
 // Message Creators
 
 export function createCloseMessage(): ICloseMessage {
@@ -47,6 +52,14 @@ export function createMinimizeMessage(): IMinimizeMessage {
 export function createResizeMessage(width: number, height: number): IResizeMessage {
     return {
         type: ChannelAction.windowChannelAction.resize,
+        width,
+        height,
+    };
+}
+
+export function createMinimumSizeMessage(width: number, height: number): IResizeMessage {
+    return {
+        type: ChannelAction.windowChannelAction.minimumSize,
         width,
         height,
     };

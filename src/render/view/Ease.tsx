@@ -4,8 +4,8 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { MainChannel } from "../../constants/Channels";
-import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from "../../constants/Constants";
-import { createResizeMessage } from "../../ipc-common/messages/WindowMessage";
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, MINIMUM_WIDTH, MINIMUM_HEIGHT } from "../../constants/Constants";
+import { createResizeMessage, createMinimumSizeMessage } from "../../ipc-common/messages/WindowMessage";
 import { changePageAction } from "../actions/AppActions";
 import { setIdAction } from "../actions/CommonPeerActions";
 import { setFullscreenAction, setPathAction } from "../actions/VideoActions";
@@ -68,6 +68,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     private onHomeClick() {
         ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        ipcRenderer.send(MainChannel.windowMainChannel, createMinimumSizeMessage(MINIMUM_WIDTH, MINIMUM_HEIGHT));
         this.props.setPathDispatch("");
         this.props.changePageDispatch(Page.START);
     }
