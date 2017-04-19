@@ -44,6 +44,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     protected videoWrapper: HTMLDivElement;
     protected timer: number;
     protected type: UserType;
+    protected resizeSensor: ResizeSensor;
 
     constructor(props, showVideo: boolean) {
         super(props);
@@ -56,6 +57,9 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
             showControls: true,
             showVideo,
         };
+
+        // Bindings
+        this.resizePageToVideo = this.resizePageToVideo.bind(this);
 
         this.type = UserType.PENDING;
     }
@@ -145,6 +149,19 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.setVolume(newVolume);
     }
 
+    protected resizePageToVideo(): void {
+        const height = this.calculatePageHeight(this.getVideoHeight());
+        ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(-1, height));
+        ipcRenderer.send(MainChannel.windowMainChannel, createMinimumSizeMessage(0, height));
+    }
+
+    protected watchVideoSize(): void {
+        if (this.resizeSensor) {
+            this.resizeSensor.detach(this.videoWrapper, this.resizePageToVideo);
+        }
+        this.resizeSensor = new ResizeSensor(this.videoWrapper, this.resizePageToVideo);
+    }
+
     private showControls = () => {
         this.setState({
             showControls: true,
@@ -163,12 +180,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     private getVideoHeight(): number {
         return this.videoWrapper.clientHeight;
-    }
-
-    private resizePageToVideo(): void {
-        const height = this.calculatePageHeight(this.getVideoHeight());
-        ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(-1, height));
-        ipcRenderer.send(MainChannel.windowMainChannel, createMinimumSizeMessage(0, height));
     }
 
     private setupVideoShortcuts = () => {
@@ -207,9 +218,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     protected componentDidMount() {
         this.setupVideoShortcuts();
-        ResizeSensor(this.videoWrapper, () => {
-            this.resizePageToVideo();
-        });
     }
 
     public abstract render(): JSX.Element;

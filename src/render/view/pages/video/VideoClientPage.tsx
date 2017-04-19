@@ -37,7 +37,6 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         this.peerManager = new ClientPeerManager();
         this.messenger = this.peerManager.getMessenger();
         this.receiver = this.peerManager.getReceiver();
-        this.setupReceiver();
     }
 
     private setupReceiver = () => {
@@ -91,8 +90,13 @@ export class VideoClientPage extends VideoPage<IClientProps> {
     /********************* React Lifecycle ***********************/
 
     protected componentDidMount() {
-        this.peerManager.onStream(this.stream);
         super.componentDidMount();
+        this.peerManager.onStream(this.stream);
+        this.setupReceiver();
+    }
+
+    protected componentDidUpdate() {
+        this.watchVideoSize();
     }
 
     public render(): JSX.Element {
