@@ -92,6 +92,11 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     protected toggleFullscreen = () => {
         if (document.webkitIsFullScreen) {
+            const listener = () => {
+                window.removeEventListener("resize", listener);
+                this.resizePageToVideo();
+            };
+            window.addEventListener("resize", listener);
             document.webkitExitFullscreen();
         } else {
             this.videoWrapper.webkitRequestFullscreen();
@@ -121,6 +126,20 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.timer = window.setTimeout(this.hideControls, VideoPage.SHOW_CONTROLS_TIME);
     }
 
+    protected copyClick = () => {
+        clipboard.writeText(this.props.id);
+    }
+
+    protected updateVideoVolume(volume?: number, muted?: boolean) {
+        if (volume === undefined) {
+            volume = this.state.volume;
+        }
+        if (muted === undefined) {
+            muted = this.state.muted;
+        }
+        this.video.volume = muted ? 0 : (volume / 100);
+    }
+
     protected onVideoWheel = (event: React.WheelEvent<HTMLVideoElement>) => {
         const newVolume = this.state.volume + ((event.deltaY > 0) ? -5 : 5);
         this.setVolume(newVolume);
@@ -136,6 +155,20 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.setState({
             showControls: false,
         });
+    }
+
+    private calculatePageHeight(videoHeight: number) {
+        return videoHeight + VideoPage.TOOLBAR_HEIGHT;
+    }
+
+    private getVideoHeight(): number {
+        return this.videoWrapper.clientHeight;
+    }
+
+    private resizePageToVideo(): void {
+        const height = this.calculatePageHeight(this.getVideoHeight());
+        ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(-1, height));
+        ipcRenderer.send(MainChannel.windowMainChannel, createMinimumSizeMessage(0, height));
     }
 
     private setupVideoShortcuts = () => {
@@ -164,28 +197,6 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         });
     }
 
-    protected copyClick = () => {
-        clipboard.writeText(this.props.id);
-    }
-
-    protected updateVideoVolume(volume?: number, muted?: boolean) {
-        if (volume === undefined) {
-            volume = this.state.volume;
-        }
-        if (muted === undefined) {
-            muted = this.state.muted;
-        }
-        this.video.volume = muted ? 0 : (volume / 100);
-    }
-
-    private calculatePageHeight(videoHeight: number) {
-        return videoHeight + VideoPage.TOOLBAR_HEIGHT;
-    }
-
-    private getVideoHeight(): number {
-        return this.videoWrapper.clientHeight;
-    }
-
     /******************** Abstract Methods *******************/
 
     protected abstract togglePlay: () => void;
@@ -197,9 +208,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     protected componentDidMount() {
         this.setupVideoShortcuts();
         ResizeSensor(this.videoWrapper, () => {
-            const height = this.calculatePageHeight(this.getVideoHeight());
-            ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(-1, height));
-            ipcRenderer.send(MainChannel.windowMainChannel, createMinimumSizeMessage(0, height));
+            this.resizePageToVideo();
         });
     }
 
