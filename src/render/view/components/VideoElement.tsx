@@ -31,7 +31,7 @@ export const VideoElement = (props: IVideoElementProps): JSX.Element => {
 
     return (
         <div
-            className={"react-video-wrapper " + (props.showControls ? "show-cursor" : "hide-cursor") + " " + (props.hidden ? "hidden" : "visible")}
+            className={"react-video-wrapper " + (props.showControls || !props.play ? "show-cursor" : "hide-cursor") + " " + (props.hidden ? "hidden" : "visible")}
             ref={props.setVideoWrapper}
             onMouseMove={props.onMouseMove}
         >

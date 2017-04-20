@@ -149,6 +149,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             peerStatus: state.clientPeerState.peerStatus,
             fullscreen: state.videoState.fullscreen,
             play: state.videoState.play,
+            maximized: state.windowState.maximized,
         });
     }
 

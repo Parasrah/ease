@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 
 import { MainChannel } from "../../../../constants/Channels";
 import { createOpenDialogAction } from "../../../../ipc-common/messages/UploadMessage";
+import { createMaximizeMessage } from "../../../../ipc-common/messages/WindowMessage";
 import { changePageAction } from "../../../actions/AppActions";
 import { setHostIdAction } from "../../../actions/ClientPeerActions";
 import { IState } from "../../../redux/State";
@@ -77,12 +78,39 @@ class StartPage extends React.Component<IStartProps, {}> {
         this.idInput = input;
     }
 
+    private watchFullscreen() {
+        window.addEventListener("keydown", this.keydownListener);
+    }
+
+    private removeKeydownListener() {
+        window.removeEventListener("keydown", this.keydownListener);
+    }
+
+    private keydownListener(event: KeyboardEvent) {
+        switch (event.keyCode) {
+            case 122: // F11
+                event.preventDefault();
+                ipcRenderer.send(MainChannel.windowMainChannel, createMaximizeMessage());
+                break;
+
+            default:
+        }
+    }
+
     /********************* React Lifecycle ***********************/
 
     protected componentWillReceiveProps(nextProps: IStartProps) {
         if (this.props.path !== nextProps.path) {
             this.props.changePage(Page.VIDEO_HOST);
         }
+    }
+
+    protected componentDidMount() {
+        this.watchFullscreen();
+    }
+
+    protected componentWillUnmount() {
+        this.removeKeydownListener();
     }
 
     public render(): JSX.Element {
