@@ -138,7 +138,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
                     time={this.state.time}
                     volume={this.state.volume}
                     play={this.props.play}
-                    showControls={this.state.showVideo}
+                    showControls={this.state.showControls}
                     onMouseMove={this.onMouseMove}
                     onVideoWheel={this.onVideoWheel}
                     onVideoClick={this.togglePlay}
