@@ -116,7 +116,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     protected componentDidMount() {
         super.componentDidMount();
-
+        this.watchVideoSize();
         this.setupVideo(this.video);
     }
 
