@@ -56,11 +56,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     /*********************** Methods *************************/
 
-    public startVideo = (filepath: string) => {
-        this.props.changePageDispatch(Page.VIDEO_HOST);
-    }
-
-    private watchFullscreen = () => {
+    private watchFullscreen() {
         document.onwebkitfullscreenchange = () => {
             this.props.setFullscreenDispatch(document.webkitIsFullScreen);
         };
@@ -81,7 +77,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     /*********************** Lifecycle ***********************/
 
-    public componentWillReceiveProps = (nextProps: IEaseStoreProps) => {
+    protected componentWillReceiveProps(nextProps: IEaseStoreProps) {
         if (this.props.path !== nextProps.path && nextProps.path) {
             this.props.changePageDispatch(Page.VIDEO_HOST);
         }

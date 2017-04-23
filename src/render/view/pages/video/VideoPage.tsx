@@ -70,6 +70,12 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.copyClick = this.copyClick.bind(this);
         this.onVideoWheel = this.onVideoWheel.bind(this);
         this.keydownListener = this.keydownListener.bind(this);
+        this.hideControls = this.hideControls.bind(this);
+
+        // Abstract Bindings
+        this.togglePlay = this.togglePlay.bind(this);
+        this.onCastButton = this.onCastButton.bind(this);
+        this.seek = this.seek.bind(this);
 
         this.type = UserType.PENDING;
     }
@@ -91,6 +97,9 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         });
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected setVolume(volume: number) {
         let check = volume;
         if (check > 100) {
@@ -108,6 +117,9 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.updateVideoVolume(check, false);
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected toggleFullscreen() {
         if (document.webkitIsFullScreen) {
             const listener = () => {
@@ -121,14 +133,23 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         }
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected setVideo(video: HTMLVideoElement) {
         this.video = video;
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected setVideoWrapper(videoWrapper: HTMLDivElement) {
         this.videoWrapper = videoWrapper;
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected toggleVolume() {
         this.setState(function() {
             return {
@@ -138,6 +159,9 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.updateVideoVolume(undefined, !this.state.muted);
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected onMouseMove() {
         this.showControls();
         if (this.timer) {
@@ -146,6 +170,9 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.timer = window.setTimeout(this.hideControls, VideoPage.SHOW_CONTROLS_TIME);
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected copyClick() {
         clipboard.writeText(this.props.id);
     }
@@ -160,11 +187,17 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.video.volume = muted ? 0 : (volume / 100);
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected onVideoWheel(event: React.WheelEvent<HTMLVideoElement>) {
         const newVolume = this.state.volume + ((event.deltaY > 0) ? -5 : 5);
         this.setVolume(newVolume);
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected resizePageToVideo(): void {
         const height = this.calculatePageHeight(this.getVideoHeight());
         ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(-1, height));
@@ -182,7 +215,7 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.resizeSensor.detach(this.videoWrapper, this.resizePageToVideo);
     }
 
-    private showControls = () => {
+    private showControls() {
         this.setState(function(state) {
             return {
                 showControls: true,
@@ -190,7 +223,10 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         });
     }
 
-    private hideControls = () => {
+    /**
+     * @this {@link VideoPage}
+     */
+    private hideControls() {
         this.setState(function(state) {
             return {
                 showControls: false,
@@ -206,14 +242,18 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         return this.videoWrapper.clientHeight;
     }
 
-    private setupVideoShortcuts() {
+    private setupWindowShortcuts() {
         window.addEventListener("keydown", this.keydownListener);
     }
 
-    private removeVideoShortcuts() {
+    private removeWindowShortcuts() {
         window.removeEventListener("keydown", this.keydownListener);
     }
 
+    /**
+     * @param event - keyboard event
+     * @this {@link VideoPage}
+     */
     private keydownListener(event: KeyboardEvent): void {
         switch (event.keyCode) {
             case 32: // space
@@ -240,9 +280,9 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     /******************** Abstract Methods *******************/
 
-    protected abstract togglePlay: () => void;
-    protected abstract onCastButton: () => void;
-    protected abstract seek: (time: number) => void;
+    protected abstract togglePlay(): void;
+    protected abstract onCastButton(): void;
+    protected abstract seek(time: number): void;
 
     /********************* React Lifecycle *******************/
 
@@ -253,13 +293,13 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
     }
 
     protected componentDidMount() {
-        this.setupVideoShortcuts();
+        this.setupWindowShortcuts();
     }
 
     protected componentWillUnmount() {
         clearTimeout(this.timer);
         this.killResizeSensor();
-        this.removeVideoShortcuts();
+        this.removeWindowShortcuts();
     }
 
     public abstract render(): JSX.Element;

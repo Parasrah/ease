@@ -41,6 +41,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      * Register the video stream with the HostPeerManager
      *
      * @param stream - Video stream
+     * @this {@link HostPeerManager}
      */
     public registerStream(stream: MediaStream) {
         this.stream = stream;
@@ -51,6 +52,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      *
      * @param clientID - ID of peer targeted by signal data
      * @param signalData - simple-peer signal data
+     * @this {@link HostPeerManager}
      */
     private receiveSignalData(clientID: string, ...signalData: SimplePeer.SignalData[]) {
         for (let i = 0; i < this.peers.length; i++) {
@@ -72,6 +74,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      *
      * @param clientID - Corresponding id of clientID
      * @param signalArray Optional signal data
+     * @this {@link HostPeerManager}
      */
     private setupPeer(clientID: string, ...signalArray: SimplePeer.SignalData[]): void {
         // Create a normal SimplePeer instance
@@ -114,6 +117,7 @@ export class HostPeerManager extends AbstractPeerManager<HostReceiver, HostMesse
      * Respond to events on the peer
      *
      * @param peer - instance of EnhancedPeer to watch
+     * @this {@link HostPeerManager}
      */
     private watchPeer(peer: IEnhancedPeer) {
         peer.on("connect", () => this.storeWrapper.dispatch(setPeerStatusAction(peer.clientID, true)));
