@@ -16,7 +16,7 @@ type deliverSignalData = (clientID: string, ...signalData: SimplePeer.SignalData
  */
 export class HostSignaler extends AbstractSignaler {
     /**
-     * Callback through with to deliver signal data up the chain.
+     * Callback to deliver signal data to listeners
      *
      * **DO NOT** call this if the video is not ready.
      */
@@ -53,7 +53,8 @@ export class HostSignaler extends AbstractSignaler {
     }
 
     /**
-     * Subscribe to signal data from the signaler
+     * Subscribe to signal data from the signaler.
+     * Calling this will override any previous subscribers
      *
      * @param callback - callback through which to deliver signal data to subscriber
      * @this {@link HostSignaler}
