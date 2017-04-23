@@ -16,11 +16,21 @@ export class ClientSignaler extends AbstractSignaler {
 
     constructor() {
         super();
+
+        // Bindings
+        this.onResponse = this.onResponse.bind(this);
+        this.sendSignal = this.sendSignal.bind(this);
+        this.dealWithResponse = this.dealWithResponse.bind(this);
+
+        // Initialization
         this.offerData = [];
         this.responseData = [];
         this.socket.on("response", this.dealWithResponse);
     }
 
+    /**
+     * @this {@link ClientSignaler}
+     */
     public onResponse(deliverSignal: (signalData: SimplePeer.SignalData) => void) {
         this.deliverSignal = deliverSignal;
         for (const data of this.responseData) {
@@ -31,7 +41,10 @@ export class ClientSignaler extends AbstractSignaler {
         this.responseData = [];
     }
 
-    public sendSignal = (signalData: SimplePeer.SignalData) => {
+    /**
+     * @this {@link ClientSignaler}
+     */
+    public sendSignal(signalData: SimplePeer.SignalData) {
         if (!this.getServerStatus()) {
             this.offerData.push(signalData);
         }
@@ -40,6 +53,9 @@ export class ClientSignaler extends AbstractSignaler {
         }
     }
 
+    /**
+     * @this {@link ClientSignaler}
+     */
     protected notify(oldState: IState, nextState: IState) {
         if (nextState.commonPeerState.serverStatus && this.offerData.length > 0) {
             for (const signalData of this.offerData) {
@@ -49,11 +65,11 @@ export class ClientSignaler extends AbstractSignaler {
         }
     }
 
-    private sendOffer = (offerMessage: IOfferMessage) => {
+    private sendOffer(offerMessage: IOfferMessage) {
         this.socket.emit("offer", offerMessage);
     }
 
-    private formOffer = (data: SimplePeer.SignalData): IOfferMessage => {
+    private formOffer(data: SimplePeer.SignalData): IOfferMessage {
         return {
             clientID: this.getID(),
             hostID: this.getClientState().hostID,
@@ -61,7 +77,10 @@ export class ClientSignaler extends AbstractSignaler {
         };
     }
 
-    private dealWithResponse = (responseMessage: IResponseMessage) => {
+    /**
+     * @this {@link ClientSignaler}
+     */
+    private dealWithResponse(responseMessage: IResponseMessage) {
         if (responseMessage.clientID === this.getID()) {
             if (this.deliverSignal) {
                 this.deliverSignal(responseMessage.signalData);

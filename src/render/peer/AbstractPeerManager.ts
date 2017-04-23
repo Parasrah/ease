@@ -12,14 +12,21 @@ export abstract class AbstractPeerManager<R extends AbstractReceiver, M extends 
         this.messenger = messenger;
         this.signaler = signaler;
 
+        // Bindings
         this.getReceiver = this.getReceiver.bind(this);
         this.getMessenger = this.getMessenger.bind(this);
     }
 
+    /**
+     * @this {@link AbstractPeerManager}
+     */
     public getReceiver() {
         return this.receiver;
     }
 
+    /**
+     * @this {@link AbstractPeerManager}
+     */
     public getMessenger() {
         return this.messenger;
     }

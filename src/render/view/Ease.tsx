@@ -62,6 +62,9 @@ export class Ease extends React.Component<IEaseProps, {}> {
         };
     }
 
+    /**
+     * @this {@link Ease}
+     */
     private onHomeClick() {
         ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         ipcRenderer.send(MainChannel.windowMainChannel, createMinimumSizeMessage(MINIMUM_WIDTH, MINIMUM_HEIGHT));
@@ -69,6 +72,9 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.props.changePageDispatch(Page.START);
     }
 
+    /**
+     * @this {@link Ease}
+     */
     private onMaximizeClick() {
         this.props.maximized ?
         this.props.unmaximizeDispatch() :
