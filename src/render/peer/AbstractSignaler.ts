@@ -35,6 +35,11 @@ export abstract class AbstractSignaler {
         this.listen();
     }
 
+    public close() {
+        this.socket.close();
+        this.socket = null;
+    }
+
     protected dispatch<T extends Action>(action: T | ThunkAction<void, IState, void>) {
         this.storeWrapper.getStore().dispatch(action as T);
     }

@@ -116,6 +116,11 @@ export class VideoClientPage extends VideoPage<IClientProps> {
         this.watchVideoSize();
     }
 
+    protected componentWillUnmount() {
+        this.peerManager.close();
+        super.componentWillUnmount();
+    }
+
     public render(): JSX.Element {
         return (
             <div className="video">

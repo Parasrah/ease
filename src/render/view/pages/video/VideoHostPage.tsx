@@ -132,6 +132,11 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         this.setupVideo(this.video);
     }
 
+    protected componentWillUnmount() {
+        this.peerManager.close();
+        super.componentWillUnmount();
+    }
+
     public render(): JSX.Element {
         return (
             <div className="video">

@@ -30,4 +30,11 @@ export abstract class AbstractPeerManager<R extends AbstractReceiver, M extends 
     public getMessenger() {
         return this.messenger;
     }
+
+    /**
+     * Cleanup the peer manager
+     */
+    public close() {
+        this.signaler.close();
+    }
 }
