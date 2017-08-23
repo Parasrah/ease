@@ -30,10 +30,7 @@
             true,
             "always"
         ],
-        "triple-equals": [
-            true,
-            "allow-null-check"
-        ],
+        "triple-equals": false,
         "variable-name": [
             true,
             "ban-keywords"
@@ -75,7 +72,7 @@
             false
         ],
         "only-arrow-functions": [
-            true
+            false
         ],
         "one-line": [
             true,
@@ -89,10 +86,6 @@
         "semicolon": [
             true,
             "always"
-        ],
-        "triple-equals": [
-            true,
-            "allow-null-check"
         ],
         "typedef-whitespace": [
             true,
@@ -117,7 +110,6 @@
             "check-type"
         ],
         "eofline": true,
-        "prefer-const": true,
         "switch-default": true,
         "no-console": [
             false
@@ -128,7 +120,32 @@
         ],
         "object-literal-sort-keys": false,
         "ordered-imports": [
-            false
-        ]
+            true
+        ],
+        "prefer-for-of": false,
+        "no-var-requires": true,
+        "typedef": [
+            true
+        ],
+        "max-file-line-count": [
+            true,
+            500
+        ],
+        "align": [
+            true
+        ],
+        "arrow-return-shorthand": true,
+        "newline-before-return": true,
+        "object-literal-shorthand": true,
+        "prefer-method-signature": true,
+        "object-literal-key-quotes": [
+            true,
+            "as-needed"
+        ],
+        "no-shadowed-variable": false,
+        "no-empty": false,
+        "ban-types": false,
+        "triple-equals": false,
+        "jsx-no-multiline-js": false
     }
 }

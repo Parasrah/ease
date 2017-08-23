@@ -24,8 +24,12 @@
 @primary-color: #212121;
 @accent-color: black;
 @font-color: white;
+@hover: #353535;
+@click: #515151;
 
-/* TODO find name */
+// Page dimensions
+// Must also change toolbar height in Toolbar.tsx
+@toolbar-height: 30px;
 
 #squarish(@length) {
     height: @length;
@@ -52,11 +56,37 @@
     font-family: 'Inconsolata', regular;
 }
 
+// Hide cursor class
+.hide-cursor {
+    cursor: none;
+}
+
+// Hide element class
+.hidden {
+    display: none !important;
+}
+
 body {
     #satisfy;
 
     background-color: @background-color;
 
+    #app {
+        height: 100vh;
+        width: 100%;
+        margin: 0;
+        -webkit-app-region: no-drag;
+        overflow: hidden;
+
+        .app-core {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    > input [type='number'] {
+        -moz-appearance: textfield;
+    }
 
     button {
         #indie-flower;

@@ -1,11 +1,10 @@
 language: node_js
 node_js:
-- "node"
+  - "6"
 env:
 - NODE_ENV=development
 before_script:
 - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
-- typings install
 - mkdir dist
 script:
 - npm run lint

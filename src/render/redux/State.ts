@@ -1,5 +1,3 @@
-import { SignalData } from "simple-peer";
-
 import * as Def from "../utils/Definitions";
 
 export interface IState {
@@ -18,8 +16,7 @@ export interface IAppState {
 }
 
 export interface IWindowState {
-    height: number;
-    width: number;
+    maximized: boolean;
 }
 
 export interface IVideoState {
@@ -30,6 +27,7 @@ export interface IVideoState {
     jumpToTime: null;
     controlStatus: null;
     volume: null;
+    path: string;
 }
 
 export interface ICommonPeerState {
@@ -43,7 +41,6 @@ export interface IHostPeerState {
 
 export interface IClientPeerState {
     hostID: string;
-    offerData: SignalData[];
     peerStatus: boolean;
 }
 

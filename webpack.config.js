@@ -1,5 +1,5 @@
 module.exports = {
-    entry: "./src/render/index.tsx",
+    entry: "./src/render/view/index.tsx",
     output: {
         filename: "bundle.js",
         path: __dirname + "/dist"
@@ -16,7 +16,7 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".jsx"]
+        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".jsx", ".less"]
     },
 
     module: {
@@ -31,7 +31,24 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 loader: "awesome-typescript-loader"
-            }
+            },
+            {
+                test: /\.less$/,
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1
+                        }
+                    },
+                    'less-loader'
+                ]
+            },
+            {
+                test: /\.[ot]tf$/,
+                loader: 'file-loader?limit=65000&mimetype=application/octet-stream&name=style/font/[name].[ext]'
+            },
         ]
     },
 

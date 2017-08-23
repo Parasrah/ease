@@ -1,21 +1,21 @@
+import { IAddSignalDataAction } from "../actions/HostPeerActions";
 import { IHostPeerState } from "../redux/State";
-import { IAddSignalDataAction } from "../Actions/HostPeerActions";
-import { DataType } from "./Definitions";
+import { UserType } from "./Definitions";
 
-export const addSignalData = (state: IHostPeerState, action: IAddSignalDataAction, type: DataType): IHostPeerState => {
+export const addSignalData = (state: IHostPeerState, action: IAddSignalDataAction, type: UserType): IHostPeerState => {
     let combinedSignalData = null;
 
     return Object.assign({}, state, {
         hostPeers: state.hostPeers.map((peer) => {
             if (peer.clientID === action.clientID) {
                 switch (type) {
-                    case DataType.HOST:
+                    case UserType.HOST:
                         combinedSignalData = {
                             hostSignalData: peer.hostSignalData.concat(action.signalData),
                         };
                         break;
 
-                    case DataType.CLIENT:
+                    case UserType.CLIENT:
                         combinedSignalData = {
                             clientSignalData: peer.clientSignalData.concat(action.signalData),
                         };
@@ -24,6 +24,7 @@ export const addSignalData = (state: IHostPeerState, action: IAddSignalDataActio
                     default:
                         throw Error("No such enum");
                 }
+
                 return Object.assign(peer, combinedSignalData);
             }
             else {
