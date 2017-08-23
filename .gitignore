@@ -3,3 +3,4 @@ dist/
 *.log
 *.css
 yarn.lock
+.vscode/*
