@@ -8,6 +8,10 @@ In sync... what does this really mean for you? Well, if you click pause, it paus
 
 If you are looking for a similar experience for remote content (youtube etc), we suggest looking at Gaze or Rabb.it, both are great products!
 
+### WeSync
+
+While Ease is still under active development, it is no longer being done in this repository. Due to the experimental API being added to Chrome as a permanent feature, with Firefox soon to follow, we will be redoing Ease as a pure web application using Vue.js. You can find more information [here](https://github.com/right2drive/wesync)
+
 ### Web Client
 
 We have developed a web application for Ease, but unfortunately is only available for the client. If you're hosting, we are afraid you are stuck with the electron app for now.
