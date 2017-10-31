@@ -1,5 +1,7 @@
 # Ease [![Build Status](https://travis-ci.org/Right2Drive/ease.svg?branch=master)](https://travis-ci.org/Right2Drive/ease.svg?branch=master)
 
+![ease](https://user-images.githubusercontent.com/14935550/32249802-e0d27512-be4f-11e7-8861-3190340dd076.PNG)
+
 Ease is a desktop application with the goal of making it a little bit easier watch movies with the people that matter to you, regardless of the distance. 
 
 Ease lets you broadcast your own local content to your friends and loved ones, completely in sync! All the audio and video sharing is peer-to-peer, ensuring your content stays private and safe, and we only use a small signaling server to help you discover other users.
