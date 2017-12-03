@@ -24,13 +24,20 @@ export abstract class AbstractSignaler {
     private storeWrapper: StoreWrapper;
 
     constructor() {
+        // Bindings
         this.notify = this.notify.bind(this);
 
+        // Initialization
         this.storeWrapper = StoreWrapper.getInstance();
         this.state = this.getState();
         this.socket = SocketIOClient.connect(this.state.settingsState.signalHost);
         this.dispatch(watchServerStatusAction(this.socket));
         this.listen();
+    }
+
+    public close() {
+        this.socket.close();
+        this.socket = null;
     }
 
     protected dispatch<T extends Action>(action: T | ThunkAction<void, IState, void>) {
@@ -69,5 +76,10 @@ export abstract class AbstractSignaler {
         });
     }
 
+    /**
+     * @this {@link AbstractSignaler}
+     * @param oldState - old redux state
+     * @param nextState - new redux state
+     */
     protected abstract notify(oldState: IState, nextState: IState);
 }

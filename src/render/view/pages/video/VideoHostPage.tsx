@@ -42,11 +42,13 @@ export class VideoHostPage extends VideoPage<IHostProps> {
 
     /************************ Methods ****************************/
 
-    private setupVideo = (video: HTMLVideoElement) => {
+    private setupVideo(video: HTMLVideoElement) {
 
         video.addEventListener("durationchange", () => {
-            this.setState({
-                duration: video.duration,
+            this.setState(function(state) {
+                return {
+                    duration: video.duration,
+                };
             });
         });
 
@@ -70,7 +72,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         });
     }
 
-    private setupMessenger = () => {
+    private setupMessenger() {
         this.receiver.on(ClientMessageType.PLAY_PAUSE, () => {
             this.toggleVideo();
         });
@@ -80,21 +82,31 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         });
     }
 
-    private toggleVideo = () => {
+    private toggleVideo() {
         this.video.paused ? this.video.play() : this.video.pause();
     }
 
     /********************* Video Listeners ***********************/
 
-    protected togglePlay = () => {
+    /**
+     * @this {@link VideoHostPage}
+     */
+    protected togglePlay(): void {
         this.toggleVideo();
     }
 
-    protected onCastButton = () => {
-        // TODO
+    /**
+     * @this {@link VideoHostPage}
+     */
+    protected onCastButton() {
+        // PENDING
     }
 
-    protected seek = (time: number) => {
+    /**
+     * @this {@link VideoHostPage}
+     * @param time - time of video to seek to
+     */
+    protected seek(time: number) {
         this.video.currentTime = time;
     }
 
@@ -120,6 +132,11 @@ export class VideoHostPage extends VideoPage<IHostProps> {
         this.setupVideo(this.video);
     }
 
+    protected componentWillUnmount() {
+        this.peerManager.close();
+        super.componentWillUnmount();
+    }
+
     public render(): JSX.Element {
         return (
             <div className="video">
@@ -138,7 +155,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
                     time={this.state.time}
                     volume={this.state.volume}
                     play={this.props.play}
-                    showControls={this.state.showVideo}
+                    showControls={this.state.showControls}
                     onMouseMove={this.onMouseMove}
                     onVideoWheel={this.onVideoWheel}
                     onVideoClick={this.togglePlay}
@@ -157,6 +174,7 @@ export class VideoHostPage extends VideoPage<IHostProps> {
             videoReady: state.videoState.videoReady,
             fullscreen: state.videoState.fullscreen,
             play: state.videoState.play,
+            maximized: state.windowState.maximized,
         });
     }
 

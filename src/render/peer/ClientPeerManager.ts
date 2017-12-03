@@ -36,6 +36,9 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         this.setupPeer();
     }
 
+    /**
+     * @this {@link ClientPeerManager}
+     */
     public reconnect() {
         this.storeWrapper.dispatch(setIdAction(Guid.raw()));
         if (this.peer) {
@@ -57,10 +60,16 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         }
     }
 
+    /**
+     * @this {@link ClientPeerManager}
+     */
     public getPeer() {
         return this.peer;
     }
 
+    /**
+     * @this {@link ClientPeerManager}
+     */
     public onStream(callback: (stream: MediaStream) => void) {
         if (this.stream) {
             setTimeout(() => {
@@ -81,6 +90,9 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         });
     }
 
+    /**
+     * @this {@link ClientPeerManager}
+     */
     private resolveStream(stream: MediaStream) {
         this.stream = stream;
         if (this.deliverStream) {
@@ -90,6 +102,9 @@ export class ClientPeerManager extends AbstractPeerManager<ClientReceiver, Clien
         }
     }
 
+    /**
+     * @this {@link ClientPeerManager}
+     */
     private setupPeer() {
         this.peer = this.createPeer();
         this.peer.on("stream", this.resolveStream);

@@ -33,13 +33,18 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     constructor(props) {
         super(props, false);
+
+        // Bindings
+        this.stream = this.stream.bind(this);
+
+        // Initialization
         this.type = UserType.CLIENT;
         this.peerManager = new ClientPeerManager();
         this.messenger = this.peerManager.getMessenger();
         this.receiver = this.peerManager.getReceiver();
     }
 
-    private setupReceiver = () => {
+    private setupReceiver() {
         this.receiver.on(HostMessageType.DURATION, (message: IDurationMessage) => {
             this.setState({
                 duration: message.duration,
@@ -57,7 +62,10 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     /********************* Methods ***********************/
 
-    private stream = (stream: MediaStream) => {
+    /**
+     * @this {@link VideoClientPage}
+     */
+    private stream(stream: MediaStream) {
         this.video.srcObject = stream;
         this.video.play();
         this.showVideo();
@@ -71,17 +79,26 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     /********************* Video Listeners ***********************/
 
-    protected togglePlay = () => {
+    /**
+     * @this {@link VideoClientPage}
+     */
+    protected togglePlay() {
         if (this.props.peerStatus) {
             this.messenger.sendPlayPauseMessage();
         }
     }
 
-    protected onCastButton = () => {
-        // TODO
+    /**
+     * @this {@link VideoClientPage}
+     */
+    protected onCastButton() {
+        // PENDING
     }
 
-    protected seek = (time: number) => {
+    /**
+     * @this {@link VideoClientPage}
+     */
+    protected seek(time: number) {
         if (this.props.peerStatus) {
             this.messenger.sendSeekMessage(time);
         }
@@ -97,6 +114,11 @@ export class VideoClientPage extends VideoPage<IClientProps> {
 
     protected componentDidUpdate() {
         this.watchVideoSize();
+    }
+
+    protected componentWillUnmount() {
+        this.peerManager.close();
+        super.componentWillUnmount();
     }
 
     public render(): JSX.Element {
@@ -149,6 +171,7 @@ export class VideoClientPage extends VideoPage<IClientProps> {
             peerStatus: state.clientPeerState.peerStatus,
             fullscreen: state.videoState.fullscreen,
             play: state.videoState.play,
+            maximized: state.windowState.maximized,
         });
     }
 

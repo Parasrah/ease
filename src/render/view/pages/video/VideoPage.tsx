@@ -13,15 +13,16 @@ export interface IVideoInputProps {
 }
 
 export interface IVideoStoreProps {
-    readonly id: string;
-    readonly videoReady: boolean;
-    readonly fullscreen: boolean;
-    readonly play: boolean;
+    id: string;
+    videoReady: boolean;
+    fullscreen: boolean;
+    maximized: boolean;
+    play: boolean;
 }
 
 export interface IVideoDispatchProps {
-    readonly setVideoReadyDispatch: setVideoReadyAction;
-    readonly setPlayStatusDispatch: setPlayStatusAction;
+    setVideoReadyDispatch: setVideoReadyAction;
+    setPlayStatusDispatch: setPlayStatusAction;
 }
 
 export interface IVideoState {
@@ -60,13 +61,28 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
         // Bindings
         this.resizePageToVideo = this.resizePageToVideo.bind(this);
+        this.toggleFullscreen = this.toggleFullscreen.bind(this);
+        this.setVolume = this.setVolume.bind(this);
+        this.setVideo = this.setVideo.bind(this);
+        this.setVideoWrapper = this.setVideoWrapper.bind(this);
+        this.toggleVolume = this.toggleVolume.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
+        this.copyClick = this.copyClick.bind(this);
+        this.onVideoWheel = this.onVideoWheel.bind(this);
+        this.keydownListener = this.keydownListener.bind(this);
+        this.hideControls = this.hideControls.bind(this);
+
+        // Abstract Bindings
+        this.togglePlay = this.togglePlay.bind(this);
+        this.onCastButton = this.onCastButton.bind(this);
+        this.seek = this.seek.bind(this);
 
         this.type = UserType.PENDING;
     }
 
     /************************ Methods ************************/
 
-    protected setTime = (time: number) => {
+    protected setTime(time: number) {
         let check = time;
         if (check > this.state.duration) {
             check = this.state.duration;
@@ -74,12 +90,17 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         else if (check < 0) {
             check = 0;
         }
-        this.setState({
-            time: check,
+        this.setState(function(state) {
+            return {
+                time: check,
+            };
         });
     }
 
-    protected setVolume = (volume: number) => {
+    /**
+     * @this {@link VideoPage}
+     */
+    protected setVolume(volume: number) {
         let check = volume;
         if (check > 100) {
             check = 100;
@@ -87,14 +108,19 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         else if (check < 0) {
             check = 0;
         }
-        this.setState({
-            volume: check,
-            muted: false,
+        this.setState(function(state) {
+            return {
+                volume: check,
+                muted: false,
+            };
         });
         this.updateVideoVolume(check, false);
     }
 
-    protected toggleFullscreen = () => {
+    /**
+     * @this {@link VideoPage}
+     */
+    protected toggleFullscreen() {
         if (document.webkitIsFullScreen) {
             const listener = () => {
                 window.removeEventListener("resize", listener);
@@ -107,22 +133,36 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         }
     }
 
-    protected setVideo = (video: HTMLVideoElement) => {
+    /**
+     * @this {@link VideoPage}
+     */
+    protected setVideo(video: HTMLVideoElement) {
         this.video = video;
     }
 
-    protected setVideoWrapper = (videoWrapper: HTMLDivElement) => {
+    /**
+     * @this {@link VideoPage}
+     */
+    protected setVideoWrapper(videoWrapper: HTMLDivElement) {
         this.videoWrapper = videoWrapper;
     }
 
-    protected toggleVolume = () => {
-        this.setState({
-            muted: !this.state.muted,
+    /**
+     * @this {@link VideoPage}
+     */
+    protected toggleVolume() {
+        this.setState(function() {
+            return {
+                muted: !this.state.muted,
+            };
         });
         this.updateVideoVolume(undefined, !this.state.muted);
     }
 
-    protected onMouseMove = () => {
+    /**
+     * @this {@link VideoPage}
+     */
+    protected onMouseMove() {
         this.showControls();
         if (this.timer) {
             window.clearTimeout(this.timer);
@@ -130,7 +170,10 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.timer = window.setTimeout(this.hideControls, VideoPage.SHOW_CONTROLS_TIME);
     }
 
-    protected copyClick = () => {
+    /**
+     * @this {@link VideoPage}
+     */
+    protected copyClick() {
         clipboard.writeText(this.props.id);
     }
 
@@ -144,11 +187,17 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         this.video.volume = muted ? 0 : (volume / 100);
     }
 
-    protected onVideoWheel = (event: React.WheelEvent<HTMLVideoElement>) => {
+    /**
+     * @this {@link VideoPage}
+     */
+    protected onVideoWheel(event: React.WheelEvent<HTMLVideoElement>) {
         const newVolume = this.state.volume + ((event.deltaY > 0) ? -5 : 5);
         this.setVolume(newVolume);
     }
 
+    /**
+     * @this {@link VideoPage}
+     */
     protected resizePageToVideo(): void {
         const height = this.calculatePageHeight(this.getVideoHeight());
         ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(-1, height));
@@ -157,20 +206,31 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
 
     protected watchVideoSize(): void {
         if (this.resizeSensor) {
-            this.resizeSensor.detach(this.videoWrapper, this.resizePageToVideo);
+            this.killResizeSensor();
         }
         this.resizeSensor = new ResizeSensor(this.videoWrapper, this.resizePageToVideo);
     }
 
-    private showControls = () => {
-        this.setState({
-            showControls: true,
+    protected killResizeSensor() {
+        this.resizeSensor.detach(this.videoWrapper, this.resizePageToVideo);
+    }
+
+    private showControls() {
+        this.setState(function(state) {
+            return {
+                showControls: true,
+            };
         });
     }
 
-    private hideControls = () => {
-        this.setState({
-            showControls: false,
+    /**
+     * @this {@link VideoPage}
+     */
+    private hideControls() {
+        this.setState(function(state) {
+            return {
+                showControls: false,
+            };
         });
     }
 
@@ -182,42 +242,64 @@ export abstract class VideoPage<P extends IVideoProps> extends React.Component<P
         return this.videoWrapper.clientHeight;
     }
 
-    private setupVideoShortcuts = () => {
-        window.addEventListener("keydown", (event: KeyboardEvent) => {
-            switch (event.keyCode) {
-                case 32: // space
-                    this.togglePlay();
-                    break;
+    private setupWindowShortcuts() {
+        window.addEventListener("keydown", this.keydownListener);
+    }
 
-                case 122: // F11
-                    event.preventDefault();
-                    this.toggleFullscreen();
-                    break;
+    private removeWindowShortcuts() {
+        window.removeEventListener("keydown", this.keydownListener);
+    }
 
-                case 37:
-                    event.preventDefault();
-                    this.seek(this.state.time - 10);
-                    break;
+    /**
+     * @param event - keyboard event
+     * @this {@link VideoPage}
+     */
+    private keydownListener(event: KeyboardEvent): void {
+        switch (event.keyCode) {
+            case 32: // space
+                this.togglePlay();
+                break;
 
-                case 39:
-                    this.seek(this.state.time + 10);
-                    break;
+            case 122: // F11
+                event.preventDefault();
+                this.toggleFullscreen();
+                break;
 
-                default:
-            }
-        });
+            case 37:
+                event.preventDefault();
+                this.seek(this.state.time - 10);
+                break;
+
+            case 39:
+                this.seek(this.state.time + 10);
+                break;
+
+            default:
+        }
     }
 
     /******************** Abstract Methods *******************/
 
-    protected abstract togglePlay: () => void;
-    protected abstract onCastButton: () => void;
-    protected abstract seek: (time: number) => void;
+    protected abstract togglePlay(): void;
+    protected abstract onCastButton(): void;
+    protected abstract seek(time: number): void;
 
     /********************* React Lifecycle *******************/
 
+    protected componentWillReceiveProps(nextProps: IVideoProps) {
+        if (this.props.maximized && !nextProps.maximized) {
+            this.resizePageToVideo();
+        }
+    }
+
     protected componentDidMount() {
-        this.setupVideoShortcuts();
+        this.setupWindowShortcuts();
+    }
+
+    protected componentWillUnmount() {
+        clearTimeout(this.timer);
+        this.killResizeSensor();
+        this.removeWindowShortcuts();
     }
 
     public abstract render(): JSX.Element;

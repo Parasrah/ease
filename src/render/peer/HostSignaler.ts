@@ -16,7 +16,7 @@ type deliverSignalData = (clientID: string, ...signalData: SimplePeer.SignalData
  */
 export class HostSignaler extends AbstractSignaler {
     /**
-     * Callback through with to deliver signal data up the chain.
+     * Callback to deliver signal data to listeners
      *
      * **DO NOT** call this if the video is not ready.
      */
@@ -31,7 +31,7 @@ export class HostSignaler extends AbstractSignaler {
         this.discover = this.discover.bind(this);
         this.handleOffer = this.handleOffer.bind(this);
 
-        // Finish setup
+        // Initialization
         this.deliverSignalData = null;
         this.socket.on("offer", this.handleOffer);
     }
@@ -41,6 +41,7 @@ export class HostSignaler extends AbstractSignaler {
      *
      * @param clientID - Target of signal data
      * @param signalData - simple-peer signal data payload
+     * @this {@link HostSignaler}
      */
     public handleSignalData(clientID: string, signalData: SimplePeer.SignalData) {
         if (this.getServerStatus()) {
@@ -52,9 +53,11 @@ export class HostSignaler extends AbstractSignaler {
     }
 
     /**
-     * Subscribe to signal data from the signaler
+     * Subscribe to signal data from the signaler.
+     * Calling this will override any previous subscribers
      *
      * @param callback - callback through which to deliver signal data to subscriber
+     * @this {@link HostSignaler}
      */
     public subscribe(callback: deliverSignalData) {
         this.deliverSignalData = callback;
@@ -106,6 +109,7 @@ export class HostSignaler extends AbstractSignaler {
 
     /**
      * Send discovery message to the server
+     * @this {@link HostSignaler}
      */
     private discover() {
         const initMessage: IInitMessage = {
@@ -118,6 +122,7 @@ export class HostSignaler extends AbstractSignaler {
      * Handle offer message from a client
      *
      * @param offer - Offer message
+     * @this {@link HostSignaler}
      */
     private handleOffer(offer: IOfferMessage) {
         // Check if peer exists in store

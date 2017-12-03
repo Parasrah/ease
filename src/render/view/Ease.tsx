@@ -56,16 +56,15 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     /*********************** Methods *************************/
 
-    public startVideo = (filepath: string) => {
-        this.props.changePageDispatch(Page.VIDEO_HOST);
-    }
-
-    private watchFullscreen = () => {
+    private watchFullscreen() {
         document.onwebkitfullscreenchange = () => {
             this.props.setFullscreenDispatch(document.webkitIsFullScreen);
         };
     }
 
+    /**
+     * @this {@link Ease}
+     */
     private onHomeClick() {
         ipcRenderer.send(MainChannel.windowMainChannel, createResizeMessage(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         ipcRenderer.send(MainChannel.windowMainChannel, createMinimumSizeMessage(MINIMUM_WIDTH, MINIMUM_HEIGHT));
@@ -73,6 +72,9 @@ export class Ease extends React.Component<IEaseProps, {}> {
         this.props.changePageDispatch(Page.START);
     }
 
+    /**
+     * @this {@link Ease}
+     */
     private onMaximizeClick() {
         this.props.maximized ?
         this.props.unmaximizeDispatch() :
@@ -81,7 +83,7 @@ export class Ease extends React.Component<IEaseProps, {}> {
 
     /*********************** Lifecycle ***********************/
 
-    public componentWillReceiveProps = (nextProps: IEaseStoreProps) => {
+    protected componentWillReceiveProps(nextProps: IEaseStoreProps) {
         if (this.props.path !== nextProps.path && nextProps.path) {
             this.props.changePageDispatch(Page.VIDEO_HOST);
         }
